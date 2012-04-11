@@ -61,4 +61,8 @@
   <!-- Light / Regular style fonts -->
   <java-symbol type="string" name="config_lightFontFamily" />
   <java-symbol type="string" name="config_regularFontFamily" />
+
+  <!-- Device keyhandler -->
+  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
+  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
 </resources>
