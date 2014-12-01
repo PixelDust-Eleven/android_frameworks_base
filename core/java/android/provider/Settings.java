@@ -5380,6 +5380,13 @@ public final class Settings {
          */
         public static final String QS_TILE_STYLE = "qs_tile_style";
 
+       /**
+         * Whether to wake the display when plugging or unplugging the charger
+         *
+         * @hide
+         */
+        public static final String WAKE_WHEN_PLUGGED_OR_UNPLUGGED = "wake_when_plugged_or_unplugged";
+
         /**
          * Media artwork wallpaper blur level on lockscreen
          * @hide
