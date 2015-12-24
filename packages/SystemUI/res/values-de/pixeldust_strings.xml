@@ -177,4 +177,8 @@
     <!-- Name of the additional status bar icons also exposed with SystemUI Tuner -->
     <string name="status_bar_camera">Kamera</string>
     <string name="status_bar_microphone">Mikrofon</string>
+
+    <!-- 4G LTE switch -->
+    <string name="show_fourg_title">4G statt LTE</string>
+    <string name="show_fourg_summary">LTE-Symbol in der Statusleiste durch 4G ersetzen</string>
 </resources>
