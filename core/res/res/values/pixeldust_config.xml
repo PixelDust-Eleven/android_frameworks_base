@@ -95,4 +95,7 @@
 
     <!-- FOD icon dim-->
     <bool name="config_targetUsesInKernelDimming">false</bool>
+
+    <!-- Whether device has dash charging support -->
+    <bool name="config_hasDashCharger">false</bool>
 </resources>
