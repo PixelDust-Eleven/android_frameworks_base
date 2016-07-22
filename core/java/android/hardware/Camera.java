@@ -63,6 +63,7 @@ import com.android.internal.app.IAppOpsService;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -286,6 +287,23 @@ public class Camera {
     private static final int CAMERA_FACE_DETECTION_SW = 1;
 
     /**
+     * @hide
+     */
+    public static boolean shouldExposeAuxCamera() {
+        /**
+         * Force to expose only two cameras
+         * if the package name does not falls in this bucket
+         */
+        String packageName = ActivityThread.currentOpPackageName();
+        List<String> packageList = Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packagelist", packageName).split(","));
+        List<String> packageBlacklist = Arrays.asList(
+                SystemProperties.get("vendor.camera.aux.packageblacklist", "").split(","));
+
+        return packageList.contains(packageName) && !packageBlacklist.contains(packageName);
+    }
+
+    /**
      * Returns the number of physical cameras available on this device.
      * The return value of this method might change dynamically if the device
      * supports external cameras and an external camera is connected or
@@ -301,24 +319,8 @@ public class Camera {
      *   cameras or an error was encountered enumerating them.
      */
     public static int getNumberOfCameras() {
-        boolean exposeAuxCamera = false;
-        String packageName = ActivityThread.currentOpPackageName();
-        /* Force to expose only two cameras
-         * if the package name does not falls in this bucket
-         */
-        String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
-        if (packageList.length() > 0) {
-            TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
-            splitter.setString(packageList);
-            for (String str : splitter) {
-                if (packageName.equals(str)) {
-                    exposeAuxCamera = true;
-                    break;
-                }
-            }
-        }
         int numberOfCameras = _getNumberOfCameras();
-        if (exposeAuxCamera == false && (numberOfCameras > 2)) {
+        if (!shouldExposeAuxCamera() && numberOfCameras > 2) {
             numberOfCameras = 2;
         }
         return numberOfCameras;
@@ -326,8 +328,9 @@ public class Camera {
 
     /**
      * Returns the number of physical cameras available on this device.
+     *
+     * @hide
      */
-    /** @hide */
     public native static int _getNumberOfCameras();
 
     /**
