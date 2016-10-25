@@ -49,7 +49,10 @@
   <!-- Flashlight proximity check -->
   <java-symbol type="integer" name="config_flashlightProximityTimeout" />
 
-    <!-- Enable face auth when swiping security view -->
-    <java-symbol type="bool" name="config_faceAuthOnSecurityView" />
+  <!-- Enable face auth when swiping security view -->
+  <java-symbol type="bool" name="config_faceAuthOnSecurityView" />
+
+  <!-- Whether notify fingerprint client of successful cancelled authentication -->
+  <java-symbol type="bool" name="config_notifyClientOnFingerprintCancelSuccess" />
 
 </resources>
