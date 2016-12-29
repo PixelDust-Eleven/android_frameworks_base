@@ -5371,7 +5371,7 @@ public final class Settings {
          */
         public static final String SHOW_VOWIFI_ICON = "show_vowifi";
 
-       /**
+        /**
          * 0 - Default
          * 1 - Round with ring
          * 2 - Two-toned round with ring
@@ -5379,6 +5379,12 @@ public final class Settings {
          * @hide
          */
         public static final String QS_TILE_STYLE = "qs_tile_style";
+
+        /**
+         * Media artwork wallpaper blur level on lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_MEDIA_BLUR = "lockscreen_media_blur";
 
         /**
          * Keys we no longer back up under the current schema, but want to continue to
