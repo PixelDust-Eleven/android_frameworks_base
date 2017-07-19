@@ -186,17 +186,9 @@
     <string name="show_fourg_title">4G statt LTE</string>
     <string name="show_fourg_summary">LTE-Symbol in der Statusleiste durch 4G ersetzen</string>
 
-    <!-- VoLTE switch -->
-    <string name="volte_switch_title">VoLTE</string>
-    <string name="volte_switch_summary">VoLTE-Symbol anzeigen</string>
-
     <!-- Data disabled icon -->
     <string name="data_disabled_icon_title">Daten deaktiviert</string>
     <string name="data_disabled_icon_summary">Ein Kreuzzeichen neben der Signalleiste anzeigen, wenn Daten deaktiviert sind</string>
-
-    <!-- VoWIFI switch -->
-    <string name="vowifi_switch_title">VoWIFI</string>
-    <string name="vowifi_switch_summary">VoWIFI-Symbol anzeigen</string>
 
     <!-- Ambient Music Ticker -->
     <string name="ambientmusic_songinfo" formatted="false">%s von %s</string>
