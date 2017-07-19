@@ -30,17 +30,10 @@
         android:key="managed_profile"
         android:title="@string/status_bar_work" />
 
-    <SwitchPreference
-        android:key="show_volte"
-        android:title="@string/volte_switch_title"
-        android:summary="@string/volte_switch_summary"
-        android:defaultValue="false" />
-
-    <SwitchPreference
-        android:key="show_vowifi"
-        android:title="@string/vowifi_switch_title"
-        android:summary="@string/vowifi_switch_summary"
-        android:defaultValue="false" />
+    <com.android.systemui.tuner.TunerSwitch
+        android:key="ims"
+        android:title="@string/ims_switch_title"
+        sysui:defValue="true" />
 
     <!-- sync_failing -->
     <!-- sync_active -->
