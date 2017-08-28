@@ -16,10 +16,11 @@
 -->
 <resources>
 
-    <!-- QS detail view scrolling -->
-    <dimen name="qs_detail_item_height_twoline">72dp</dimen>
-
-    <!-- Largest size an avatar might need to be drawn in the power menu user picker -->
-    <dimen name="global_actions_avatar_size">24dp</dimen>
+    <string-array translatable="false" name="config_rebootActionsList">
+        <item>restart</item>
+        <item>reboot_recovery</item>
+        <item>reboot_bootloader</item>
+        <item>reboot_fastboot</item>
+    </string-array>
 
 </resources>
