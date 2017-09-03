@@ -44,6 +44,8 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
+import com.android.internal.statusbar.IStatusBarService;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -222,6 +224,34 @@ public class PixeldustUtils {
         public List<OverlayInfo> getOverlayInfosForTarget(String target, int userId)
                 throws RemoteException {
             return mService.getOverlayInfosForTarget(target, userId);
+        }
+    }
+
+    public static void toggleCameraFlash() {
+        FireActions.toggleCameraFlash();
+    }
+
+    private static final class FireActions {
+        private static IStatusBarService mStatusBarService = null;
+        private static IStatusBarService getStatusBarService() {
+            synchronized (FireActions.class) {
+                if (mStatusBarService == null) {
+                    mStatusBarService = IStatusBarService.Stub.asInterface(
+                            ServiceManager.getService("statusbar"));
+                }
+                return mStatusBarService;
+            }
+        }
+
+        public static void toggleCameraFlash() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.toggleCameraFlash();
+                } catch (RemoteException e) {
+                    // do nothing.
+                }
+            }
         }
     }
 }
