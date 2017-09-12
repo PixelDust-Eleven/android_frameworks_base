@@ -147,4 +147,8 @@
     <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmauschnitts aufnehmen</string>
     <string name="global_screenshot_selector_cancel_description">Screenshot abbrechen</string>
 
+    <!-- Screenshot QS tile -->
+    <string name="quick_settings_screenshot_label">Screenshot</string>
+    <string name="quick_settings_region_screenshot_label">Screenshot eines Bildschirmauschnitts</string>
+
 </resources>
