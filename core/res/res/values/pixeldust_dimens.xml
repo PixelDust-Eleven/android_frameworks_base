@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2019-2020 The PixelDust Project
+     Copyright (C) 2021 The PixelDust Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,11 +16,7 @@
 -->
 <resources>
 
-    <color name="theme_generic_semi_transparent_color">#EAFFFFFF</color>
-    <color name="du_themes_qs_inactive_color">#FFDCDCDC</color>
-
-    <color name="toast_bg">@color/white</color>
-    <color name="toast_text">@color/black</color>
+    <dimen name="toast_elevation">4dp</dimen>
 
 </resources>
 
