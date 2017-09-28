@@ -67,4 +67,8 @@
     <string name="accessibility_quick_settings_caffeine_off">Koffein inaktiv</string>
     <string name="accessibility_quick_settings_caffeine_on">Koffein aktiv</string>
 
+    <!-- Language toggle tile -->
+    <string name="quick_settings_locale_label">Sprache</string>
+    <string name="quick_settings_locale_more_locales_toast">Um diese Funktion zu verwenden, müssen zunächst weitere Sprachen hinzugefügt werden</string>
+
 </resources>
