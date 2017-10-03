@@ -5503,6 +5503,12 @@ public final class Settings {
         public static final String OMNI_QS_MEDIA_PLAYER = "qs_media_player";
 
         /**
+         *  Enable statusbar double tap gesture on to put device to sleep
+         * @hide
+         */
+        public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5514,6 +5520,7 @@ public final class Settings {
             OMNI_QS_QUICKBAR_COLUMNS,
             OMNI_QS_TILE_TITLE_VISIBILITY,
             OMNI_QS_MEDIA_PLAYER,
+            DOUBLE_TAP_SLEEP_GESTURE,
         };
 
         /**
@@ -5534,6 +5541,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_LAYOUT_COLUMNS, 1);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_MEDIA_PLAYER, 0);
+            OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_GESTURE, 0);
        }
     }
 
