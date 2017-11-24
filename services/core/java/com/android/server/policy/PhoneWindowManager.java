@@ -207,6 +207,7 @@ import com.android.internal.policy.KeyInterceptionInfo;
 import com.android.internal.policy.PhoneWindow;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.ArrayUtils;
+import com.android.internal.util.pixeldust.LineageButtons;
 import com.android.internal.util.pixeldust.PixeldustUtils;
 import com.android.server.ExtconStateObserver;
 import com.android.server.ExtconUEventObserver;
@@ -643,6 +644,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private Sensor mProximitySensor;
     private SensorEventListener mProximityListener;
     private android.os.PowerManager.WakeLock mProximityWakeLock;
+
+    private LineageButtons mLineageButtons;
 
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
@@ -4076,6 +4079,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // {@link interceptKeyBeforeDispatching()}.
                     result |= ACTION_PASS_TO_USER;
                 } else if ((result & ACTION_PASS_TO_USER) == 0) {
+                    if (mLineageButtons.handleVolumeKey(event, interactive)) {
+                        break;
+                    }
                     if (!interactive && mVolumeMusicControl && isMusicActive()) {
                         boolean notHandledMusicControl = false;
                         if (down) {
@@ -5135,6 +5141,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mKeyguardDelegate.onBootCompleted();
             }
         }
+
+        mLineageButtons = new LineageButtons(mContext);
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }
