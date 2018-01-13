@@ -33,4 +33,15 @@
     <string name="accessibility_quick_settings_sync_changed_off">Sync deaktiviert</string>
     <string name="accessibility_quick_settings_sync_changed_on">Sync aktiviert</string>
 
+    <!-- Always on Display Tile -->
+    <string name="quick_settings_always_on_display_label">\"Always On\"-Display</string>
+    <!-- Content description of the ambient display tile in quick settings when off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_always_on_display_off">\"Always On\"-Display deaktiviert.</string>
+    <!-- Content description of the ambient display tile in quick settings when on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_always_on_display_on">\"Always On\"-Display aktiviert.</string>
+    <!-- Announcement made when ambient display changes to off (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_always_on_display_changed_off">\"Always On\"-Display wurde deaktiviert.</string>
+    <!-- Announcement made when ambient display changes to on (not shown on the screen). [CHAR LIMIT=NONE] -->
+    <string name="accessibility_quick_settings_always_on_display_changed_on">\"Always On\"-Display wurde aktiviert.</string>
+
 </resources>
