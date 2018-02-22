@@ -47,6 +47,7 @@ import com.android.systemui.qs.tiles.PDSettingsTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.SyncTile;
+import com.android.systemui.qs.tiles.ThemeTile;
 import com.android.systemui.qs.tiles.UiModeNightTile;
 import com.android.systemui.qs.tiles.UserTile;
 import com.android.systemui.qs.tiles.WifiTile;
@@ -90,7 +91,8 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<AlwaysOnDisplayTile> mAlwaysOnDisplayTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
     private final Provider<LocaleTile> mLocaleTileProvider;
-
+    private final Provider<ThemeTile> mThemeTileProvider;
+    
     private final Lazy<QSHost> mQsHostLazy;
 
     @Inject
@@ -120,7 +122,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<SyncTile> syncTileProvider,
             Provider<AlwaysOnDisplayTile> alwaysOnDisplayTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
-            Provider<LocaleTile> localeTileProvider) {
+            Provider<LocaleTile> localeTileProvider,
+            Provider<ThemeTile> themeTileProvider) {
 
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
@@ -149,6 +152,7 @@ public class QSFactoryImpl implements QSFactory {
         mAlwaysOnDisplayTileProvider = alwaysOnDisplayTileProvider;
         mCaffeineTileProvider = caffeineTileProvider;
         mLocaleTileProvider = localeTileProvider;
+        mThemeTileProvider = themeTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -212,6 +216,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mCaffeineTileProvider.get();
             case "locale":
                 return mLocaleTileProvider.get();
+            case "theme":
+                return mThemeTileProvider.get();
         }
 
         // Custom tiles
