@@ -5932,6 +5932,12 @@ public final class Settings {
         public static final String OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS = "sysui_keyguard_show_battery_bar_always";
 
         /**
+         * Whether to show battery percent on ambient bottom
+         * @hide
+         */
+        public static final String AMBIENT_BATTERY_PERCENT = "ambient_battery_percent";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5955,6 +5961,7 @@ public final class Settings {
             NETWORK_TRAFFIC_TYPE,
             NETWORK_TRAFFIC_ARROW,
             CLOCK_SHOW_STATUS_AREA,
+            AMBIENT_BATTERY_PERCENT,
         };
 
         /**
@@ -5987,6 +5994,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(OMNI_VOLUME_LINK_NOTIFICATION, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_KEYGUARD_SHOW_BATTERY_BAR, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS, 0);
+            OMNI_SETTINGS_VALIDATORS.put(AMBIENT_BATTERY_PERCENT, 0);
        }
     }
 
