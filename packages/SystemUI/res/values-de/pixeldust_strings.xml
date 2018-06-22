@@ -67,4 +67,11 @@
     <string name="accessibility_quick_settings_caffeine_off">Koffein inaktiv</string>
     <string name="accessibility_quick_settings_caffeine_on">Koffein aktiv</string>
 
+    <!-- Dynamic Immersive Mode tile -->
+    <string name="quick_settings_immersive_tile">Vollbildmodus</string>
+    <string name="quick_settings_immersive_tile_off">Vollbildmodus aus</string>
+    <string name="quick_settings_immersive_tile_statusbar">Statusleiste verbergen</string>
+    <string name="quick_settings_immersive_tile_navbar">Navigationsleiste verbergen</string>
+    <string name="quick_settings_immersive_tile_full">Vollbildmodus</string>
+
 </resources>
