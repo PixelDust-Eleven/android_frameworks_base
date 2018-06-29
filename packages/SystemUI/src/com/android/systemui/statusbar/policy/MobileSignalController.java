@@ -37,6 +37,7 @@ import android.telephony.CellSignalStrengthNr;
 import android.telephony.ims.ImsMmTelManager;
 import android.telephony.ims.ImsReasonInfo;
 import android.telephony.ims.feature.MmTelFeature;
+import android.telephony.ims.stub.ImsRegistrationImplBase;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
@@ -123,6 +124,8 @@ public class MobileSignalController extends SignalController<
 
     // 4G instead of LTE
     private int mShow4GUserConfig;
+    private boolean mImsResitered;
+    private final boolean mShowVolteIcon;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -145,6 +148,8 @@ public class MobileSignalController extends SignalController<
                 .toString();
         mNetworkNameDefault = getTextIfExists(
                 com.android.internal.R.string.lockscreen_carrier_default).toString();
+
+        mShowVolteIcon = context.getResources().getBoolean(R.bool.config_display_volte);
 
         mapIconSets();
 
@@ -178,7 +183,6 @@ public class MobileSignalController extends SignalController<
                         removeListeners();
                     }
         }, "?");
-
 
         mObserver = new ContentObserver(new Handler(receiverLooper)) {
             @Override
@@ -279,6 +283,11 @@ public class MobileSignalController extends SignalController<
         mContext.registerReceiver(mVolteSwitchObserver,
                 new IntentFilter("org.codeaurora.intent.action.ACTION_ENHANCE_4G_SWITCH"));
         mFeatureConnector.connect();
+        try {
+            mImsManager.addRegistrationCallback(mImsRegistrationCallback);
+        }catch(ImsException e){
+            Log.d(mTag, "exception:" + e);
+        }
     }
 
     /**
@@ -478,6 +487,11 @@ public class MobileSignalController extends SignalController<
         return mImsManager != null && mImsManager.isEnhanced4gLteModeSettingEnabledByUser();
     }
 
+    private boolean isEnhanced4gLteModeSettingEnabled() {
+        return mImsManager.isEnhanced4gLteModeSettingEnabledByUser()
+                && mImsManager.isNonTtyOrTtyOnVolteEnabled();
+    }
+
     private int getVolteResId() {
         int resId = 0;
         int voiceNetTye = getVoiceNetworkType();
@@ -590,7 +604,7 @@ public class MobileSignalController extends SignalController<
         }else if ( mConfig.enableDdsRatIconEnhancement ) {
             typeIcon = getEnhancementDdsRatIcon();
         }
-        int volteIcon = mConfig.showVolteIcon && isVolteSwitchOn() ? getVolteResId() : 0;
+        int volteIcon = mShowVolteIcon && isEnhanced4gLteModeSettingEnabled() ? getVolteResId() : 0;
         MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
         if ( mConfig.showVowifiIcon && vowifiIconGroup != null ) {
             typeIcon = vowifiIconGroup.mDataType;
@@ -1166,6 +1180,32 @@ public class MobileSignalController extends SignalController<
                     notifyListenersIfNecessary();
                 }
     };
+
+    private final ImsRegistrationImplBase.Callback mImsRegistrationCallback =
+            new ImsRegistrationImplBase.Callback() {
+                @Override
+                public void onRegistered(
+                        @ImsRegistrationImplBase.ImsRegistrationTech int imsRadioTech) {
+                    Log.d(mTag, "onRegistered imsRadioTech=" + imsRadioTech);
+                    mImsResitered = true;
+                    notifyListeners();
+                }
+
+                @Override
+                public void onRegistering(
+                        @ImsRegistrationImplBase.ImsRegistrationTech int imsRadioTech) {
+                    Log.d(mTag, "onRegistering imsRadioTech=" + imsRadioTech);
+                    mImsResitered = false;
+                    notifyListeners();
+                }
+
+                @Override
+                public void onDeregistered(ImsReasonInfo imsReasonInfo) {
+                    Log.d(mTag, "onDeregistered imsReasonInfo=" + imsReasonInfo);
+                    mImsResitered = false;
+                    notifyListeners();
+                }
+            };
 
     private final BroadcastReceiver mVolteSwitchObserver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
