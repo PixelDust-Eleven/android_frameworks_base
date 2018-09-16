@@ -192,4 +192,8 @@
     <!-- VoLTE switch -->
     <string name="volte_switch_title">VoLTE icon</string>
     <string name="volte_switch_summary">Display VoLTE icon</string>
+
+    <!-- Data disabled icon -->
+    <string name="data_disabled_icon_title">Data disabled icon</string>
+    <string name="data_disabled_icon_summary">Display a cross sign next to signal bar when data is disabled</string>
 </resources>

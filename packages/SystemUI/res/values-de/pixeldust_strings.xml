@@ -185,4 +185,8 @@
     <!-- VoLTE switch -->
     <string name="volte_switch_title">VoLTE</string>
     <string name="volte_switch_summary">VoLTE-Symbol anzeigen</string>
+
+    <!-- Data disabled icon -->
+    <string name="data_disabled_icon_title">Daten deaktiviert</string>
+    <string name="data_disabled_icon_summary">Ein Kreuzzeichen neben der Signalleiste anzeigen, wenn Daten deaktiviert sind</string>
 </resources>
