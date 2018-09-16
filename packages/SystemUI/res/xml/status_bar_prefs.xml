@@ -92,6 +92,12 @@
         android:dependency="mobile"
         android:defaultValue="@bool/config_show4GForLTE" />
 
+    <SwitchPreference
+        android:key="data_disabled_icon"
+        android:title="@string/data_disabled_icon_title"
+        android:summary="@string/data_disabled_icon_summary"
+        android:defaultValue="true" />
+
     <com.android.systemui.tuner.StatusBarSwitch
         android:key="airplane"
         android:title="@string/status_bar_airplane" />
