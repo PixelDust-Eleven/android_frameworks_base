@@ -5810,6 +5810,12 @@ public final class Settings {
         public static final String FORCE_SHOW_NAVBAR = "navbar_visibility";
 
         /**
+         * What to show in network traffic indicator in statusbar
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_TYPE = "network_traffic_type";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5824,6 +5830,7 @@ public final class Settings {
             DOUBLE_TAP_SLEEP_GESTURE,
             DOUBLE_TAP_SLEEP_LOCKSCREEN,
             FORCE_SHOW_NAVBAR,
+            NETWORK_TRAFFIC_TYPE,
         };
 
         /**
@@ -5847,6 +5854,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_GESTURE, 0);
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_LOCKSCREEN, 0);
             OMNI_SETTINGS_VALIDATORS.put(FORCE_SHOW_NAVBAR, 0);
+            OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_TYPE, 1);
        }
     }
 
