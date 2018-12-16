@@ -164,6 +164,7 @@ public class VolumeDialogImpl implements VolumeDialog,
     private boolean mConfigChanged = false;
     private boolean mIsAnimatingDismiss = false;
     private boolean mHasSeenODICaptionsTooltip;
+    private boolean mEnableVolumePanelTint;
     private ViewStub mODICaptionsTooltipViewStub;
     private View mODICaptionsTooltipView = null;
 
@@ -1189,10 +1190,12 @@ public class VolumeDialogImpl implements VolumeDialog,
         final int alpha = useActiveColoring
                 ? Color.alpha(tint.getDefaultColor())
                 : getAlphaAttr(android.R.attr.secondaryContentAlpha);
-        if (tint == row.cachedTint) return;
-        row.slider.setProgressTintList(tint);
+        boolean mEnableVolumePanelTint = mContext.getResources().getBoolean(R.bool.config_enableVolumePanelTint);
+        final ColorStateList progressTint = useActiveColoring ? null : tint;
+        if (tint == row.cachedTint && mExpanded) return;
+        row.slider.setProgressTintList(mEnableVolumePanelTint ? tint : progressTint);
         row.slider.setThumbTintList(tint);
-        row.slider.setProgressBackgroundTintList(tint);
+        if (!mEnableVolumePanelTint) row.slider.setProgressBackgroundTintList(tint);
         row.slider.setAlpha(((float) alpha) / 255);
         row.icon.setImageTintList(tint);
         row.icon.setImageAlpha(alpha);
