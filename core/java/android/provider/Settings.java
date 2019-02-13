@@ -5932,6 +5932,16 @@ public final class Settings {
         public static final String OMNI_VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
         /**
+         * @hide
+         */
+        public static final String OMNI_KEYGUARD_SHOW_BATTERY_BAR = "sysui_keyguard_show_battery_bar";
+
+        /**
+         * @hide
+         */
+        public static final String OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS = "sysui_keyguard_show_battery_bar_always";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5947,6 +5957,8 @@ public final class Settings {
             OMNI_QS_SHOW_MEDIA_DIVIDER,
             OMNI_NAVIGATION_BAR_ARROW_KEYS,
             OMNI_VOLUME_LINK_NOTIFICATION,
+            OMNI_KEYGUARD_SHOW_BATTERY_BAR,
+            OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS,
             DOUBLE_TAP_SLEEP_GESTURE,
             DOUBLE_TAP_SLEEP_LOCKSCREEN,
             FORCE_SHOW_NAVBAR,
@@ -5983,6 +5995,8 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(CLOCK_SHOW_STATUS_AREA, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_NAVIGATION_BAR_ARROW_KEYS, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_VOLUME_LINK_NOTIFICATION, 0);
+            OMNI_SETTINGS_VALIDATORS.put(OMNI_KEYGUARD_SHOW_BATTERY_BAR, 0);
+            OMNI_SETTINGS_VALIDATORS.put(OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS, 0);
        }
     }
 

@@ -74,4 +74,7 @@
 
     <!-- App Lock -->
     <dimen name="applock_icon_dimension">54dp</dimen>
+
+    <!-- AoD battery bar -->
+    <dimen name="battery_bar_view_height">6dp</dimen>
 </resources>

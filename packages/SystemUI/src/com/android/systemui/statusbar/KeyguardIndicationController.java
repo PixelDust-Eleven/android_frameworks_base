@@ -65,6 +65,7 @@ import com.android.systemui.Interpolators;
 import com.android.systemui.R;
 import com.android.systemui.broadcast.BroadcastDispatcher;
 import com.android.systemui.dock.DockManager;
+import com.android.systemui.omni.BatteryBarView;
 import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.plugins.statusbar.StatusBarStateController.StateListener;
 import com.android.systemui.statusbar.phone.KeyguardIndicationTextView;
@@ -145,6 +146,9 @@ public class KeyguardIndicationController implements StateListener,
 
     private KeyguardUpdateMonitorCallback mUpdateMonitorCallback;
 
+    // omni additions
+    private BatteryBarView mBatteryBar;
+
     private boolean mDozing;
     private final ViewClippingUtil.ClippingParameters mClippingParams =
             new ViewClippingUtil.ClippingParameters() {
@@ -196,6 +200,7 @@ public class KeyguardIndicationController implements StateListener,
         mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
                 R.id.charging_indication);
         mDisclosure = indicationArea.findViewById(R.id.keyguard_indication_enterprise_disclosure);
+        mBatteryBar = indicationArea.findViewById(R.id.battery_bar_view);
         mDisclosureMaxAlpha = mDisclosure.getAlpha();
 
         mChargingIndicationView = (LottieAnimationView) indicationArea.findViewById(
@@ -425,8 +430,14 @@ public class KeyguardIndicationController implements StateListener,
         }
 
         if (mVisible) {
+            boolean showBatteryBar = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.OMNI_KEYGUARD_SHOW_BATTERY_BAR, 0, UserHandle.USER_CURRENT) == 1;
+            boolean showBatteryBarAlways = Settings.System.getIntForUser(mContext.getContentResolver(),
+                     Settings.System.OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS, 0, UserHandle.USER_CURRENT) == 1;
+
             // Walk down a precedence-ordered list of what indication
             // should be shown based on user or device state
+            mBatteryBar.setVisibility(View.GONE);
             if (mDozing) {
                 // When dozing we ignore any text color and use white instead, because
                 // colors can be hard to read in low brightness.
@@ -442,6 +453,11 @@ public class KeyguardIndicationController implements StateListener,
                         animateText(mTextView, indication);
                     } else {
                         mTextView.switchIndication(indication);
+                    }
+                    if (showBatteryBar) {
+                        mBatteryBar.setVisibility(View.VISIBLE);
+                        mBatteryBar.setBatteryPercent(mBatteryLevel);
+                        mBatteryBar.setBarColor(Color.WHITE);
                     }
                 } else {
                     String percentage = NumberFormat.getPercentInstance()
@@ -488,6 +504,11 @@ public class KeyguardIndicationController implements StateListener,
                     animateText(mTextView, powerIndication);
                 } else {
                     mTextView.switchIndication(powerIndication);
+                }
+                if (showBatteryBar && showBatteryBarAlways) {
+                    mBatteryBar.setVisibility(View.VISIBLE);
+                    mBatteryBar.setBatteryPercent(mBatteryLevel);
+                    mBatteryBar.setBarColor(mTextView.getCurrentTextColor());
                 }
             } else if (!TextUtils.isEmpty(trustManagedIndication)
                     && mKeyguardUpdateMonitor.getUserTrustIsManaged(userId)
