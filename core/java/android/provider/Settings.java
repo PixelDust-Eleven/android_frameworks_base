@@ -9657,6 +9657,13 @@ public final class Settings {
         public static final String NAVBAR_INVERSE_LAYOUT = "navbar_inverse_layout";
 
         /**
+         * Whether user has to unlock the secured lock screen before they can use a quick settings tile.
+         * @hide
+         */
+        public static final String QSTILE_REQUIRES_UNLOCKING =
+                "qstile_requires_unlocking";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
