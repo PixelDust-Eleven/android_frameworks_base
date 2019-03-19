@@ -68,5 +68,7 @@
     <color name="quick_settings_theme_tile_xboxgreen">#107C10</color>
     <color name="quick_settings_theme_tile_xiaomiorange">#ff6700</color>
 
+    <color name="accent_device_default_light">@*android:color/accent_device_default_light</color>
+
 </resources>
 
