@@ -65,4 +65,7 @@
     <string-array translatable="false" name="config_customPermissionsList">
         <item>com.android.wallpaper.livepicker</item>
     </string-array>
+
+    <!-- Smart charging battery percentage -->
+    <integer name="config_smartChargingBatteryLevel">80</integer>
 </resources>
