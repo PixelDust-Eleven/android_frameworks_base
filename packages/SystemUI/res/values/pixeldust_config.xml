@@ -37,5 +37,8 @@
     <integer name="quick_settings_num_columns_port_max">8</integer>
     <integer name="quick_settings_num_columns_land_max">9</integer>
 
+    <!-- Color of the FOD view -->
+    <color name="config_fodColor">#00ff00</color>
+
 </resources>
 
