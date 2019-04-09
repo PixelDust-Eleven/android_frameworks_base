@@ -4985,6 +4985,14 @@ public final class Settings {
         public static final String SMART_CHARGING_RESUME_LEVEL = "smart_charging_resume_level";
 
         /**
+         * The enabled mode for the theme tile.
+         * - ACCENT
+         * - STYLE
+         * @hide
+         */
+        public static final String THEME_TILE_ENABLED_MODE = "theme_tile_enabled_mode";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
