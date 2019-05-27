@@ -536,6 +536,8 @@ public class StatusBar extends SystemUI implements DemoMode,
     private final NotificationRemoteInputManager mRemoteInputManager;
     private boolean mWallpaperSupported;
 
+    private boolean mChargingAnimation;
+
     private final BroadcastReceiver mWallpaperChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1978,6 +1980,9 @@ public class StatusBar extends SystemUI implements DemoMode,
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CHARGING_ANIMATION),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -1985,11 +1990,15 @@ public class StatusBar extends SystemUI implements DemoMode,
             if (uri.equals(Settings.Secure.getUriFor(
                     Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS))) {
                 setFpToDismissNotifications();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_CHARGING_ANIMATION))) {
+                updateChargingAnimation();
             }
         }
 
         public void update() {
             setFpToDismissNotifications();
+            updateChargingAnimation();
         }
     }
 
@@ -1997,6 +2006,14 @@ public class StatusBar extends SystemUI implements DemoMode,
         mFpDismissNotifications = Settings.Secure.getIntForUser(mContext.getContentResolver(),
                 Settings.Secure.FP_SWIPE_TO_DISMISS_NOTIFICATIONS, 1,
                 UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void updateChargingAnimation() {
+        mChargingAnimation = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_CHARGING_ANIMATION, 1, UserHandle.USER_CURRENT) == 1;
+        if (mKeyguardIndicationController != null) {
+            mKeyguardIndicationController.updateChargingIndication(mChargingAnimation);
+        }
     }
 
     /**
