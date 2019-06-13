@@ -181,4 +181,8 @@
     <!-- 4G LTE switch -->
     <string name="show_fourg_title">4G statt LTE</string>
     <string name="show_fourg_summary">LTE-Symbol in der Statusleiste durch 4G ersetzen</string>
+
+    <!-- VoLTE switch -->
+    <string name="volte_switch_title">VoLTE</string>
+    <string name="volte_switch_summary">VoLTE-Symbol anzeigen</string>
 </resources>

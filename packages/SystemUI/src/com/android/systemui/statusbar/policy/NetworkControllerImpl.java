@@ -1211,7 +1211,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
 
         boolean showRsrpSignalLevelforLTE = false;
         boolean hideNoInternetState = false;
-        boolean showVolteIcon = false;
         boolean alwaysShowNetworkTypeIcon = false;
         boolean enableRatIconEnhancement = false;
         boolean showVowifiIcon = false;
@@ -1234,7 +1233,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
             config.showRsrpSignalLevelforLTE =
                     res.getBoolean(R.bool.config_showRsrpSignalLevelforLTE);
             config.hideNoInternetState = res.getBoolean(R.bool.config_hideNoInternetState);
-            config.showVolteIcon = res.getBoolean(R.bool.config_display_volte);
 
             CarrierConfigManager configMgr = (CarrierConfigManager)
                     context.getSystemService(Context.CARRIER_CONFIG_SERVICE);
