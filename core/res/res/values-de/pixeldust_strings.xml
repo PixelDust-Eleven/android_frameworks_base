@@ -23,4 +23,10 @@
     <string name="url_copy_success">URL erfolgreich kopiert</string>
     <string name="url_copy_failed">Beim Hochladen des Protokolls zu dogbin ist ein Fehler aufgetreten</string>
 
+    <!-- Gaming mode -->
+    <string name="notification_channel_gaming">Spielemodus</string>
+    <string name="gaming_mode_notification_title">Spielemodus aktiviert</string>
+    <string name="gaming_mode_notification_content">Tippen, um den Spielemodus zu deaktivieren</string>
+    <string name="gaming_mode_enabled_toast">Spielemodus aktiviert</string>
+    <string name="gaming_mode_disabled_toast">Spielemodus deaktiviert</string>
 </resources>

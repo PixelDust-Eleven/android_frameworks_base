@@ -213,4 +213,8 @@
     <string name="applock_fingerprint">&#160;oder Fingerabdruck zum Entsperren</string>
     <string name="applock_credential">&#160;zum Entsperren</string>
     <string name="applock_unlock">Entsperren</string>
+
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">Der Spielemodus ist in den Einstellungen deaktiviert</string>
+    <string name="quick_settings_gaming_mode_label">Spielemodus</string>
 </resources>
