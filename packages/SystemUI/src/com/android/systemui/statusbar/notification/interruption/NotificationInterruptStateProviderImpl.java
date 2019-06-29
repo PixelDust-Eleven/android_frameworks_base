@@ -77,6 +77,8 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     @VisibleForTesting
     protected boolean mUseHeadsUp = false;
 
+    private boolean mSkipHeadsUp = false;
+
     @Inject
     public NotificationInterruptStateProviderImpl(
             Context context,
@@ -208,6 +210,13 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
 
         StatusBarNotification sbn = entry.getSbn();
 
+        if (shouldSkipHeadsUp(sbn)) {
+            if (DEBUG_HEADS_UP) {
+                Log.d(TAG, "No alerting: gaming mode");
+            }
+            return false;
+        }
+
         if (!mUseHeadsUp) {
             if (DEBUG_HEADS_UP) {
                 Log.d(TAG, "No heads up: no huns");
@@ -220,10 +229,6 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
         }
 
         if (!canAlertAwakeCommon(entry)) {
-            return false;
-        }
-
-        if (shouldSkipHeadsUp(sbn)) {
             return false;
         }
 
@@ -289,12 +294,17 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
     }
 
     public boolean shouldSkipHeadsUp(StatusBarNotification sbn) {
-        boolean isImportantHeadsUp = false;
-        String notificationPackageName = sbn.getPackageName();
-        isImportantHeadsUp = notificationPackageName.equals(getDefaultDialerPackage(mTm))
-                || notificationPackageName.equals(getDefaultSmsPackage(mContext))
-                || notificationPackageName.contains("clock");
-        return !mStatusBarStateController.isDozing() && mLessBoringHeadsUp && !isImportantHeadsUp;
+        String notificationPackageName = sbn.getPackageName().toLowerCase();
+
+        // Gaming mode takes precedence since messaging headsup is intrusive
+        if (mSkipHeadsUp) {
+            boolean isImportantHeadsUp = notificationPackageName.equals(getDefaultDialerPackage(mTm))
+                    || notificationPackageName.equals(getDefaultSmsPackage(mContext))
+                    || notificationPackageName.contains("clock");
+            return !mStatusBarStateController.isDozing() && mLessBoringHeadsUp && !isImportantHeadsUp && mSkipHeadsUp;
+        }
+
+        return false;
     }
 
     private static String getDefaultSmsPackage(Context ctx) {
@@ -351,6 +361,11 @@ public class NotificationInterruptStateProviderImpl implements NotificationInter
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void setGamingPeekMode(boolean skipHeadsUp) {
+        mSkipHeadsUp = skipHeadsUp;
     }
 
     /**

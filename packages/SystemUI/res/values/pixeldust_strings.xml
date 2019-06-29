@@ -223,4 +223,8 @@
     <string name="applock_fingerprint">&#160;or your fingerprint to unlock</string>
     <string name="applock_credential">&#160;to unlock</string>
     <string name="applock_unlock">Unlock</string>
+
+    <!-- Gaming mode -->
+    <string name="gaming_mode_not_enabled">Gaming mode is disabled in settings</string>
+    <string name="quick_settings_gaming_mode_label">Gaming mode</string>
 </resources>
