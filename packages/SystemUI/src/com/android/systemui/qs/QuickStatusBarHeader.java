@@ -279,6 +279,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         // Tint for the battery icons are handled in setupHost()
         mBatteryRemainingIcon = findViewById(R.id.batteryRemainingIcon);
         mBatteryRemainingIcon.setIsQsHeader(true);
+        mBatteryRemainingIcon.setOnClickListener(this);
         updateQSBatteryPercent();
         updateQSBatteryEstimate();
 
@@ -688,6 +689,9 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         } else if (v == mRingerContainer && mRingerContainer.isVisibleToUser()) {
             mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
                     Settings.ACTION_SOUND_SETTINGS), 0);
+        } else if (v == mBatteryRemainingIcon) {
+            mActivityStarter.postStartActivityDismissingKeyguard(new Intent(
+                Intent.ACTION_POWER_USAGE_SUMMARY), 0);
         }
     }
 
