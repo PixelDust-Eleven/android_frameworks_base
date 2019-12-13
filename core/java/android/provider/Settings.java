@@ -5905,6 +5905,12 @@ public final class Settings {
         public static final String CLOCK_SHOW_STATUS_AREA = "clock_show_status_area";
 
         /**
+         * Whether to show arrow keys in navigation bar
+         * @hide
+         */
+        public static final String OMNI_NAVIGATION_BAR_ARROW_KEYS = "navigation_bar_menu_arrow_keys";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5918,6 +5924,7 @@ public final class Settings {
             OMNI_QS_MEDIA_PLAYER,
             OMNI_QS_LAYOUT_PREF_THREE_ROWS,
             OMNI_QS_SHOW_MEDIA_DIVIDER,
+            OMNI_NAVIGATION_BAR_ARROW_KEYS,
             DOUBLE_TAP_SLEEP_GESTURE,
             DOUBLE_TAP_SLEEP_LOCKSCREEN,
             FORCE_SHOW_NAVBAR,
@@ -5952,6 +5959,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_TYPE, 1);
             OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_ARROW, 0);
             OMNI_SETTINGS_VALIDATORS.put(CLOCK_SHOW_STATUS_AREA, 0);
+            OMNI_SETTINGS_VALIDATORS.put(OMNI_NAVIGATION_BAR_ARROW_KEYS, 0);
        }
     }
 

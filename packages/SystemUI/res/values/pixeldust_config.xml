@@ -66,5 +66,7 @@
 
     <!-- Whether to invert the icon color for active quicksettings icons -->
     <bool name="config_useInvertedQsIconColor">false</bool>
+
+    <string name="config_navBarLayoutHandleArrows" translatable="false">back[1.7WC];home_handle;ime_switcher[1.7WC]</string>
 </resources>
 
