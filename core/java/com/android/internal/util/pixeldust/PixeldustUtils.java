@@ -16,6 +16,7 @@
 
 package com.android.internal.util.pixeldust;
 
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -206,6 +207,15 @@ public class PixeldustUtils {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Method to detect whether the system dark theme is enabled or not
+    public static boolean isDarkTheme(Context context) {
+        UiModeManager mUiModeManager =
+                context.getSystemService(UiModeManager.class);
+        if (mUiModeManager == null) return false;
+        int mode = mUiModeManager.getNightMode();
+        return (mode == UiModeManager.MODE_NIGHT_YES);
     }
 
     public static class OverlayManager {
