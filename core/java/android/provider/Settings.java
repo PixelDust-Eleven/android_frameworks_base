@@ -5385,6 +5385,12 @@ public final class Settings {
                 "show_qs_on_secure_keyguard";
 
         /**
+         * Whether to show status bar on lockscreen
+         * @hide
+         */
+        public static final String SHOW_STATUS_BAR_ON_SECURE_KEYGUARD = "show_status_bar_on_secure_keyguard";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *

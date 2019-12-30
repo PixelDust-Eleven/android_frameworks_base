@@ -366,6 +366,7 @@ public class NotificationPanelViewController extends PanelViewController {
 
     private LockPatternUtils mLockPatternUtils;
     private boolean mShowQSOnSecureKeyguard;
+    private boolean mShowStatusBarOnSecureKeyguard;
 
     private Runnable mHeadsUpExistenceChangedRunnable = () -> {
         setHeadsUpAnimatingAway(false);
@@ -646,6 +647,9 @@ public class NotificationPanelViewController extends PanelViewController {
             mView.getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_QS_ON_SECURE_KEYGUARD),
                     false, this, UserHandle.USER_ALL);
+mView.getContext().getContentResolver().registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_STATUS_BAR_ON_SECURE_KEYGUARD),
+                    false, this, UserHandle.USER_ALL);
         }
 
         @Override
@@ -659,6 +663,9 @@ public class NotificationPanelViewController extends PanelViewController {
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.SHOW_QS_ON_SECURE_KEYGUARD))) {
                 setShowQSOnSecureKeyguard();
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.SHOW_STATUS_BAR_ON_SECURE_KEYGUARD))) {
+                setShowLockscreenStatusBar();
             }
         }
 
@@ -666,6 +673,7 @@ public class NotificationPanelViewController extends PanelViewController {
             setDoubleTapToSleep();
             setLockscreenDoubleTap();
             setShowQSOnSecureKeyguard();
+            setShowLockscreenStatusBar();
         }
 
     }
@@ -673,6 +681,12 @@ public class NotificationPanelViewController extends PanelViewController {
     private void setShowQSOnSecureKeyguard() {
         mShowQSOnSecureKeyguard = Settings.System.getIntForUser(
             mView.getContext().getContentResolver(), Settings.System.SHOW_QS_ON_SECURE_KEYGUARD, 1,
+            UserHandle.USER_CURRENT) == 0;
+    }
+
+    private void setShowLockscreenStatusBar() {
+        mShowStatusBarOnSecureKeyguard = Settings.System.getIntForUser(
+            mView.getContext().getContentResolver(), Settings.System.SHOW_STATUS_BAR_ON_SECURE_KEYGUARD, 1,
             UserHandle.USER_CURRENT) == 0;
     }
 
@@ -1737,6 +1751,7 @@ public class NotificationPanelViewController extends PanelViewController {
             };
 
     private void animateKeyguardStatusBarIn(long duration) {
+        if (!mShowStatusBarOnSecureKeyguard) return;
         mKeyguardStatusBar.setVisibility(View.VISIBLE);
         mKeyguardStatusBar.setAlpha(0f);
         ValueAnimator anim = ValueAnimator.ofFloat(0f, 1f);
@@ -2368,7 +2383,7 @@ public class NotificationPanelViewController extends PanelViewController {
                 mFirstBypassAttempt && mUpdateMonitor.shouldListenForFace()
                         || mDelayShowingKeyguardStatusBar;
         mKeyguardStatusBar.setVisibility(
-                newAlpha != 0f && !mDozing && !hideForBypass ? View.VISIBLE : View.INVISIBLE);
+                newAlpha != 0f && !mDozing && !hideForBypass && mShowStatusBarOnSecureKeyguard ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void updateKeyguardBottomAreaAlpha() {
@@ -3741,7 +3756,7 @@ public class NotificationPanelViewController extends PanelViewController {
                 }
             } else {
                 mKeyguardStatusBar.setAlpha(1f);
-                mKeyguardStatusBar.setVisibility(keyguardShowing ? View.VISIBLE : View.INVISIBLE);
+                mKeyguardStatusBar.setVisibility(keyguardShowing && mShowStatusBarOnSecureKeyguard ? View.VISIBLE : View.INVISIBLE);
                 if (keyguardShowing && oldState != mBarState) {
                     if (mQs != null) {
                         mQs.hideImmediately();
