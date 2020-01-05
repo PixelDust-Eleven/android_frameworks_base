@@ -103,5 +103,24 @@
     <string name="quick_settings_theme_tile_color_red">Rot</string>
     <string name="quick_settings_theme_tile_color_teal">Blaugrün</string>
     <string name="quick_settings_theme_tile_color_yellow">Gelb</string>
+    <string name="quick_settings_theme_tile_color_androidonegreen">AndroidOneGrün</string>
+    <string name="quick_settings_theme_tile_color_cocacolared">CocaColaRot</string>
+    <string name="quick_settings_theme_tile_color_discordpurple">DiscordLila</string>
+    <string name="quick_settings_theme_tile_color_facebookblue">FacebookBlau</string>
+    <string name="quick_settings_theme_tile_color_instagramcerise">InstagramKirschrot</string>
+    <string name="quick_settings_theme_tile_color_jollibeecrimson">JollibeePurpur</string>
+    <string name="quick_settings_theme_tile_color_monsterenergygreen">MonsterEnergyGrün</string>
+    <string name="quick_settings_theme_tile_color_nextbitmint">NextbitMinze</string>
+    <string name="quick_settings_theme_tile_color_oneplusred">OneplusRot</string>
+    <string name="quick_settings_theme_tile_color_pepsiblue">PepsiBlau</string>
+    <string name="quick_settings_theme_tile_color_pocophoneyellow">PocophoneGelb</string>
+    <string name="quick_settings_theme_tile_color_razergreen">RazerGrün</string>
+    <string name="quick_settings_theme_tile_color_samsungblue">SamsungBlau</string>
+    <string name="quick_settings_theme_tile_color_spotifygreen">SpotifyGrün</string>
+    <string name="quick_settings_theme_tile_color_starbucksgreen">StarbucksGrün</string>
+    <string name="quick_settings_theme_tile_color_twitchpurple">TwitchLila</string>
+    <string name="quick_settings_theme_tile_color_twitterblue">TwitterBlau</string>
+    <string name="quick_settings_theme_tile_color_xboxgreen">XboxGrün</string>
+    <string name="quick_settings_theme_tile_color_xiaomiorange">XiaomiOrange</string>
 
 </resources>
