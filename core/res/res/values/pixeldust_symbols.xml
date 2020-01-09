@@ -77,4 +77,7 @@
     <java-symbol type="string" name="url_copy_success" />
     <java-symbol type="string" name="url_copy_failed" />
 
+    <!-- Themes -->
+    <java-symbol type="color" name="theme_generic_semi_transparent_color" />
+
 </resources>
