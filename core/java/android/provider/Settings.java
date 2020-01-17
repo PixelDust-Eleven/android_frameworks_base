@@ -5822,6 +5822,12 @@ public final class Settings {
         public static final String NETWORK_TRAFFIC_ARROW = "network_traffic_arrow";
 
         /**
+         * Whether to display status area (date & weather information) on the cLock
+         * @hide
+         */
+        public static final String CLOCK_SHOW_STATUS_AREA = "clock_show_status_area";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5838,6 +5844,7 @@ public final class Settings {
             FORCE_SHOW_NAVBAR,
             NETWORK_TRAFFIC_TYPE,
             NETWORK_TRAFFIC_ARROW,
+            CLOCK_SHOW_STATUS_AREA,
         };
 
         /**
@@ -5863,6 +5870,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(FORCE_SHOW_NAVBAR, 0);
             OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_TYPE, 1);
             OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_ARROW, 0);
+            OMNI_SETTINGS_VALIDATORS.put(CLOCK_SHOW_STATUS_AREA, 0);
        }
     }
 
