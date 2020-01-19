@@ -143,4 +143,8 @@
     <string name="customize_columns_land_label">Querkant</string>
     <string name="customize_columns_port_label">Hochkant</string>
 
+    <!-- Partial screenshot -->
+    <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmauschnitts aufnehmen</string>
+    <string name="global_screenshot_selector_cancel_description">Screenshot abbrechen</string>
+
 </resources>
