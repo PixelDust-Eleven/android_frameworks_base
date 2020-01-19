@@ -159,4 +159,9 @@ interface IStatusBarService
     void startAssist(in Bundle args);
 
     void triggerElmyraAction(String action);
+
+    /**
+     * Used to block or unblock usage of gestural navigation
+     */
+    void setBlockedGesturalNavigation(boolean blocked);
 }
