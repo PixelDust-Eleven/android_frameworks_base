@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+<<<<<<< HEAD
    Copyright (C) 2019-2020 The PixelDust Project
+=======
+    Copyright (C) 2019-2020 The PixelDust Project
+>>>>>>> 3f714c22a152... Themes: Add colors to use in DU-Themes
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -72,12 +76,13 @@
   <java-symbol type="array" name="config_deviceKeyHandlerLibs" />
   <java-symbol type="array" name="config_deviceKeyHandlerClasses" />
 
-    <!-- App error dialog -->
-    <java-symbol type="id" name="aerr_copy" />
-    <java-symbol type="string" name="url_copy_success" />
-    <java-symbol type="string" name="url_copy_failed" />
+  <!-- App error dialog -->
+  <java-symbol type="id" name="aerr_copy" />
+  <java-symbol type="string" name="url_copy_success" />
+  <java-symbol type="string" name="url_copy_failed" />
 
-    <!-- Themes -->
-    <java-symbol type="color" name="theme_generic_semi_transparent_color" />
+  <!-- Themes -->
+  <java-symbol type="color" name="theme_generic_semi_transparent_color" />
+  <java-symbol type="color" name="du_themes_qs_inactive_color" />
 
 </resources>
