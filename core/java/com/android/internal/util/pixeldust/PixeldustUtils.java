@@ -19,6 +19,7 @@ package com.android.internal.util.pixeldust;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.UiModeManager;
 import android.content.ComponentName;
@@ -230,6 +231,10 @@ public class PixeldustUtils {
         FireActions.toggleQsPanel();
     }
 
+    public static void clearAllNotifications() {
+        FireActions.clearAllNotifications();
+    }
+
     public static void sendKeycode(int keycode) {
         long when = SystemClock.uptimeMillis();
         final KeyEvent evDown = new KeyEvent(when, when, KeyEvent.ACTION_DOWN, keycode, 0,
@@ -398,6 +403,16 @@ public class PixeldustUtils {
             if (service != null) {
                 try {
                     service.toggleSettingsPanel();
+                } catch (RemoteException e) {}
+            }
+        }
+
+        // Clear notifications
+        public static void clearAllNotifications() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.onClearAllNotifications(ActivityManager.getCurrentUser());
                 } catch (RemoteException e) {}
             }
         }
