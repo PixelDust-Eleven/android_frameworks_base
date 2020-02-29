@@ -7431,5 +7431,8 @@ message MetricsEvent {
 
     // PixelDust custom constants
     PIXELDUST = 10001;
+    // Panel for Bluetooth
+    PANEL_BLUETOOTH = 10002;
+
   }
 }
