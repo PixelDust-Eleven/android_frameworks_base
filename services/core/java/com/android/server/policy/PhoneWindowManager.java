@@ -630,6 +630,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private int mPowerButtonSuppressionDelayMillis = POWER_BUTTON_SUPPRESSION_DELAY_DEFAULT_MILLIS;
 
     private int mTorchActionMode;
+    private boolean mIsTorchEnabled;
     private static final float PROXIMITY_DISTANCE_THRESHOLD = 5.0f;
     private int mProximityTimeOut;
     private SensorManager mSensorManager;
@@ -870,6 +871,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.TORCH_POWER_BUTTON_GESTURE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.Secure.FLASHLIGHT_ENABLED), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -1306,7 +1310,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void powerMultiPressAction(long eventTime, boolean interactive, int behavior) {
         switch (behavior) {
             case MULTI_PRESS_POWER_NOTHING:
-                if ((mTorchActionMode == 1) && (!isScreenOn() || isDozeMode())) {
+                if ((mTorchActionMode == 1) && (!isScreenOn() || isDozeMode() || mIsTorchEnabled)) {
                     toggleFlashLightProximityCheck();
                 }
                 break;
@@ -1455,7 +1459,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (FactoryTest.isLongPressOnPowerOffEnabled()) {
             return LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM;
         }
-        if ((mTorchActionMode == 2) && (!isScreenOn() || isDozeMode())) {
+        if ((mTorchActionMode == 2) && (!isScreenOn() || isDozeMode() || mIsTorchEnabled)) {
             return LONG_PRESS_POWER_TORCH;
         }
         return mLongPressOnPowerBehavior;
@@ -2230,6 +2234,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mTorchActionMode = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.TORCH_POWER_BUTTON_GESTURE,
                             0, UserHandle.USER_CURRENT);
+
+            mIsTorchEnabled = Settings.Secure.getIntForUser(resolver,
+                    Settings.Secure.FLASHLIGHT_ENABLED, 1,
+                    UserHandle.USER_CURRENT) != 0;
         }
         if (updateRotation) {
             updateRotation(true);
