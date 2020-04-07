@@ -15,11 +15,10 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="clock_title_binary">Binary</string>
     <string name="clock_title_default_bold">Default (bold)</string>
     <string name="clock_title_samsung">Samsung</string>
     <string name="clock_title_samsung_bold">Samsung (bold)</string>
     <string name="clock_title_space_clock">Space Analog Clock</string>
-
+    <string name="date_long_title_today">Today is %s</string>
 </resources>

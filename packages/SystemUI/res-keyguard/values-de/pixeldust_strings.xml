@@ -16,10 +16,9 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
     <string name="clock_title_binary">Binäre Uhr</string>
     <string name="clock_title_default_bold">Standard (fett)</string>
     <string name="clock_title_samsung_bold">Samsung (fett)</string>
     <string name="clock_title_space_clock">Weltraum-Uhr</string>
-
+    <string name="date_long_title_today">Heute ist %s</string>
 </resources>
