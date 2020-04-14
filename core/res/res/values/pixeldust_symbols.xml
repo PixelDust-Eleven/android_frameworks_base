@@ -49,4 +49,7 @@
   <!-- Flashlight proximity check -->
   <java-symbol type="integer" name="config_flashlightProximityTimeout" />
 
+    <!-- Enable face auth when swiping security view -->
+    <java-symbol type="bool" name="config_faceAuthOnSecurityView" />
+
 </resources>
