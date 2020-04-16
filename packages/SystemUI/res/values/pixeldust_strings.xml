@@ -188,6 +188,7 @@
     <!-- Name of the additional status bar icons also exposed with SystemUI Tuner -->
     <string name="status_bar_camera">Camera</string>
     <string name="status_bar_microphone">Microphone</string>
+    <string name="status_bar_location">Location</string>
 
     <!-- 4G LTE switch -->
     <string name="show_fourg_title">Show 4G instead of LTE</string>
