@@ -168,4 +168,8 @@
     <string name="empty_app_killed">App</string>
 
     <string name="quick_settings_killapp_label">Kill app</string>
+
+    <!-- Name of the additional status bar icons also exposed with SystemUI Tuner -->
+    <string name="status_bar_camera">Camera</string>
+    <string name="status_bar_microphone">Microphone</string>
 </resources>
