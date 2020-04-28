@@ -301,6 +301,8 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
     private static final int HAL_ERROR_RETRY_TIMEOUT = 500; // ms
     private static final int HAL_ERROR_RETRY_MAX = 10;
 
+    private boolean mKeyguardReset = false;
+
     private final Runnable mCancelNotReceived = new Runnable() {
         @Override
         public void run() {
@@ -1943,7 +1945,7 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
                     && !mSwitchingUser && !isFingerprintDisabled(getCurrentUser())
                     && (!mKeyguardGoingAway || !mDeviceInteractive) && mIsPrimaryUser && allowedOnBouncer;
         } else {
-           return (mKeyguardIsVisible || !mDeviceInteractive ||
+            return (mKeyguardIsVisible || !mDeviceInteractive ||
                     (mBouncer && !mKeyguardGoingAway) || mGoingToSleep ||
                     shouldListenForFingerprintAssistant() || (mKeyguardOccluded && mIsDreaming))
                     && !mSwitchingUser && !isFingerprintDisabled(getCurrentUser())
@@ -1955,6 +1957,11 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
      * If face auth is allows to scan on this exact moment.
      */
     public boolean shouldListenForFace() {
+        if (mFaceAuthOnSecurityView && mKeyguardReset) {
+            mKeyguardReset = false;
+            return false;
+        }
+
         final boolean statusBarShadeLocked =
                 mStatusBarStateController.getState() == StatusBarState.SHADE_LOCKED;
         boolean awakeKeyguard = mKeyguardIsVisible && mDeviceInteractive && !mGoingToSleep
@@ -2500,6 +2507,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         if (DEBUG) Log.d(TAG, "handleKeyguardReset");
         updateBiometricListeningState();
         mNeedsSlowUnlockTransition = resolveNeedsSlowUnlockTransition();
+        if (mFaceAuthOnSecurityView) {
+            mKeyguardReset = true;
+        }
     }
 
     private boolean resolveNeedsSlowUnlockTransition() {
