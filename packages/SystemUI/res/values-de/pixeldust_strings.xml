@@ -203,4 +203,12 @@
 
     <string name="lockscreen_default">Standard</string>
     <string name="lockscreen_hidden">Keine</string>
+
+    <!-- App Lock -->
+    <string name="applock_locked">&#160;ist gesperrt</string>
+    <string name="applock_fingerprint_face">, Fingerabdruck oder Ihr Gesicht zum Entsperren</string>
+    <string name="applock_face">&#160;oder Ihr Gesicht zum Entsperren</string>
+    <string name="applock_fingerprint">&#160;oder Fingerabdruck zum Entsperren</string>
+    <string name="applock_credential">&#160;zum Entsperren</string>
+    <string name="applock_unlock">Entsperren</string>
 </resources>
