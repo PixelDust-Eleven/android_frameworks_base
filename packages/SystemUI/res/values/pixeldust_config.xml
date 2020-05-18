@@ -61,6 +61,9 @@
     <!-- Whether to show VoLTE icon in the status bar -->
     <bool name="config_display_volte">true</bool>
 
+    <!-- Whether to show VoWiFi icon in the status bar -->
+    <bool name="config_display_vowifi">true</bool>
+
     <!-- Whether to invert the icon color for active quicksettings icons -->
     <bool name="config_useInvertedQsIconColor">false</bool>
 </resources>
