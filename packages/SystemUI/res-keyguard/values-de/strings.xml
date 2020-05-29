@@ -138,6 +138,7 @@
     <string name="clock_title_bubble" msgid="2204559396790593213">"Bubble"</string>
     <string name="clock_title_analog" msgid="8409262532900918273">"Analog"</string>
     <string name="clock_title_type">Typografisch</string>
+    <string name="clock_title_type_alt">Typografisch (zentriert)</string>
     <plurals name="type_clock_header" formatted="false" msgid="6782840450655632763">
       <item quantity="other">"<annotation name="color">"Es ist"</annotation>\n"^1\n^2</item>
       <item quantity="one">"<annotation name="color">"Es ist"</annotation>\n"^1\n^2</item>

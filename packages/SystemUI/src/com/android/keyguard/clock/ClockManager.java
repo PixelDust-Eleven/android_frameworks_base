@@ -156,6 +156,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new AnalogClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new SpaceClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new TypeClockController(res, layoutInflater, colorExtractor, context));
+        addBuiltinClock(() -> new TypeClockAltController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new BinaryClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new OronosClockController(res, layoutInflater, colorExtractor, context));
 
