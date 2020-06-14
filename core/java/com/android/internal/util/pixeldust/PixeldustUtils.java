@@ -42,6 +42,7 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -217,6 +218,12 @@ public class PixeldustUtils {
         if (mUiModeManager == null) return false;
         int mode = mUiModeManager.getNightMode();
         return (mode == UiModeManager.MODE_NIGHT_YES);
+    }
+
+    public static int getThemeAccentColor (final Context context) {
+        final TypedValue value = new TypedValue ();
+        context.getTheme ().resolveAttribute (android.R.attr.colorAccent, value, true);
+        return value.data;
     }
 
     public static class OverlayManager {
