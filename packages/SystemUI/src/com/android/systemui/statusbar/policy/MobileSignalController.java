@@ -113,6 +113,9 @@ public class MobileSignalController extends SignalController<
     private boolean mVoLTEicon;
     private boolean mDataDisabledIcon;
 
+    // VoWiFi Icon
+    private int mVoWiFiIcon;
+
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
     public MobileSignalController(Context context, Config config, boolean hasMobileData,
@@ -192,6 +195,9 @@ public class MobileSignalController extends SignalController<
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_VOLTE_ICON),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.SHOW_VOWIFI_ICON),
+                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -223,6 +229,9 @@ public class MobileSignalController extends SignalController<
         mVoLTEicon = Settings.System.getIntForUser(resolver,
                 Settings.System.SHOW_VOLTE_ICON, 1,
                 UserHandle.USER_CURRENT) == 1;
+        mVoWiFiIcon = Settings.System.getIntForUser(resolver,
+                Settings.System.SHOW_VOWIFI_ICON, 2,
+                UserHandle.USER_CURRENT);
         mapIconSets();
         updateTelephony();
     }
@@ -478,6 +487,9 @@ public class MobileSignalController extends SignalController<
 
     private int getVolteResId() {
         int resId = 0;
+        if (mVoWiFiIcon == 2 && isVowifiAvailable()) {
+            return resId;
+        }
         if ((mCurrentState.voiceCapable || mCurrentState.videoCapable)
                 && mCurrentState.imsRegistered && mVoLTEicon) {
             resId = R.drawable.ic_volte;
@@ -579,7 +591,7 @@ public class MobileSignalController extends SignalController<
         int typeIcon = (showDataIcon || mConfig.alwaysShowDataRatIcon) ? icons.mDataType : 0;
         int volteIcon = isVolteSwitchOn() ? getVolteResId() : 0;
         MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
-        boolean vowifiIcon = mConfig.showVowifiIcon && vowifiIconGroup != null;
+        boolean vowifiIcon = mVoWiFiIcon >= 1 && vowifiIconGroup != null;
         if (mImsManager != null) {
             if (mImsManager.isWfcEnabledByUser()) {
                 switch (mImsManager.getWfcMode(mCurrentState.roaming)) {

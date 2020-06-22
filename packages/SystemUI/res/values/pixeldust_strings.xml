@@ -196,4 +196,8 @@
     <!-- Data disabled icon -->
     <string name="data_disabled_icon_title">Data disabled icon</string>
     <string name="data_disabled_icon_summary">Display a cross sign next to signal bar when data is disabled</string>
+
+    <!-- VoWIFI switch -->
+    <string name="vowifi_switch_title">VoWIFI icon</string>
+    <string name="vowifi_switch_summary">Display VoWIFI icon</string>
 </resources>
