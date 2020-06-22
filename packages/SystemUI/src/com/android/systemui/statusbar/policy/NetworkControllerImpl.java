@@ -1208,13 +1208,7 @@ public class NetworkControllerImpl extends BroadcastReceiver
         boolean hspaDataDistinguishable;
         boolean inflateSignalStrengths = false;
         boolean alwaysShowDataRatIcon = false;
-
-        boolean showRsrpSignalLevelforLTE = false;
-        boolean hideNoInternetState = false;
-        boolean alwaysShowNetworkTypeIcon = false;
-        boolean enableRatIconEnhancement = false;
         boolean showVowifiIcon = false;
-        boolean enableDdsRatIconEnhancement = false;
 
         static Config readConfig(Context context) {
             Config config = new Config();
