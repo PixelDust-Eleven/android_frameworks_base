@@ -402,6 +402,28 @@ public class PixeldustUtils {
         }
     }
 
+    // Method to detect whether a qs tile overlay is enabled or not
+    public static boolean isTileStyleEnabled(String packageName) {
+        if (mOverlayService == null) {
+            mOverlayService = new OverlayManager();
+        }
+        try {
+            ArrayList<OverlayInfo> infos = new ArrayList<OverlayInfo>();
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("com.android.systemui",
+                    UserHandle.myUserId()));
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("com.android.systemui",
+                    UserHandle.myUserId()));
+            for (int i = 0, size = infos.size(); i < size; i++) {
+                if (infos.get(i).packageName.equals(packageName)) {
+                    return infos.get(i).isEnabled();
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void toggleCameraFlash(boolean proximityCheck) {
         FireActions.toggleCameraFlash(proximityCheck);
     }
