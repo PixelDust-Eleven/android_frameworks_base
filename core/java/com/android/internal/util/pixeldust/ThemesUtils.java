@@ -240,4 +240,13 @@ public class ThemesUtils {
             "com.android.system.switch.retro", // 7
             "com.android.system.switch.oos", // 8
     };
+
+    // Brightness slider styles
+    public static final String[] BRIGHTNESS_SLIDER_STYLES = {
+            "com.android.systemui.brightness.slider.daniel", // 1
+            "com.android.systemui.brightness.slider.mememini", // 2
+            "com.android.systemui.brightness.slider.memeround", // 3
+            "com.android.systemui.brightness.slider.memeroundstroke", // 4
+            "com.android.systemui.brightness.slider.memestroke", // 5
+    };
 }
