@@ -64,6 +64,7 @@ import com.android.systemui.BatteryMeterView;
 import com.android.systemui.DualToneHandler;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
+import com.android.systemui.omni.OmniSettingsService;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.DarkIconDispatcher;
 import com.android.systemui.plugins.DarkIconDispatcher.DarkReceiver;
@@ -100,7 +101,7 @@ import javax.inject.Named;
  */
 public class QuickStatusBarHeader extends RelativeLayout implements
         View.OnClickListener, NextAlarmController.NextAlarmChangeCallback,
-        ZenModeController.Callback, LifecycleOwner {
+        ZenModeController.Callback, LifecycleOwner, OmniSettingsService.OmniSettingsObserver {
     private static final String TAG = "QuickStatusBarHeader";
     private static final boolean DEBUG = false;
 
@@ -528,6 +529,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         });
         mStatusBarIconController.addIconGroup(mIconManager);
         requestApplyInsets();
+        Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_LAYOUT_COLUMNS);
+        Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_LAYOUT_COLUMNS_LANDSCAPE);
+        Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_QUICKBAR_COLUMNS);
+        Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_TILE_TITLE_VISIBILITY);
     }
 
     @Override
@@ -607,6 +612,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         setListening(false);
         mRingerModeTracker.getRingerModeInternal().removeObservers(this);
         mStatusBarIconController.removeIconGroup(mIconManager);
+        Dependency.get(OmniSettingsService.class).removeObserver(this);
         super.onDetachedFromWindow();
     }
 
@@ -771,5 +777,17 @@ public class QuickStatusBarHeader extends RelativeLayout implements
 
     private boolean getChipEnabled() {
         return mMicCameraIndicatorsEnabled || mAllIndicatorsEnabled;
+    }
+
+    @Override
+    public void onIntSettingChanged(String key, Integer newValue) {
+        if (DEBUG) Log.d(TAG, "onIntSettingChanged " + key + " -> " + newValue);
+        if (mQsPanel != null) {
+            mQsPanel.updateSettings();
+        }
+        // if count is -1 it depends on mQsPanel so it must be afterwards
+        if (mHeaderQsPanel != null) {
+            mHeaderQsPanel.updateSettings();
+        }
     }
 }
