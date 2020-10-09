@@ -5467,6 +5467,11 @@ public final class Settings {
         public static final String OMNI_QS_TILE_TITLE_VISIBILITY = "qs_tile_title_visibility";
 
         /**
+         * @hide
+         */
+        public static final String OMNI_QS_MEDIA_PLAYER = "qs_media_player";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5477,6 +5482,7 @@ public final class Settings {
             OMNI_QS_LAYOUT_COLUMNS,
             OMNI_QS_QUICKBAR_COLUMNS,
             OMNI_QS_TILE_TITLE_VISIBILITY,
+            OMNI_QS_MEDIA_PLAYER,
         };
 
         /**
@@ -5496,7 +5502,8 @@ public final class Settings {
                     1);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_LAYOUT_COLUMNS, 1);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, 0);
-        }
+            OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_MEDIA_PLAYER, 0);
+       }
     }
 
     /**
