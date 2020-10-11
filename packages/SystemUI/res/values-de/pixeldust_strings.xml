@@ -133,4 +133,14 @@
     <string name="quick_settings_theme_tile_color_xboxgreen">XboxGrün</string>
     <string name="quick_settings_theme_tile_color_xiaomiorange">XiaomiOrange</string>
 
+    <!-- QS config UI -->
+    <string name="drag_or_touch_to_rearrange_tiles">Berühren, um Kacheln zu entfernen oder zu ziehen, um sie neu anzuordnen</string>
+    <string name="drag_or_touch_to_add_tiles">Berühren oder ziehen, um Kacheln hinzuzufügen</string>
+    <string name="customize_columns_note"><b>Achtung:</b> Spalten werden automatisch für den verfügbaren Speicherplatz begrenzt</string>
+    <string name="customize_show_labels">Beschriftung</string>
+    <string name="customize_quickbar_sync">Synchronisieren</string>
+    <string name="customize_quickbar_label">Quickbar</string>
+    <string name="customize_columns_land_label">Querkant</string>
+    <string name="customize_columns_port_label">Hochkant</string>
+
 </resources>
