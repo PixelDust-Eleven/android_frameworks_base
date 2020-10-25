@@ -109,6 +109,7 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NextAlarmController;
+import com.android.systemui.statusbar.policy.PulseController;
 import com.android.systemui.statusbar.policy.RemoteInputQuickSettingsDisabler;
 import com.android.systemui.statusbar.policy.RotationLockController;
 import com.android.systemui.statusbar.policy.SecurityController;
@@ -330,6 +331,7 @@ public class Dependency {
     @Inject Lazy<Divider> mDivider;
     @Inject Lazy<OmniSettingsService> mOmniSettingsService;
     @Inject Lazy<TaskHelper> mTaskHelper;
+    @Inject Lazy<PulseController> mPulseController;
 
     @Inject
     public Dependency() {
@@ -529,6 +531,7 @@ public class Dependency {
         mProviders.put(RecordingController.class, mRecordingController::get);
         mProviders.put(Divider.class, mDivider::get);
         mProviders.put(OmniSettingsService.class, mOmniSettingsService::get);
+        mProviders.put(PulseController.class, mPulseController::get);
 
         sDependency = this;
     }
