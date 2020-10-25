@@ -23,7 +23,7 @@ LOCAL_PRODUCT_MODULE := true
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 
-LOCAL_PACKAGE_NAME := IconPackCircularPixelThemePickerOverlay
+LOCAL_PACKAGE_NAME := IconPackRoundedThemePickerOverlay
 LOCAL_SDK_VERSION := current
 
 include $(BUILD_RRO_PACKAGE)
