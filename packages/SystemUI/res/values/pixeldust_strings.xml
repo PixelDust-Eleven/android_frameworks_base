@@ -84,6 +84,12 @@
     <string name="quick_settings_theme_tile_color_ocean">Ocean</string>
     <string name="quick_settings_theme_tile_color_green">Green</string>
     <string name="quick_settings_theme_tile_color_cinnamon">Cinnamon</string>
+    <string name="quick_settings_theme_tile_color_amethyst">Amethyst</string>
+    <string name="quick_settings_theme_tile_color_aquamarine">Aquamarine</string>
+    <string name="quick_settings_theme_tile_color_carbon">Carbon</string>
+    <string name="quick_settings_theme_tile_color_palette">Palette</string>
+    <string name="quick_settings_theme_tile_color_sand">Sand</string>
+    <string name="quick_settings_theme_tile_color_tangerine">Tangerine</string>
     <string name="quick_settings_theme_tile_color_amber">Amber</string>
     <string name="quick_settings_theme_tile_color_blue">Blue</string>
     <string name="quick_settings_theme_tile_color_bluegrey">Blue Grey</string>

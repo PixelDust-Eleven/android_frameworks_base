@@ -24,6 +24,12 @@
     <color name="quick_settings_theme_tile_ocean">#FF0C80A7</color>
     <color name="quick_settings_theme_tile_green">#FF1B873B</color>
     <color name="quick_settings_theme_tile_cinnamon">#FFAF6050</color>
+    <color name="quick_settings_theme_tile_amethyst">#A03EFF</color>
+    <color name="quick_settings_theme_tile_aquamarine">#23847D</color>
+    <color name="quick_settings_theme_tile_carbon">#434E58</color>
+    <color name="quick_settings_theme_tile_palette">#c01668</color>
+    <color name="quick_settings_theme_tile_sand">#795548</color>
+    <color name="quick_settings_theme_tile_tangerine">#C85125</color>
     <color name="quick_settings_theme_tile_amber">#FFFFC107</color>
     <color name="quick_settings_theme_tile_blue">#FF448AFF</color>
     <color name="quick_settings_theme_tile_bluegrey">#FF607D8B</color>
