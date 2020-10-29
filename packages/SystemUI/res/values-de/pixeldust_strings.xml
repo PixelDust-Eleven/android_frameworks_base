@@ -143,6 +143,17 @@
     <string name="customize_columns_land_label">Querkant</string>
     <string name="customize_columns_port_label">Hochkant</string>
 
+    <string name="tuner_show_brightness_mode">Schalter für Helligkeitsmodus anzeigen</string>
+    <string name="tuner_show_brightness_side_buttons">Buttons seitlich vom Helligkeitsregler anzeigen</string>
+    <string name="tuner_quick_settings">Schnelleinstellungen</string>
+    <string name="tuner_show_brightness_new">Helligkeitsregler anzeigen</string>
+    <string name="tuner_brightness_position_bottom">Helligkeitsregler unten anzeigen</string>
+    <string name="tuner_show_secure_title">Sicherheitsfußzeile anzeigen</string>
+    <string name="tuner_show_drag_handle">Anfasser anzeigen</string>
+    <string name="tuner_battery_location_bar">Batterie in Statusleiste anzeigen</string>
+    <string name="tuner_status_bar_bg_transparency">Transparenter Hintergrund für Statusleiste</string>
+    <string name="tuner_qs_media_player">Inline Media Player - Neustart erforderlich</string>
+
     <!-- Partial screenshot -->
     <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmausschnitts aufnehmen</string>
     <string name="global_screenshot_selector_cancel_description">Screenshot abbrechen</string>
