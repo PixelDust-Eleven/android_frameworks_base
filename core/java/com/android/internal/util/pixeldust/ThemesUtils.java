@@ -35,6 +35,7 @@ public class ThemesUtils {
             "com.android.theme.color.tangerine", // Tangerine
             // Custom colors
             "com.android.theme.color.amber", // Amber
+            "com.android.theme.color.azureradiance", // AzureRadiance
             "com.android.theme.color.blue", // Blue
             "com.android.theme.color.bluegrey", // Blue Grey
             "com.android.theme.color.brown", // Brown
