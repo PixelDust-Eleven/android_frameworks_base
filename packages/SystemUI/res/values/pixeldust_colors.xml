@@ -31,6 +31,7 @@
     <color name="quick_settings_theme_tile_sand">#795548</color>
     <color name="quick_settings_theme_tile_tangerine">#C85125</color>
     <color name="quick_settings_theme_tile_amber">#FFFFC107</color>
+    <color name="quick_settings_theme_tile_azureradiance">#00A4F8</color>
     <color name="quick_settings_theme_tile_blue">#FF448AFF</color>
     <color name="quick_settings_theme_tile_bluegrey">#FF607D8B</color>
     <color name="quick_settings_theme_tile_brown">#FF795548</color>
