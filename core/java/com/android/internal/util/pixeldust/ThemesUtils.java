@@ -26,6 +26,13 @@ public class ThemesUtils {
             "com.android.theme.color.ocean", // Ocean
             "com.android.theme.color.green", // Green
             "com.android.theme.color.cinnamon", // Cinnamon
+            // New AOSP colors from Android 11
+            "com.android.theme.color.amethyst", // Amethyst
+            "com.android.theme.color.aquamarine", // Aquamarine
+            "com.android.theme.color.carbon", // Carbon
+            "com.android.theme.color.palette", // Palette
+            "com.android.theme.color.sand", // Sand
+            "com.android.theme.color.tangerine", // Tangerine
             // Custom colors
             "com.android.theme.color.amber", // Amber
             "com.android.theme.color.blue", // Blue
@@ -67,12 +74,17 @@ public class ThemesUtils {
     };
 
     public static final String[] ADAPTIVE_ICON_SHAPE = {
+            "com.android.theme.icon.pebble",
+            "com.android.theme.icon.vessel",
+            "com.android.theme.icon.taperedrect",
             "com.android.theme.icon.teardrop",
             "com.android.theme.icon.squircle",
             "com.android.theme.icon.roundedrect",
-            "com.android.theme.icon.cylinder",
-            "com.android.theme.icon.hexagon",
             "com.android.theme.icon.square",
+            "com.android.theme.icon.hexagon",
+            "com.android.theme.icon.cylinder",
+            "com.android.theme.icon.heart",
+
     };
 
     public static final String[] PITCH_BLACK = {
@@ -94,6 +106,9 @@ public class ThemesUtils {
             "com.android.theme.icon_pack.filled.android",
             "com.android.theme.icon_pack.rounded.android",
             "com.android.theme.icon_pack.circular.android",
+            "com.android.theme.icon_pack.kai.android",
+            "com.android.theme.icon_pack.sam.android",
+            "com.android.theme.icon_pack.victor.android",
     };
 
     public static final String[] FONTS = {
