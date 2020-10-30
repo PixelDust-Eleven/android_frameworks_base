@@ -463,7 +463,7 @@
                   android:theme="@style/ExTunerSettings"
                   android:label="@string/nav_bar"
                   android:process=":tuner"
-                  android:parentActivityName="com.msm.xtended.fragments.NavbarSettings"
+                  android:parentActivityName="com.pixeldust.settings.fragments.NavigationBarSettings"
                   android:exported="true">
         </activity>
 
