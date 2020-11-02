@@ -5509,6 +5509,12 @@ public final class Settings {
         public static final String DOUBLE_TAP_SLEEP_GESTURE = "double_tap_sleep_gesture";
 
         /**
+         * Double tap on lockscreen to sleep
+         * @hide
+         */
+        public static final String DOUBLE_TAP_SLEEP_LOCKSCREEN = "double_tap_sleep_lockscreen";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5521,6 +5527,7 @@ public final class Settings {
             OMNI_QS_TILE_TITLE_VISIBILITY,
             OMNI_QS_MEDIA_PLAYER,
             DOUBLE_TAP_SLEEP_GESTURE,
+            DOUBLE_TAP_SLEEP_LOCKSCREEN,
         };
 
         /**
@@ -5542,6 +5549,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_MEDIA_PLAYER, 0);
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_GESTURE, 0);
+            OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_LOCKSCREEN, 0);
        }
     }
 
