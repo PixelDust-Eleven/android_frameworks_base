@@ -567,6 +567,10 @@ public class NotificationPanelViewController extends PanelViewController {
         });
         mBottomAreaShadeAlphaAnimator.setDuration(160);
         mBottomAreaShadeAlphaAnimator.setInterpolator(Interpolators.ALPHA_OUT);
+
+        mSettingsObserver.observe();
+        mSettingsObserver.update();
+
         mDoubleTapGesture = new GestureDetector(mView.getContext(),
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -588,6 +592,7 @@ public class NotificationPanelViewController extends PanelViewController {
                 return true;
             }
         });
+
         mShadeController = shadeController;
         mLockscreenUserManager = notificationLockscreenUserManager;
         mEntryManager = notificationEntryManager;
@@ -605,9 +610,6 @@ public class NotificationPanelViewController extends PanelViewController {
         if (DEBUG) {
             mView.getOverlay().add(new DebugDrawable());
         }
-
-        mSettingsObserver.observe();
-        mSettingsObserver.update();
 
         onFinishInflate();
     }
@@ -631,19 +633,29 @@ public class NotificationPanelViewController extends PanelViewController {
         public void onChange(boolean selfChange, Uri uri) {
             if (uri.equals(Settings.Secure.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_GESTURE))) {
-                mDoubleTapToSleepEnabled = Settings.System.getIntForUser(
-                    mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1,
-                    UserHandle.USER_CURRENT) == 1;
-
+                setDoubleTapToSleep();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN))) {
-                mIsLockscreenDoubleTapEnabled = Settings.System.getIntForUser(
-                    mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 1,
-                    UserHandle.USER_CURRENT) == 1;
+                setLockscreenDoubleTap();
             }
         }
 
-        public void update() {}
+        public void update() {
+            setDoubleTapToSleep();
+            setLockscreenDoubleTap();
+        }
+    }
+
+    private void setDoubleTapToSleep() {
+        mDoubleTapToSleepEnabled = Settings.System.getIntForUser(
+            mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_GESTURE, 1,
+            UserHandle.USER_CURRENT) == 1;
+    }
+
+    private void setLockscreenDoubleTap() {
+        mIsLockscreenDoubleTapEnabled = Settings.System.getIntForUser(
+            mView.getContext().getContentResolver(), Settings.System.DOUBLE_TAP_SLEEP_LOCKSCREEN, 1,
+            UserHandle.USER_CURRENT) == 1;
     }
 
     private void onFinishInflate() {
