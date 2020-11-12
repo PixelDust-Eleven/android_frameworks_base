@@ -34,6 +34,7 @@ import android.hardware.input.InputManager;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.BatteryManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -208,6 +209,10 @@ public class PixeldustUtils {
         }
     }
 
+    public static void startAssist() {
+        FireActions.startAssist();
+    }
+
     public static void sendKeycode(int keycode) {
         long when = SystemClock.uptimeMillis();
         final KeyEvent evDown = new KeyEvent(when, when, KeyEvent.ACTION_DOWN, keycode, 0,
@@ -337,6 +342,15 @@ public class PixeldustUtils {
                 } catch (RemoteException e) {
                     // do nothing.
                 }
+            }
+        }
+
+        public static void startAssist() {
+            IStatusBarService service = getStatusBarService();
+            if (service != null) {
+                try {
+                    service.startAssist(new Bundle());
+                } catch (RemoteException e) {}
             }
         }
     }
