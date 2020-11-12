@@ -185,6 +185,15 @@ public class PixeldustUtils {
         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show();
     }
 
+    public static void showPowerMenu() {
+        final IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+        try {
+            wm.showGlobalActions();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void sendKeycode(int keycode) {
         long when = SystemClock.uptimeMillis();
         final KeyEvent evDown = new KeyEvent(when, when, KeyEvent.ACTION_DOWN, keycode, 0,
