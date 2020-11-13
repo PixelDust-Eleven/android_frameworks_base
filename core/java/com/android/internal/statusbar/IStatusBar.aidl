@@ -231,5 +231,7 @@ oneway interface IStatusBar
      */
     void suppressAmbientDisplay(boolean suppress);
 
-    void toggleCameraFlash();
+    void toggleCameraFlash(boolean proximityCheck);
+
+    void triggerElmyraAction(String action);
 }

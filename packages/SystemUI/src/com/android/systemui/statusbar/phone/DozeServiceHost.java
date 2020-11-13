@@ -418,6 +418,16 @@ public final class DozeServiceHost implements DozeHost {
     }
 
     @Override
+    public void performToggleFlashlight() {
+        mStatusBar.toggleFlashlight();
+    }
+
+    @Override
+    public void performTriggeredAction(String action) {
+        mStatusBar.performTriggeredAction(action);
+    }
+
+    @Override
     public void cancelGentleSleep() {
         mPendingScreenOffCallback = null;
         if (mScrimController.getState() == ScrimState.OFF) {
@@ -470,5 +480,17 @@ public final class DozeServiceHost implements DozeHost {
 
     public boolean isDozeSuppressed() {
         return mSuppressed;
+    }
+
+    public void toggleFlashlightProximityCheck() {
+        for (Callback callback : mCallbacks) {
+            callback.toggleFlashlightProximityCheck();
+        }
+    }
+
+    public void triggerActionProximityCheck(String action) {
+        for (Callback callback : mCallbacks) {
+            callback.triggerActionProximityCheck(action);
+        }
     }
 }

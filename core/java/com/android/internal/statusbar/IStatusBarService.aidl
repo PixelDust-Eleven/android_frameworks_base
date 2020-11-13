@@ -151,10 +151,12 @@ interface IStatusBarService
      */
     void suppressAmbientDisplay(boolean suppress);
 
-    void toggleCameraFlash();
+    void toggleCameraFlash(boolean proximityCheck);
 
     /**
      * Starts the default assistant app.
      */
     void startAssist(in Bundle args);
+
+    void triggerElmyraAction(String action);
 }
