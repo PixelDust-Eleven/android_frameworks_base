@@ -129,6 +129,7 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
     private static final int MSG_TOGGLE_CAMERA_FLASH               = 57 << MSG_SHIFT;
     private static final int MSG_SHOW_IN_DISPLAY_FINGERPRINT_VIEW  = 58 << MSG_SHIFT;
     private static final int MSG_HIDE_IN_DISPLAY_FINGERPRINT_VIEW  = 59 << MSG_SHIFT;
+    private static final int MSG_TRIGGER_ACTION                    = 60 << MSG_SHIFT;
 
     public static final int FLAG_EXCLUDE_NONE = 0;
     public static final int FLAG_EXCLUDE_SEARCH_PANEL = 1 << 0;
@@ -343,7 +344,8 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
          * @param enabled
          */
         default void onTracingStateChanged(boolean enabled) { }
-        default void toggleCameraFlash() { }
+        default void toggleCameraFlash(boolean proximityCheck) { }
+        default void triggerElmyraAction(String action) { }
     }
 
     public CommandQueue(Context context) {
@@ -986,10 +988,18 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
         }
     }
 
-    public void toggleCameraFlash() {
+    public void toggleCameraFlash(boolean proximityCheck) {
         synchronized (mLock) {
             mHandler.removeMessages(MSG_TOGGLE_CAMERA_FLASH);
-            mHandler.sendEmptyMessage(MSG_TOGGLE_CAMERA_FLASH);
+            mHandler.obtainMessage(MSG_TOGGLE_CAMERA_FLASH, proximityCheck).sendToTarget();
+        }
+    }
+
+    @Override
+    public void triggerElmyraAction(String action) {
+        synchronized (mLock) {
+            mHandler.removeMessages(MSG_TRIGGER_ACTION);
+            mHandler.obtainMessage(MSG_TRIGGER_ACTION, action).sendToTarget();
         }
     }
 
@@ -1336,7 +1346,12 @@ public class CommandQueue extends IStatusBar.Stub implements CallbackController<
 
                 case MSG_TOGGLE_CAMERA_FLASH:
                     for (int i = 0; i < mCallbacks.size(); i++) {
-                        mCallbacks.get(i).toggleCameraFlash();
+                        mCallbacks.get(i).toggleCameraFlash((boolean) msg.obj);
+                    }
+                    break;
+                case MSG_TRIGGER_ACTION:
+                    for (int i = 0; i < mCallbacks.size(); i++) {
+                        mCallbacks.get(i).triggerElmyraAction((String) msg.obj);
                     }
                     break;
                 case MSG_SHOW_IN_DISPLAY_FINGERPRINT_VIEW:

@@ -33,6 +33,8 @@ import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
 
+import com.android.internal.util.pixeldust.PixeldustUtils;
+
 import java.util.List;
 
 public final class LineageButtons {
@@ -199,6 +201,47 @@ public final class LineageButtons {
             mVolBtnMusicControls = Settings.System.getIntForUser(
                     resolver, Settings.System.VOLUME_BUTTON_MUSIC_CONTROL, 1,
                     UserHandle.USER_CURRENT) == 1;
+        }
+    }
+
+    // Elmyra app actions
+    public void performTriggeredAction(String action, Context context, boolean interactive) {
+        switch(action) {
+            case "flashlight":
+                PixeldustUtils.toggleCameraFlash(false);
+                break;
+            case "assist":
+                PixeldustUtils.startAssist();
+                break;
+            case "screenshot":
+                //PixeldustUtilsalready disabled when screen is OFF by Elmyra app
+                PixeldustUtils.takeScreenshot(true/*full*/);
+                break;
+            case "partialscreenshot":
+                // already disabled when screen is OFF by Elmyra app
+                PixeldustUtils.takeScreenshot(false/*full*/);
+                break;
+            case "camera":
+                if (!interactive) {
+                    PixeldustUtils.switchScreenOff(context);
+                }
+                PixeldustUtils.launchCamera(context);
+                break;
+            case "mute":
+                PixeldustUtils.triggerHushMute(context);
+                break;
+            case "screen":
+                if (interactive) {
+                    PixeldustUtils.switchScreenOff(context);
+                } else {
+                    PixeldustUtils.switchScreenOn(context);
+                }
+                break;
+            case "powermenu":
+                PixeldustUtils.showPowerMenu();
+                break;
+           default:
+                break;
         }
     }
 }
