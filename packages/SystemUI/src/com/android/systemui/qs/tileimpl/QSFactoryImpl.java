@@ -39,6 +39,7 @@ import com.android.systemui.qs.tiles.DndTile;
 import com.android.systemui.qs.tiles.FlashlightTile;
 import com.android.systemui.qs.tiles.HeadsUpTile;
 import com.android.systemui.qs.tiles.HotspotTile;
+import com.android.systemui.qs.tiles.KillappTile;
 import com.android.systemui.qs.tiles.LocaleTile;
 import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
@@ -94,7 +95,8 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<LocaleTile> mLocaleTileProvider;
     private final Provider<ThemeTile> mThemeTileProvider;
     private final Provider<ScreenshotTile> mScreenshotTileProvider;
-    
+    private final Provider<KillappTile> mKillappTileProvider;
+
     private final Lazy<QSHost> mQsHostLazy;
 
     @Inject
@@ -126,7 +128,8 @@ public class QSFactoryImpl implements QSFactory {
             Provider<CaffeineTile> caffeineTileProvider,
             Provider<LocaleTile> localeTileProvider,
             Provider<ThemeTile> themeTileProvider,
-            Provider<ScreenshotTile> screenshotTileProvider) {
+            Provider<ScreenshotTile> screenshotTileProvider,
+            Provider<KillappTile> killappTileProvider) {
         mQsHostLazy = qsHostLazy;
         mWifiTileProvider = wifiTileProvider;
         mBluetoothTileProvider = bluetoothTileProvider;
@@ -156,6 +159,7 @@ public class QSFactoryImpl implements QSFactory {
         mLocaleTileProvider = localeTileProvider;
         mThemeTileProvider = themeTileProvider;
         mScreenshotTileProvider = screenshotTileProvider;
+        mKillappTileProvider = killappTileProvider;
     }
 
     public QSTile createTile(String tileSpec) {
@@ -223,6 +227,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mThemeTileProvider.get();
             case "screenshot":
                 return mScreenshotTileProvider.get();
+            case "killapp":
+                return mKillappTileProvider.get();
         }
 
         // Custom tiles
