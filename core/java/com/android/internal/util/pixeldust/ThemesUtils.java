@@ -85,7 +85,6 @@ public class ThemesUtils {
             "com.android.theme.icon.hexagon",
             "com.android.theme.icon.cylinder",
             "com.android.theme.icon.heart",
-
     };
 
     public static final String[] PITCH_BLACK = {
@@ -131,5 +130,12 @@ public class ThemesUtils {
             "com.android.theme.font.sonysketchsource",
             "com.android.theme.font.summerdream",
             "com.android.theme.font.surfersource",
+    };
+
+    public static final String[] NAVBAR_STYLES = {
+            "com.android.theme.navbar.asus",
+            "com.android.theme.navbar.oneplus",
+            "com.android.theme.navbar.oneui",
+            "com.android.theme.navbar.tecno",
     };
 }
