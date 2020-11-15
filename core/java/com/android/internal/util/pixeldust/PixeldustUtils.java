@@ -65,6 +65,7 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -320,9 +321,11 @@ public class PixeldustUtils {
     public static boolean isThemeEnabled(String packageName) {
         mOverlayService = new OverlayManager();
         try {
-            List<OverlayInfo> infos = mOverlayService.getOverlayInfosForTarget("android",
-                    UserHandle.myUserId());
-            for (int i = 0, size = infos.size(); i < size; i++) {
+            ArrayList<OverlayInfo> infos = new ArrayList<OverlayInfo>();
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("android",
+                    UserHandle.myUserId()));
+            infos.addAll(mOverlayService.getOverlayInfosForTarget("com.android.systemui",
+                    UserHandle.myUserId()));            for (int i = 0, size = infos.size(); i < size; i++) {
                 if (infos.get(i).packageName.equals(packageName)) {
                     return infos.get(i).isEnabled();
                 }
@@ -447,7 +450,7 @@ public class PixeldustUtils {
 
     public static void setComponentState(Context context, String packageName,
             String componentClassName, boolean enabled) {
-        PackageManager pm  = context.getApplicationContext().getPackageManager();
+        PackageManager pm = context.getApplicationContext().getPackageManager();
         ComponentName componentName = new ComponentName(packageName, componentClassName);
         int state = enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED :
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
