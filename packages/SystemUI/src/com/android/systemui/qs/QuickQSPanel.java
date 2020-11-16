@@ -412,9 +412,7 @@ public class QuickQSPanel extends QSPanel {
                 // Only one column/tile. Use the margin to center the tile.
                 return getPaddingStart() + mCellMarginHorizontal;
             }
-            return super.getColumnStart(column);
-            /*return getPaddingStart() + mCellMarginHorizontal / 2 +
-                    column *  (mCellWidth + mCellMarginHorizontal);*/
+            return getPaddingStart() + column *  (mCellWidth + mCellMarginHorizontal);
         }
 
         @Override
