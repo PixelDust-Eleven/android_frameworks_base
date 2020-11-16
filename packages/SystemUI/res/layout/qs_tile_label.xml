@@ -43,7 +43,7 @@
             android:clickable="false"
             android:padding="0dp"
             android:gravity="center"
-            android:singleLine="true"
+            android:ellipsize="marquee"
             android:textAppearance="@style/TextAppearance.QS.TileLabel"/>
 
         <ImageView android:id="@+id/restricted_padlock"
