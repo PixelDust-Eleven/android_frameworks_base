@@ -106,4 +106,10 @@
     <bool name="config_has_weird_dt_sensor">false</bool>
 
     <bool name="config_has_elmyra">false</bool>
+
+    <!-- Whether device has a physical display cutout -->
+    <bool name="config_physicalDisplayCutout">false</bool>
+
+    <!-- Whether device has a big physical display cutout -->
+    <bool name="config_physicalDisplayCutoutCentered">@bool/config_physicalDisplayCutout</bool>
 </resources>
