@@ -103,4 +103,9 @@
 
   <java-symbol type="bool" name="config_has_elmyra" />
 
+  <!-- Whether device has a physical display cutout -->
+  <java-symbol type="bool" name="config_physicalDisplayCutout" />
+
+  <!-- Whether device has a big physical display cutout -->
+  <java-symbol type="bool" name="config_physicalDisplayCutoutCentered" />
 </resources>
