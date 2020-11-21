@@ -244,4 +244,66 @@ public final class LineageButtons {
                 break;
         }
     }
+
+    public void triggerAction(int action, boolean leftEdge, boolean isVerticalSwipe, Context context) {
+        switch (action) {
+            case 0: // No action
+            default:
+                break;
+            case 1: // Assistant
+                PixeldustUtils.startAssist();
+                break;
+            case 2: // Voice search
+                PixeldustUtils.launchVoiceSearch(context);
+                break;
+            case 3: // Camera
+                PixeldustUtils.launchCamera(context);
+                break;
+            case 4: // Flashlight
+                PixeldustUtils.toggleCameraFlash(false/*no proximity check*/);
+                break;
+            case 5: // Application
+                PixeldustUtils.launchApp(context, leftEdge, isVerticalSwipe);
+                break;
+            case 6: // Volume panel
+                PixeldustUtils.toggleVolumePanel(context);
+                break;
+            case 7: // Screen off
+                PixeldustUtils.switchScreenOff(context);
+                break;
+            case 8: // Screenshot
+                PixeldustUtils.takeScreenshot(true);
+                break;
+            case 9: // Notification panel
+                PixeldustUtils.toggleNotifications();
+                break;
+            case 10: // QS panel
+                PixeldustUtils.toggleQsPanel();
+                break;
+            case 11: // Clear notifications
+                PixeldustUtils.clearAllNotifications();
+                break;
+            case 12: // Ringer modes
+                PixeldustUtils.toggleRingerModes(context);
+                break;
+            case 13: // Kill app
+                PixeldustUtils.killForegroundApp();
+                break;
+            case 14: // Skip song
+                skipTrack();
+                break;
+            case 15: // Previous song
+                previousTrack();
+                break;
+            case 16: // Power menu
+                PixeldustUtils.showPowerMenu();
+                break;
+            case 17: // Partial screenshot
+                PixeldustUtils.takeScreenshot(false);
+                break;
+            case 18: // Hush mute
+                PixeldustUtils.triggerHushMute(context);
+                break;
+        }
+    }
 }
