@@ -154,4 +154,6 @@
     <string name="screenrecord_stopdot_label">Stopppunkt anzeigen\nLang drücken, um ihn verschieben</string>
     <string name="screenrecord_lowquality_label">Qualität reduzieren für kleinere Dateien</string>
 
+    <string name="app_picker_dialog_title">App auswählen</string>
+    <string name="app_picker_activity_select_title">Aktion wählen</string>
 </resources>
