@@ -144,12 +144,12 @@
     <string name="customize_columns_port_label">Hochkant</string>
 
     <!-- Partial screenshot -->
-    <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmauschnitts aufnehmen</string>
+    <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmausschnitts aufnehmen</string>
     <string name="global_screenshot_selector_cancel_description">Screenshot abbrechen</string>
 
     <!-- Screenshot QS tile -->
     <string name="quick_settings_screenshot_label">Screenshot</string>
-    <string name="quick_settings_region_screenshot_label">Screenshot eines Bildschirmauschnitts</string>
+    <string name="quick_settings_region_screenshot_label">Screenshot eines Bildschirmausschnitts</string>
 
     <string name="screenrecord_stopdot_label">Stopppunkt anzeigen\nLang drücken, um ihn verschieben</string>
     <string name="screenrecord_lowquality_label">Qualität reduzieren für kleinere Dateien</string>
