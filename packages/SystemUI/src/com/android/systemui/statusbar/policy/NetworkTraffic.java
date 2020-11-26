@@ -77,6 +77,9 @@ public class NetworkTraffic extends TextView {
     private int mTrafficType;
     private int mAutoHideThreshold;
     protected int mTintColor;
+    private boolean mShowArrow;
+    private boolean iBytes;
+    private boolean oBytes;
 
     private boolean mScreenOn = true;
     protected boolean mVisible = true;
@@ -107,6 +110,8 @@ public class NetworkTraffic extends TextView {
             long txData = newTotalTxBytes - totalTxBytes;
 
             CharSequence output = "";
+            iBytes = (rxData <= (mAutoHideThreshold * 1024));
+            oBytes = (txData <= (mAutoHideThreshold * 1024));
 
             if (shouldHide(rxData, txData, timeDelta)) {
                 setText(output);
@@ -122,13 +127,48 @@ public class NetworkTraffic extends TextView {
                 // Add information for uplink and downlink
                 output = formatOutput(timeDelta, txData, symbol);
                 output += "\n" + formatOutput(timeDelta, rxData, symbol);
-            } else if (mTrafficType == DYNAMIC){
+            } else if (mTrafficType == DYNAMIC) {
                 if (shouldShowUpload(rxData, txData, timeDelta)) {
                     // Show information for uplink if it's called for
-                    output = formatOutput(timeDelta, txData, symbol);
+                    if (txData > rxData) {
+                        output = formatOutput(timeDelta, txData, symbol);
+                        if (!oBytes) {
+                            oBytes = false;
+                            iBytes = true;
+                        } else {
+                            oBytes = true;
+                            iBytes = true;
+                        }
+                    } else {
+                        output = formatOutput(timeDelta, rxData, symbol);
+                        if (!iBytes) {
+                            iBytes = false;
+                            oBytes = true;
+                        } else {
+                            iBytes = true;
+                            oBytes = true;
+                        }
+                    }
                 } else {
                     // Add information for downlink if it's called for
-                    output = formatOutput(timeDelta, rxData, symbol);
+                    output = formatOutput(timeDelta, rxData + txData, symbol);
+                    if (txData > rxData) {
+                        if (!oBytes) {
+                            oBytes = false;
+                            iBytes = true;
+                        } else {
+                            oBytes = true;
+                            iBytes = true;
+                        }
+                    } else {
+                        if (!iBytes) {
+                            iBytes = false;
+                            oBytes = true;
+                        } else {
+                            iBytes = true;
+                            oBytes = true;
+                        }
+                    }
                 }
             }
             // Update view if there's anything new to show
@@ -137,6 +177,8 @@ public class NetworkTraffic extends TextView {
             }
             updateVisibility();
             updateTextSize();
+            if (mShowArrow)
+                updateTrafficDrawable();
 
             // Post delayed message to refresh in ~1000ms
             totalRxBytes = newTotalRxBytes;
@@ -259,12 +301,12 @@ public class NetworkTraffic extends TextView {
         final Resources resources = getResources();
         txtImgPadding = resources.getDimensionPixelSize(R.dimen.net_traffic_txt_img_padding);
         mTintColor = resources.getColor(android.R.color.white);
-        setMode();
         Handler mHandler = new Handler();
         mConnectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         SettingsObserver settingsObserver = new SettingsObserver(mHandler);
         settingsObserver.observe();
+        setMode();
         update();
     }
 
@@ -325,6 +367,9 @@ public class NetworkTraffic extends TextView {
             resolver.registerContentObserver(Settings.System
                     .getUriFor(Settings.System.NETWORK_TRAFFIC_TYPE), false,
                     this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.NETWORK_TRAFFIC_ARROW), false,
+                    this, UserHandle.USER_ALL);
         }
 
         /*
@@ -372,6 +417,7 @@ public class NetworkTraffic extends TextView {
                 lastUpdateTime = SystemClock.elapsedRealtime();
                 mTrafficHandler.sendEmptyMessage(1);
             }
+            updateTrafficDrawable();
             return;
         } else {
             clearHandlerCallbacks();
@@ -394,6 +440,9 @@ public class NetworkTraffic extends TextView {
         mTrafficType = Settings.System.getIntForUser(resolver,
                 Settings.System.NETWORK_TRAFFIC_TYPE, 0,
                 UserHandle.USER_CURRENT);
+        mShowArrow = Settings.System.getIntForUser(resolver,
+                Settings.System.NETWORK_TRAFFIC_ARROW, 0,
+                UserHandle.USER_CURRENT) == 1;
         setGravity(Gravity.CENTER);
         setMaxLines(2);
         setSpacingAndFonts();
@@ -409,7 +458,50 @@ public class NetworkTraffic extends TextView {
     }
 
     protected void updateTrafficDrawable() {
-        setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        int intTrafficDrawable;
+        if (mIsEnabled && mShowArrow) {
+            if (mTrafficType == UP) {
+                if (oBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic;
+                } else {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_up;
+                }
+            } else if (mTrafficType == DOWN) {
+                if (iBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic;
+                } else {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_down;
+                }
+            } else if (mTrafficType == DYNAMIC) {
+                if (iBytes && !oBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_up;
+                } else if (!iBytes && oBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_down;
+                } else {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic;
+                }
+            } else {
+                if (!iBytes && !oBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_updown;
+                } else if (!oBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_up;
+                } else if (!iBytes) {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic_down;
+                } else {
+                    intTrafficDrawable = R.drawable.stat_sys_network_traffic;
+                }
+            }
+        } else {
+            intTrafficDrawable = 0;
+        }
+        if (intTrafficDrawable != 0) {
+            Drawable d = getContext().getDrawable(intTrafficDrawable);
+            d.setColorFilter(mTintColor, Mode.MULTIPLY);
+            setCompoundDrawablePadding(txtImgPadding);
+            setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
+        } else {
+            setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
         setTextColor(mTintColor);
     }
 
@@ -423,7 +515,7 @@ public class NetworkTraffic extends TextView {
     }
 
     protected void setSpacingAndFonts() {
-        txtImgPadding = getResources().getDimensionPixelSize(R.dimen.net_traffic_multi_text_size);
+        txtImgPadding = getResources().getDimensionPixelSize(R.dimen.net_traffic_txt_img_padding);
         setCompoundDrawablePadding(txtImgPadding);
         updateTextSize();
     }
