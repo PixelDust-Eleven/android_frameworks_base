@@ -5826,6 +5826,12 @@ public final class Settings {
         public static final String NETWORK_TRAFFIC_TYPE = "network_traffic_type";
 
         /**
+         * Whether to disable showing arrows in statusbar network traffic indicators
+         * @hide
+         */
+        public static final String NETWORK_TRAFFIC_ARROW = "network_traffic_arrow";
+
+        /**
          * SettingsBackupAgent will combine its list with this so we dont need
          * to add new things into SettingsProvider SystemSettings
          * @hide
@@ -5841,6 +5847,7 @@ public final class Settings {
             DOUBLE_TAP_SLEEP_LOCKSCREEN,
             FORCE_SHOW_NAVBAR,
             NETWORK_TRAFFIC_TYPE,
+            NETWORK_TRAFFIC_ARROW,
         };
 
         /**
@@ -5865,6 +5872,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_LOCKSCREEN, 0);
             OMNI_SETTINGS_VALIDATORS.put(FORCE_SHOW_NAVBAR, 0);
             OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_TYPE, 1);
+            OMNI_SETTINGS_VALIDATORS.put(NETWORK_TRAFFIC_ARROW, 0);
        }
     }
 
