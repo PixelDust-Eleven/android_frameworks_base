@@ -114,6 +114,8 @@ public class ThemesUtils {
     public static final String[] FONTS = {
             "com.android.theme.font.aclonicasource",
             "com.android.theme.font.amarantesource",
+            "com.android.theme.font.arbutussource",
+            "com.android.theme.font.arvolato",
             "com.android.theme.font.bariolsource",
             "com.android.theme.font.cagliostrosource",
             "com.android.theme.font.comicsanssource",
@@ -125,11 +127,13 @@ public class ThemesUtils {
             "com.android.theme.font.linotte",
             "com.android.theme.font.oneplusslate", 
             "com.android.theme.font.rosemarysource",
+            "com.android.theme.font.rubikrubik",
             "com.android.theme.font.samsungone",
             "com.android.theme.font.sanfrancisco",
             "com.android.theme.font.sonysketchsource",
             "com.android.theme.font.summerdream",
             "com.android.theme.font.surfersource",
+
     };
 
     public static final String[] NAVBAR_STYLES = {
