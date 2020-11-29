@@ -201,8 +201,8 @@ public interface StatusBarGoogleModule {
             UserInfoControllerImpl userInfoControllerImpl,
             PhoneStatusBarPolicy phoneStatusBarPolicy,
             KeyguardIndicationController keyguardIndicationController,
-            Lazy<NotificationShadeDepthController> notificationShadeDepthController,
             DismissCallbackRegistry dismissCallbackRegistry,
+            Lazy<NotificationShadeDepthController> notificationShadeDepthController,
             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
             TaskHelper taskHelper) {
         return new StatusBarGoogle(
