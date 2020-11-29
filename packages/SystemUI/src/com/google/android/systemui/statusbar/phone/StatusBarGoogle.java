@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.android.internal.logging.MetricsLogger;
 import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
@@ -173,6 +174,7 @@ public class StatusBarGoogle extends StatusBar {
             PluginManager pluginManager,
             Optional<Divider> dividerOptional,
             LightsOutNotifController lightsOutNotifController,
+            FlashlightController flashlightController,
             StatusBarNotificationActivityStarter.Builder
                     statusBarNotificationActivityStarterBuilder,
             ShadeController shadeController,
@@ -191,7 +193,6 @@ public class StatusBarGoogle extends StatusBar {
             DismissCallbackRegistry dismissCallbackRegistry,
             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
             StatusBarTouchableRegionManager statusBarTouchableRegionManager,
-            FlashlightController flashlightController,
             TaskHelper taskHelper) {
         super(context,
                 notificationsController,
@@ -253,6 +254,7 @@ public class StatusBarGoogle extends StatusBar {
                 pluginManager,
                 dividerOptional,
                 lightsOutNotifController,
+                flashlightController,
                 statusBarNotificationActivityStarterBuilder,
                 shadeController,
                 superStatusBarViewFactory,
@@ -270,7 +272,6 @@ public class StatusBarGoogle extends StatusBar {
                 dismissCallbackRegistry,
                 notificationShadeDepthControllerLazy,
                 statusBarTouchableRegionManager,
-                flashlightController,
                 taskHelper);
         mSmartSpaceController = smartSpaceController;
     }
