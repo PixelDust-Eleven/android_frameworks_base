@@ -46,7 +46,6 @@ import com.android.systemui.bubbles.BubbleController;
 import com.android.systemui.statusbar.phone.NotificationGroupManager;
 import com.android.systemui.statusbar.notification.VisualStabilityManager;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
-import com.android.systemui.statusbar.policy.TaskHelper;
 import com.android.systemui.statusbar.NavigationBarController;
 import com.android.systemui.assist.AssistManager;
 import com.android.systemui.statusbar.phone.BiometricUnlockController;
@@ -183,8 +182,7 @@ public class StatusBarGoogle extends StatusBar {
             KeyguardIndicationController keyguardIndicationController,
             DismissCallbackRegistry dismissCallbackRegistry,
             Lazy<NotificationShadeDepthController> notificationShadeDepthControllerLazy,
-            StatusBarTouchableRegionManager statusBarTouchableRegionManager,
-            TaskHelper taskHelper) {
+            StatusBarTouchableRegionManager statusBarTouchableRegionManager) {
 
         super(context, 
             notificationsController,
@@ -263,8 +261,7 @@ public class StatusBarGoogle extends StatusBar {
             keyguardIndicationController,
             dismissCallbackRegistry,
             notificationShadeDepthControllerLazy,
-            statusBarTouchableRegionManager,
-            taskHelper);
+            statusBarTouchableRegionManager);
         }
 
     @Override
