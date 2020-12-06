@@ -518,4 +518,14 @@ public class PixeldustUtils {
         boolean displayCutoutExists = (!TextUtils.isEmpty(displayCutout) && !maskDisplayCutout);
         return displayCutoutExists;
     }
+
+    // Check to see if device supports NFC
+    public static boolean hasNFC(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_NFC);
+    }
+
+    // Check to see if device supports A/B (seamless) system updates
+    public static boolean isABdevice(Context context) {
+        return SystemProperties.getBoolean("ro.build.ab_update", false);
+    }
 }
