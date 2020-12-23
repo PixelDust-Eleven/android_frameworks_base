@@ -228,7 +228,7 @@
                 android:drawableStart="@drawable/ic_text_label"
                 android:gravity="center_vertical" />
 
-            <com.pixeldust.settings.preferences.SystemSettingsSwitch
+            <com.pixeldust.support.preferences.SystemSettingsSwitch
                 android:id="@+id/qs_tile_title_visibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

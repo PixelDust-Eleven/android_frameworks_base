@@ -42,7 +42,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/tuner_qs_media_player" />
 
-            <com.pixeldust.settings.preferences.SystemSettingsSwitch
+            <com.pixeldust.support.preferences.SystemSettingsSwitch
                 android:id="@+id/qs_media_player"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/tuner_show_brightness_new"/>
 
-            <com.pixeldust.settings.preferences.SecureSettingsSwitch
+            <com.pixeldust.support.preferences.SecureSettingsSwitch
                 android:id="@+id/qs_show_brightness"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/tuner_show_drag_handle" />
 
-            <com.pixeldust.settings.preferences.SystemSettingsSwitch
+            <com.pixeldust.support.preferences.SystemSettingsSwitch
                 android:id="@+id/qs_show_drag_handle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
