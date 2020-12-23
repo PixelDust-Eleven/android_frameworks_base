@@ -102,6 +102,11 @@ public class ThemesUtils {
             "com.android.theme.chocox.systemui",
     };
 
+    public static final String[] DARK_GREY = {
+            "com.android.theme.darkgrey.system",
+            "com.android.theme.darkgrey.systemui",
+    };
+
     public static final String[] STATUSBAR_ICONS = {
             "com.android.theme.icon_pack.filled.android",
             "com.android.theme.icon_pack.rounded.android",
