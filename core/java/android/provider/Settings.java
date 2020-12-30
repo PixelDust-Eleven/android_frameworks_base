@@ -9779,6 +9779,13 @@ public final class Settings {
                 "qstile_requires_unlocking";
 
         /**
+         * Whether the Touch Sensitivity option is enabled.
+         *
+         * @hide
+         */
+        public static final String TOUCH_SENSITIVITY_ENABLED = "touch_sensitivity_enabled";
+
+        /**
          * Pulse navbar music visualizer
          *
          * @hide
