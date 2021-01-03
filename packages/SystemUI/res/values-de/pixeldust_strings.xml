@@ -222,4 +222,7 @@
 
     <!-- Scrolling Screenshot string -->
     <string name="scrollss">Scrollen</string>
+
+    <!-- Power menu QS tile -->
+    <string name="quick_settings_power_menu_label">Ein-/Aus-Menü</string>
 </resources>

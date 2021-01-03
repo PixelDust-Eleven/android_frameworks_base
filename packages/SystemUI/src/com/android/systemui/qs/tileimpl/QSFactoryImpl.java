@@ -46,6 +46,7 @@ import com.android.systemui.qs.tiles.LocationTile;
 import com.android.systemui.qs.tiles.NfcTile;
 import com.android.systemui.qs.tiles.NightDisplayTile;
 import com.android.systemui.qs.tiles.PDSettingsTile;
+import com.android.systemui.qs.tiles.PowerMenuTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
 import com.android.systemui.qs.tiles.ScreenRecordTile;
 import com.android.systemui.qs.tiles.SyncTile;
@@ -90,6 +91,7 @@ public class QSFactoryImpl implements QSFactory {
     private final Provider<ScreenRecordTile> mScreenRecordTileProvider;
     private final Provider<PDSettingsTile> mPDSettingsTileProvider;
     private final Provider<HeadsUpTile> mHeadsUpTileProvider;
+    private final Provider<PowerMenuTile> mPowerMenuTileProvider;
     private final Provider<SyncTile> mSyncTileProvider;
     private final Provider<AlwaysOnDisplayTile> mAlwaysOnDisplayTileProvider;
     private final Provider<CaffeineTile> mCaffeineTileProvider;
@@ -125,6 +127,7 @@ public class QSFactoryImpl implements QSFactory {
             Provider<ScreenRecordTile> screenRecordTileProvider,
             Provider<PDSettingsTile> pdSettingsTileProvider,
             Provider<HeadsUpTile> headsUpTileProvider,
+            Provider<PowerMenuTile> powerMenuTileProvider,
             Provider<SyncTile> syncTileProvider,
             Provider<AlwaysOnDisplayTile> alwaysOnDisplayTileProvider,
             Provider<CaffeineTile> caffeineTileProvider,
@@ -157,6 +160,7 @@ public class QSFactoryImpl implements QSFactory {
         mScreenRecordTileProvider = screenRecordTileProvider;
         mPDSettingsTileProvider = pdSettingsTileProvider;
         mHeadsUpTileProvider = headsUpTileProvider;
+        mPowerMenuTileProvider = powerMenuTileProvider;
         mSyncTileProvider = syncTileProvider;
         mAlwaysOnDisplayTileProvider = alwaysOnDisplayTileProvider;
         mCaffeineTileProvider = caffeineTileProvider;
@@ -220,6 +224,8 @@ public class QSFactoryImpl implements QSFactory {
                 return mPDSettingsTileProvider.get();
             case "heads_up":
                 return mHeadsUpTileProvider.get();
+            case "powermenu":
+                return mPowerMenuTileProvider.get();
             case "sync":
                 return mSyncTileProvider.get();
             case "always_on_display":
