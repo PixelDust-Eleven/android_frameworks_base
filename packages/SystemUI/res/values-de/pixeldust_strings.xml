@@ -193,4 +193,7 @@
     <!-- VoWIFI switch -->
     <string name="vowifi_switch_title">VoWIFI</string>
     <string name="vowifi_switch_summary">VoWIFI-Symbol anzeigen</string>
+
+    <!-- Ambient Music Ticker -->
+    <string name="ambientmusic_songinfo" formatted="false">%s von %s</string>
 </resources>
