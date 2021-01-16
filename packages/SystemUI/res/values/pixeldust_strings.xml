@@ -200,4 +200,7 @@
     <!-- VoWIFI switch -->
     <string name="vowifi_switch_title">VoWIFI icon</string>
     <string name="vowifi_switch_summary">Display VoWIFI icon</string>
+
+    <!-- Ambient Music Ticker -->
+    <string name="ambientmusic_songinfo" formatted="false">%s by %s</string>
 </resources>
