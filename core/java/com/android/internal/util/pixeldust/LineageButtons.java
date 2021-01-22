@@ -221,7 +221,7 @@ public final class LineageButtons {
                 PixeldustUtils.startAssist();
                 break;
             case "screenshot":
-                //PixeldustUtilsalready disabled when screen is OFF by Elmyra app
+                // already disabled when screen is OFF by Elmyra app
                 PixeldustUtils.takeScreenshot(true/*full*/);
                 break;
             case "partialscreenshot":
@@ -245,6 +245,9 @@ public final class LineageButtons {
                 }
                 break;
             case "powermenu":
+                if (!interactive) {
+                    PixeldustUtils.switchScreenOn(context);
+                }
                 PixeldustUtils.showPowerMenu();
                 break;
            default:
