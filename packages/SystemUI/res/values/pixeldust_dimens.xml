@@ -66,4 +66,6 @@
 
     <!-- Margin on the left side of the heads up notification -->
     <dimen name="heads_up_status_bar_padding_start">0dp</dimen>
+
+    <dimen name="keyguard_charging_animation_margin">30dp</dimen>
 </resources>
