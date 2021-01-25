@@ -5889,6 +5889,11 @@ public final class Settings {
         public static final String OMNI_QS_LAYOUT_PREF_THREE_ROWS = "qs_layout_pref_three_rows";
 
         /**
+         * @hide
+         */
+        public static final String OMNI_QS_SHOW_MEDIA_DIVIDER = "qs_show_media_divider";
+
+        /**
          *  Enable statusbar double tap gesture on to put device to sleep
          * @hide
          */
@@ -5936,6 +5941,7 @@ public final class Settings {
             OMNI_QS_TILE_TITLE_VISIBILITY,
             OMNI_QS_MEDIA_PLAYER,
             OMNI_QS_LAYOUT_PREF_THREE_ROWS,
+            OMNI_QS_SHOW_MEDIA_DIVIDER,
             DOUBLE_TAP_SLEEP_GESTURE,
             DOUBLE_TAP_SLEEP_LOCKSCREEN,
             FORCE_SHOW_NAVBAR,
@@ -5963,6 +5969,7 @@ public final class Settings {
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_TILE_TITLE_VISIBILITY, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_MEDIA_PLAYER, 0);
             OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_LAYOUT_PREF_THREE_ROWS, 0);
+            OMNI_SETTINGS_VALIDATORS.put(OMNI_QS_SHOW_MEDIA_DIVIDER, 0);
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_GESTURE, 0);
             OMNI_SETTINGS_VALIDATORS.put(DOUBLE_TAP_SLEEP_LOCKSCREEN, 0);
             OMNI_SETTINGS_VALIDATORS.put(FORCE_SHOW_NAVBAR, 0);
