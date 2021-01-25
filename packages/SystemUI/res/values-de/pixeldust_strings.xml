@@ -155,6 +155,7 @@
     <string name="tuner_status_bar_bg_transparency">Transparenter Hintergrund für Statusleiste</string>
     <string name="tuner_qs_media_player">Media Player - Neustart erforderlich</string>
     <string name="tuner_prefer_three_rows">3 Zeilen präferieren - Neustart erforderlich</string>
+    <string name="tuner_qs_show_media_divider">Media Player Trennlinie anzeigen</string>
 
     <!-- Partial screenshot -->
     <string name="global_screenshot_selector_capture_description">Screenshot eines Bildschirmausschnitts aufnehmen</string>
