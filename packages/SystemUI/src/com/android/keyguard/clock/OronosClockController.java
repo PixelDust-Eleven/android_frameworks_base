@@ -259,10 +259,14 @@ public class OronosClockController implements ClockPlugin {
 
     @Override
     public void onTimeTick() {
-        mTime.setTimeInMillis(System.currentTimeMillis());
-        mLongDate.setText(mResources.getString(R.string.date_long_title_today, mTime.getDisplayName(
-                Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
-
+        if (mView != null && mHourClock != null && mMinuteClock != null) {
+            mView.onTimeChanged();
+            mHourClock.refreshTime();
+            mMinuteClock.refreshTime();
+            mTime.setTimeInMillis(System.currentTimeMillis());
+            mLongDate.setText(mResources.getString(R.string.date_long_title_today, mTime.getDisplayName(
+                    Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+        }
     }
 
     @Override
