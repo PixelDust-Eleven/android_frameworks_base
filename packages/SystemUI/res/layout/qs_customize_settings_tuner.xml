@@ -33,10 +33,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="@string/tuner_qs_media_player" />
+                android:text="@string/tuner_prefer_three_rows" />
 
             <com.pixeldust.support.preferences.SystemSettingsSwitch
-                android:id="@+id/qs_media_player"
+                android:id="@+id/qs_layout_pref_three_rows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 systemui:initialValue="1"

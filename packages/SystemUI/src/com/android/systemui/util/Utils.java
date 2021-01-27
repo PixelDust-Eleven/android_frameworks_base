@@ -126,12 +126,19 @@ public class Utils {
     }
 
     /**
-     * Allow the media player to be shown in the QS area, controlled by 2 flags.
-     * Off by default, but can be disabled by setting to 0
+     * Allow the media player to be shown in the QS area
      */
     public static boolean useQsMediaPlayer(Context context) {
+        return true;
+    }
+
+    /**
+     * Controls whether the QS rows layout prefers three rows.
+     * On by default, but can be disabled by setting to 0
+     */
+    public static boolean useQsThreeRows(Context context) {
         return Settings.System.getIntForUser(
-                context.getContentResolver(), Settings.System.OMNI_QS_MEDIA_PLAYER, 1,
+                context.getContentResolver(), Settings.System.OMNI_QS_LAYOUT_PREF_THREE_ROWS, 1,
                 UserHandle.USER_CURRENT) == 1;
     }
 

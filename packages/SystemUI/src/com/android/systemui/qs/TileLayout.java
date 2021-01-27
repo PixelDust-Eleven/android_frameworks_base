@@ -1,6 +1,6 @@
 package com.android.systemui.qs;
 
-import static com.android.systemui.util.Utils.useQsMediaPlayer;
+import static com.android.systemui.util.Utils.useQsThreeRows;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -54,9 +54,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
     public TileLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusableInTouchMode(true);
-        mLessRows = (Settings.System.getInt(context.getContentResolver(), "qs_less_rows", 0) != 0);
+        mLessRows = (Settings.System.getInt(context.getContentResolver(), "qs_less_rows", 0) != 0)
+            || !useQsThreeRows(context);
         updateResources();
-
     }
 
     @Override
