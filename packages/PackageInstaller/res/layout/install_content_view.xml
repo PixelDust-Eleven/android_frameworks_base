@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 style="@android:style/TextAppearance.Material.Small"
                 android:text="@string/old_version_number"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/updating_app_version"
