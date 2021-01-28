@@ -136,6 +136,16 @@ public class Utils {
     }
 
     /**
+     * Controls whether the QS rows layout prefers three rows.
+     * On by default, but can be disabled by setting to 0
+     */
+    public static boolean useQsThreeRows(Context context) {
+        return Settings.System.getIntForUser(
+                context.getContentResolver(), Settings.System.OMNI_QS_LAYOUT_PREF_THREE_ROWS, 1,
+                UserHandle.USER_CURRENT) == 1;
+    }
+
+    /**
      * Allow media resumption controls. Requires {@link #useQsMediaPlayer(Context)} to be enabled.
      * Off by default, but can be enabled by setting to 1
      */
