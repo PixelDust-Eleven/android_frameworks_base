@@ -149,6 +149,7 @@
     <string name="tuner_show_drag_handle">Show drag handle</string>
     <string name="tuner_battery_location_bar">Show battery in status bar</string>
     <string name="tuner_status_bar_bg_transparency">Transparent status bar background</string>
+    <string name="tuner_qs_media_player">Inline media player - reboot required</string>
 
     <!-- Indication on the keyguard that is shown when the device is charging with a dash charger. Should match keyguard_plugged_in_dash_charging [CHAR LIMIT=40]-->
     <string name="keyguard_indication_dash_charging_time">Dash Charging (<xliff:g id="charging_time_left" example="4 hours and 2 minutes">%s</xliff:g> until full)</string>
