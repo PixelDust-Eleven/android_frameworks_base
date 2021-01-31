@@ -248,5 +248,13 @@ public class ThemesUtils {
             "com.android.systemui.brightness.slider.memeround", // 3
             "com.android.systemui.brightness.slider.memeroundstroke", // 4
             "com.android.systemui.brightness.slider.memestroke", // 5
+            "com.android.systemui.brightness.slider.danielgradient", // 6
+            "com.android.systemui.brightness.slider.mememinigradient", // 7
+            "com.android.systemui.brightness.slider.memeroundgradient", // 8
+            "com.android.systemui.brightness.slider.memeroundstrokegradient", // 9
+            "com.android.systemui.brightness.slider.memestrokegradient", // 10
+            "com.android.systemui.brightness.slider.minihalf", // 11
+            "com.android.systemui.brightness.slider.half", // 12
+            "com.android.systemui.brightness.slider.oos", // 13
     };
 }
