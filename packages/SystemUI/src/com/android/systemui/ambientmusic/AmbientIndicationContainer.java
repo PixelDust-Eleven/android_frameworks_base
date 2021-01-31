@@ -122,10 +122,8 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     }
 
     private void hideIndication() {
-        mInfoAvailable = false;
-        mNpInfoAvailable = false;
         mText.setText(null);
-        mAmbientIndication.setVisibility(View.INVISIBLE);
+        setVisibility(shouldShow());
     }
 
     public void initializeView(StatusBar statusBar, Handler handler, KeyguardIndicationController keyguardIndicationController) {
@@ -221,17 +219,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
     }
 
     public boolean shouldShow() {
-        // if not dozing, show ambient music info only for Google Now Playing,
-        // not for local media players if they are showing a lockscreen media notification
-        final NotificationLockscreenUserManager lockscreenManager =
-                mStatusBar.getNotificationLockscreenUserManager();
-        boolean filtered = lockscreenManager.shouldHideNotifications(
-                lockscreenManager.getCurrentUserId()) || lockscreenManager.shouldHideNotifications(
-                        mMediaManager.getMediaNotificationKey());
-        return (mKeyguard || isAod() || mDozing)
-                && ((mDozing && (mInfoAvailable || mNpInfoAvailable))
-                || (!mDozing && mNpInfoAvailable && !mInfoAvailable)
-                || (!mDozing && mInfoAvailable && filtered));
+        return mKeyguard && !mDozing && mNpInfoAvailable;
     }
 
     public void setIndication(boolean nowPlaying) {
@@ -273,10 +261,7 @@ public class AmbientIndicationContainer extends AutoReinflateContainer implement
         }
         if (mInfoToSet != null) {
             mText.setText(mInfoToSet);
-            mAmbientIndication.setVisibility(shouldShow() ? View.VISIBLE : View.INVISIBLE);
-        if (hasInDisplayFingerprint() && shouldShow() || (showsChargingAnimation() && isAod() && shouldShow())) {
-                updatePosition();
-            }
+            setVisibility(shouldShow());
         } else {
             hideIndication();
         }
