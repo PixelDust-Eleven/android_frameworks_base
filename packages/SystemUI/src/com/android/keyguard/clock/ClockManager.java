@@ -160,6 +160,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new BinaryClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new OronosReshapedClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new ClockertinoClockController(res, layoutInflater, colorExtractor, context));
+        addBuiltinClock(() -> new IDEClockController(res, layoutInflater, colorExtractor, context));
 
         // Store the size of the display for generation of clock preview.
         DisplayMetrics dm = res.getDisplayMetrics();
