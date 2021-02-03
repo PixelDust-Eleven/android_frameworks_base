@@ -219,4 +219,7 @@
     <!-- Gaming mode -->
     <string name="gaming_mode_not_enabled">Der Spielemodus ist in den Einstellungen deaktiviert</string>
     <string name="quick_settings_gaming_mode_label">Spielemodus</string>
+
+    <!-- Scrolling Screenshot string -->
+    <string name="scrollss">Scrollen</string>
 </resources>
