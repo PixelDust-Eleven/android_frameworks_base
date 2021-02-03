@@ -142,7 +142,9 @@
     <string name="tuner_show_brightness_mode">Show brightness mode switch</string>
     <string name="tuner_show_brightness_side_buttons">Show brightness slider side buttons</string>
     <string name="tuner_quick_settings">Quick settings</string>
-    <string name="tuner_show_brightness_new">Show brightness slider</string>
+    <string name="tuner_show_brightness_slider">Show brightness slider in quickbar</string>
+    <string name="tuner_show_brightness_slider_show_expanded">Show brightness slider when expanded</string>
+    <string name="tuner_show_auto_brightness_title">Show autobrightness icon</string>
     <string name="tuner_brightness_position_bottom">Brightness slider on bottom</string>
     <string name="tuner_show_secure_title">Show security footer</string>
     <string name="tuner_show_drag_handle">Show drag handle</string>
