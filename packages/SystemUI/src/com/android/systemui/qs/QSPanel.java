@@ -153,7 +153,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private Consumer<Boolean> mMediaVisibilityChangedListener;
 
     // omni
-    private View mBrightnessPlaceholder;
     private int mFooterMargin;
     private boolean mShowMediaDivider = true;
 
@@ -235,9 +234,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected void addViewsAboveTiles() {
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
-        mBrightnessPlaceholder = LayoutInflater.from(mContext).inflate(
-            R.layout.quick_settings_brightness_placeholder, this, false);
-        addView(mBrightnessPlaceholder);
         addView(mBrightnessView);
         mBrightnessController = new BrightnessController(getContext(),
                 findViewById(R.id.brightness_slider), mBroadcastDispatcher);
@@ -392,19 +388,12 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     @Override
     public void onTuningChanged(String key, String newValue) {
         if (QS_SHOW_BRIGHTNESS.equals(key) && mBrightnessView != null) {
-            updateViewVisibilityForTuningValue(newValue);
+            updateViewVisibilityForTuningValue(mBrightnessView, newValue);
         }
     }
 
-    private void updateViewVisibilityForTuningValue(@Nullable String newValue) {
-        boolean visible = TunerService.parseIntegerSwitch(newValue, true);
-        if (visible) {
-            mBrightnessView.setVisibility(VISIBLE);
-            mBrightnessPlaceholder.setVisibility(View.GONE);
-        } else {
-            mBrightnessView.setVisibility(GONE);
-            mBrightnessPlaceholder.setVisibility(View.VISIBLE);
-        }
+    private void updateViewVisibilityForTuningValue(View view, @Nullable String newValue) {
+        view.setVisibility(TunerService.parseIntegerSwitch(newValue, true) ? VISIBLE : GONE);
     }
 
     public void openDetails(String subPanel) {
@@ -444,10 +433,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     @Nullable
     View getBrightnessView() {
         return mBrightnessView;
-    }
-
-    View getBrightnessPlaceholder() {
-        return mBrightnessPlaceholder;
     }
 
     public void setCallback(QSDetail.Callback callback) {
