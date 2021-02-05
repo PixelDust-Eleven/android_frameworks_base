@@ -9920,6 +9920,17 @@ public final class Settings {
                 "qs_show_brightness_slider_show_expanded";
 
         /**
+         * Whether to show qs brightness slider at the bottom
+         *
+         * 0: show before the quickbar (default)
+         * 1: show at the bottom
+         *
+         * @hide
+         */
+        public static final String QS_SHOW_BRIGHTNESS_POSITION_BOTTOM =
+                "qs_show_brightness_position_bottom";
+
+        /**
          * Keys we no longer back up under the current schema, but want to continue to
          * process when restoring historical backup datasets.
          *
