@@ -217,10 +217,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         }
     };
 
-    private View mQuickQsBrightnessTop;
-    private View mQuickQsBrightnessBottom;
-    private BrightnessController mBrightnessControllerTop;
-    private BrightnessController mBrightnessControllerBottom;
+    private View mQuickQsBrightness;
+    private BrightnessController mBrightnessController;
     private boolean mIsQuickQsBrightnessEnabled;
     private boolean mIsQsAutoBrightnessEnabled;
     private boolean mShowQuickQsBrightnessBottom;
@@ -260,15 +258,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         iconContainer.setShouldRestrictIcons(false);
         mIconManager = new TintedIconManager(iconContainer, mCommandQueue);
 
-        mQuickQsBrightnessTop = findViewById(R.id.quick_qs_brightness_bar_top);
-        mQuickQsBrightnessBottom = findViewById(R.id.quick_qs_brightness_bar_bottom);
-        mBrightnessControllerTop = new BrightnessController(getContext(),
-                mQuickQsBrightnessTop.findViewById(R.id.brightness_icon),
-                mQuickQsBrightnessTop.findViewById(R.id.brightness_slider),
-                mBroadcastDispatcher);
-        mBrightnessControllerBottom = new BrightnessController(getContext(),
-                mQuickQsBrightnessBottom.findViewById(R.id.brightness_icon),
-                mQuickQsBrightnessBottom.findViewById(R.id.brightness_slider),
+        mQuickQsBrightness = findViewById(R.id.quick_qs_brightness_bar);
+        mBrightnessController = new BrightnessController(getContext(),
+                mQuickQsBrightness.findViewById(R.id.brightness_icon),
+                mQuickQsBrightness.findViewById(R.id.brightness_slider),
                 mBroadcastDispatcher);
 
         // Views corresponding to the header info section (e.g. ringer and next alarm).
@@ -473,28 +466,26 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 com.android.internal.R.dimen.quick_qs_offset_height);
         mSystemIconsView.setLayoutParams(mSystemIconsView.getLayoutParams());
 
-        if (mIsQuickQsBrightnessEnabled && !mShowQuickQsBrightnessBottom) { // show slider at top
+        if (mIsQuickQsBrightnessEnabled) {
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
-                mQuickQsBrightnessTop.findViewById(R.id.brightness_icon).setVisibility(View.VISIBLE);
+                mQuickQsBrightness.findViewById(R.id.brightness_icon).setVisibility(View.VISIBLE);
             } else {
-                mQuickQsBrightnessTop.findViewById(R.id.brightness_icon).setVisibility(View.GONE);
+                mQuickQsBrightness.findViewById(R.id.brightness_icon).setVisibility(View.GONE);
             }
-            mQuickQsBrightnessTop.setVisibility(View.VISIBLE);
-            mQuickQsBrightnessBottom.setVisibility(View.GONE);
-        } else if (mIsQuickQsBrightnessEnabled && mShowQuickQsBrightnessBottom) { // show slider at bottom
-            if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
-                    com.android.internal.R.bool.config_automatic_brightness_available)) {
-                mQuickQsBrightnessBottom.findViewById(R.id.brightness_icon).setVisibility(View.VISIBLE);
-            } else {
-                mQuickQsBrightnessBottom.findViewById(R.id.brightness_icon).setVisibility(View.GONE);
-            }
-            mQuickQsBrightnessTop.setVisibility(View.GONE);
-            mQuickQsBrightnessBottom.setVisibility(View.VISIBLE);
+            mQuickQsBrightness.setVisibility(View.VISIBLE);
+        } else {
+            mQuickQsBrightness.setVisibility(View.GONE);
+        }
 
-        } else { // don't show a slider
-            mQuickQsBrightnessTop.setVisibility(View.GONE);
-            mQuickQsBrightnessBottom.setVisibility(View.GONE);
+        // Change the upper or lower position of the quickbar
+        RelativeLayout.LayoutParams params;
+        if (mIsQuickQsBrightnessEnabled && mShowQuickQsBrightnessBottom) {
+            params = (RelativeLayout.LayoutParams) mHeaderQsPanel.getLayoutParams();
+params.addRule(RelativeLayout.BELOW, R.id.quick_qs_status_icons);
+        } else {
+            params = (RelativeLayout.LayoutParams) mHeaderQsPanel.getLayoutParams();
+params.addRule(RelativeLayout.BELOW, R.id.quick_qs_brightness_bar);
         }
 
         ViewGroup.LayoutParams lp = getLayoutParams();
@@ -583,18 +574,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             }
         }
         if (mIsQuickQsBrightnessEnabled) {
-            if (mShowQuickQsBrightnessBottom) {
-                if (keyguardExpansionFraction > 0) {
-                    mQuickQsBrightnessBottom.setVisibility(INVISIBLE);
-                } else {
-                    mQuickQsBrightnessBottom.setVisibility(VISIBLE);
-                }
+            if (keyguardExpansionFraction > 0) {
+                mQuickQsBrightness.setVisibility(INVISIBLE);
             } else {
-                if (keyguardExpansionFraction > 0) {
-                    mQuickQsBrightnessTop.setVisibility(INVISIBLE);
-                } else {
-                    mQuickQsBrightnessTop.setVisibility(VISIBLE);
-                }
+                mQuickQsBrightness.setVisibility(VISIBLE);
             }
         }
         if (mPrivacyChipAlphaAnimator != null) {
@@ -616,11 +599,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         mHeaderQsPanel.setDisabledByPolicy(disabled);
         mHeaderTextContainerView.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
         mQuickQsStatusIcons.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
-        if (mShowQuickQsBrightnessBottom) {
-            mQuickQsBrightnessBottom.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
-        } else {
-            mQuickQsBrightnessTop.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
-        }
+        mQuickQsBrightness.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
         updateResources();
     }
 
@@ -733,8 +712,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (listening) {
             mZenController.addCallback(this);
             mAlarmController.addCallback(this);
-            mBrightnessControllerTop.registerCallbacks();
-            mBrightnessControllerBottom.registerCallbacks();
+            mBrightnessController.registerCallbacks();
             mLifecycle.setCurrentState(Lifecycle.State.RESUMED);
             // Get the most up to date info
             mAllIndicatorsEnabled = mPrivacyItemController.getAllIndicatorsAvailable();
@@ -743,8 +721,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         } else {
             mZenController.removeCallback(this);
             mAlarmController.removeCallback(this);
-            mBrightnessControllerTop.unregisterCallbacks();
-            mBrightnessControllerBottom.unregisterCallbacks();
+            mBrightnessController.unregisterCallbacks();
             mLifecycle.setCurrentState(Lifecycle.State.CREATED);
             mPrivacyItemController.removeCallback(mPICCallback);
             mPrivacyChipLogged = false;
@@ -858,7 +835,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
             if (view == mHeaderQsPanel) {
                 // QS panel doesn't lays out some of its content full width
                 mHeaderQsPanel.setContentMargins(marginStart, marginEnd);
-            } else if (view != mQuickQsBrightnessTop || view != mQuickQsBrightnessBottom) {
+            } else if (view != mQuickQsBrightness) {
                 MarginLayoutParams lp = (MarginLayoutParams) view.getLayoutParams();
                 lp.setMarginStart(marginStart);
                 lp.setMarginEnd(marginEnd);

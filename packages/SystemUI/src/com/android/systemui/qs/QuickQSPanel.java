@@ -92,7 +92,7 @@ public class QuickQSPanel extends QSPanel {
     }
 
     @Override
-    protected void addViewsAboveTiles() {
+    protected void addBrightnessView() {
         // Nothing to add above the tiles
     }
 

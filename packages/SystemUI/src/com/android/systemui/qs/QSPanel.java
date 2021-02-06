@@ -83,6 +83,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
     private static final String QS_SHOW_AUTO_BRIGHTNESS =
                                 Settings.Secure.QS_SHOW_AUTO_BRIGHTNESS;
+    private static final String QS_SHOW_BRIGHTNESS_POSITION_BOTTOM =
+                               Settings.Secure.QS_SHOW_BRIGHTNESS_POSITION_BOTTOM;
     public static final String QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED =
                                Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED;
     public static final String QS_SHOW_HEADER = "qs_show_header";
@@ -161,6 +163,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     // omni
     private int mFooterMargin;
     private boolean mShowMediaDivider = true;
+    private boolean mShowQsBrightnessBottom = false;
 
     @Inject
     public QSPanel(
@@ -188,9 +191,17 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mUiEventLogger = uiEventLogger;
 
         setOrientation(VERTICAL);
-
-        addViewsAboveTiles();
+        addQSPanel();
         mMovableContentStartIndex = getChildCount();
+        if (mRegularTileLayout instanceof PagedTileLayout) {
+            mQsTileRevealController = new QSTileRevealController(mContext, this,
+                    (PagedTileLayout) mRegularTileLayout);
+        }
+        mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
+        updateResources();
+    }
+
+    private void createTileLayout() {
         mRegularTileLayout = createRegularTileLayout();
 
         if (mUsingMediaPlayer) {
@@ -217,13 +228,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
             initMediaHostState();
         }
-        addSecurityFooter();
-        if (mRegularTileLayout instanceof PagedTileLayout) {
-            mQsTileRevealController = new QSTileRevealController(mContext, this,
-                    (PagedTileLayout) mRegularTileLayout);
-        }
-        mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
-        updateResources();
     }
 
     protected void onMediaVisibilityChanged(Boolean visible) {
@@ -237,7 +241,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mSecurityFooter = new QSSecurityFooter(this, mContext);
     }
 
-    protected void addViewsAboveTiles() {
+    protected void addBrightnessView() {
         mBrightnessView = LayoutInflater.from(mContext).inflate(
             R.layout.quick_settings_brightness_dialog, this, false);
         addView(mBrightnessView);
@@ -248,6 +252,25 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
 
         mIsAutomaticBrightnessAvailable = getResources().getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
+    }
+
+    private void addQSPanel() {
+        if (mShowQsBrightnessBottom) {
+            createTileLayout();
+            addBrightnessView();
+        } else {
+            addBrightnessView();
+            createTileLayout();
+        }
+        addSecurityFooter();
+        updateResources();
+    }
+
+    private void restartQSPanel() {
+        if (mSecurityFooter.getView() != null) removeView(mSecurityFooter.getView());
+        if ((View) mTileLayout != null) removeView((View) mTileLayout);
+        if (mBrightnessView != null) removeView(mBrightnessView);
+        addQSPanel();
     }
 
     protected QSTileLayout createRegularTileLayout() {
@@ -353,7 +376,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, QS_SHOW_AUTO_BRIGHTNESS, QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED);
+        tunerService.addTunable(this, QS_SHOW_AUTO_BRIGHTNESS, QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED, QS_SHOW_BRIGHTNESS_POSITION_BOTTOM);
         Dependency.get(OmniSettingsService.class).addIntObserver(this, QS_SHOW_SECURITY);
         Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_SHOW_MEDIA_DIVIDER);
 
@@ -402,6 +425,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             updateViewVisibilityForTuningValue(mAutoBrightnessView, newValue);
         } else if (QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED.equals(key) && mBrightnessView != null) {
             updateViewVisibilityForTuningValue(mBrightnessView, newValue);
+        } else if (QS_SHOW_BRIGHTNESS_POSITION_BOTTOM.equals(key) && mBrightnessView != null) {
+            mShowQsBrightnessBottom = TunerService.parseIntegerSwitch(newValue, true);
+            restartQSPanel();
         }
     }
 
