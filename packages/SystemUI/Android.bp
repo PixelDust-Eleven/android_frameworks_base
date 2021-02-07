@@ -73,6 +73,7 @@ android_library {
         "vendor.lineage.biometrics.fingerprint.inscreen-V1.0-java",
         "airbnb-lottie",
         "VendorSupport-preference",
+        "faceunlock_framework",
     ],
     manifest: "AndroidManifest.xml",
     defaults: [
