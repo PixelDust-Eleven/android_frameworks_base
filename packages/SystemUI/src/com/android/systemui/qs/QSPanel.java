@@ -191,13 +191,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
         mUiEventLogger = uiEventLogger;
 
         setOrientation(VERTICAL);
-        addQSPanel();
         mMovableContentStartIndex = getChildCount();
-        if (mRegularTileLayout instanceof PagedTileLayout) {
-            mQsTileRevealController = new QSTileRevealController(mContext, this,
-                    (PagedTileLayout) mRegularTileLayout);
-        }
-        mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
+        addQSPanel();
         updateResources();
     }
 
@@ -263,12 +258,18 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             createTileLayout();
         }
         addSecurityFooter();
+        if (mRegularTileLayout instanceof PagedTileLayout) {
+            mQsTileRevealController = new QSTileRevealController(mContext, this,
+                    (PagedTileLayout) mRegularTileLayout);
+        }
+        mQSLogger.logAllTilesChangeListening(mListening, getDumpableTag(), mCachedSpecs);
+        //switchTileLayout();
         updateResources();
     }
 
     private void restartQSPanel() {
         if (mSecurityFooter.getView() != null) removeView(mSecurityFooter.getView());
-        if ((View) mTileLayout != null) removeView((View) mTileLayout);
+        if ((View) mHorizontalLinearLayout != null) removeView((View) mHorizontalLinearLayout);
         if (mBrightnessView != null) removeView(mBrightnessView);
         addQSPanel();
     }
