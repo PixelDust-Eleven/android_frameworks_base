@@ -238,5 +238,6 @@ public class ThemesUtils {
             "com.android.system.switch.telegram", // 5
             "com.android.system.switch.md2", // 6
             "com.android.system.switch.retro", // 7
+            "com.android.system.switch.oos", // 8
     };
 }
