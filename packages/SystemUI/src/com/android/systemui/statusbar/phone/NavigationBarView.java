@@ -1030,8 +1030,10 @@ public class NavigationBarView extends FrameLayout implements
         updateButtonLocation(getRecentsButton(), inScreenSpace);
         updateButtonLocation(getImeSwitchButton(), inScreenSpace);
         updateButtonLocation(getAccessibilityButton(), inScreenSpace);
-        updateButtonLocation(getKeyButtonViewById(R.id.dpad_left), inScreenSpace);
-        updateButtonLocation(getKeyButtonViewById(R.id.dpad_right), inScreenSpace);
+        if (showDpadArrowKeys()) {
+            updateButtonLocation(getKeyButtonViewById(R.id.dpad_left), inScreenSpace);
+            updateButtonLocation(getKeyButtonViewById(R.id.dpad_right), inScreenSpace);
+        }
         if (includeFloatingRotationButton && mFloatingRotationButton.isVisible()) {
             updateButtonLocation(mFloatingRotationButton.getCurrentView(), inScreenSpace);
         } else {
@@ -1049,6 +1051,10 @@ public class NavigationBarView extends FrameLayout implements
     }
 
     private void updateButtonLocation(View view, boolean inScreenSpace) {
+        // we get called also without ButtonDispatcher before
+        if (view == null || view.getVisibility() != View.VISIBLE) {
+            return;
+        }
         if (inScreenSpace) {
             view.getBoundsOnScreen(mTmpBounds);
         } else {
