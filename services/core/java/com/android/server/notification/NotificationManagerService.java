@@ -5591,7 +5591,7 @@ public class NotificationManagerService extends SystemService {
                 mUsageStats.dump(pw, "    ", filter);
             }
 
-            long now = SystemClock.elapsedRealtime();
+            long now = mSystemClock.elapsedRealtime();
             pw.println("\n  Last notification sound timestamps:");
             for (Map.Entry<String, Long> entry : mLastSoundTimestamps.entrySet()) {
                 pw.print("    " + entry.getKey() + " -> ");
@@ -7017,7 +7017,7 @@ public class NotificationManagerService extends SystemService {
         }
         if (buzz || beep) {
             mLastSoundTimestamps.put(generateLastSoundTimeoutKey(record),
-                    SystemClock.elapsedRealtime());
+                    mSystemClock.elapsedRealtime());
         }
         final int buzzBeepBlink = (buzz ? 1 : 0) | (beep ? 2 : 0) | (blink ? 4 : 0);
         if (buzzBeepBlink > 0) {
@@ -7078,7 +7078,7 @@ public class NotificationManagerService extends SystemService {
         if (value == null) {
             return false;
         }
-        return SystemClock.elapsedRealtime() - value < timeoutMillis;
+        return mSystemClock.elapsedRealtime() - value < timeoutMillis;
     }
 
     private String generateLastSoundTimeoutKey(NotificationRecord record) {
