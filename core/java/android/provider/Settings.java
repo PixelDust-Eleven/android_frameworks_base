@@ -5345,22 +5345,10 @@ public final class Settings {
         public static final String SHOW_FOURG = "show_fourg";
 
         /**
-         * Whether to show VoLTE icon or not
-         * @hide
-         */
-        public static final String SHOW_VOLTE_ICON = "volte_icon";
-
-        /**
          * Whether to display cross sign for a data disabled connection
          * @hide
          */
         public static final String DATA_DISABLED_ICON = "data_disabled_icon";
-
-        /**
-         * Whether to show VoWiFi icon or not
-         * @hide
-         */
-        public static final String SHOW_VOWIFI_ICON = "show_vowifi";
 
         /**
          * 0 - Default
@@ -5523,8 +5511,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(STATUSBAR_CLOCK_DATE_POSITION);
             PRIVATE_SETTINGS.add(LOCKSCREEN_MEDIA_METADATA);
             PRIVATE_SETTINGS.add(SHOW_FOURG);
-            PRIVATE_SETTINGS.add(SHOW_VOLTE_ICON);
-            PRIVATE_SETTINGS.add(SHOW_VOWIFI_ICON);
             PRIVATE_SETTINGS.add(QS_TILE_STYLE);
         }
 

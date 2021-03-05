@@ -102,6 +102,7 @@ public class MobileSignalController extends SignalController<
     @VisibleForTesting
     boolean mInflateSignalStrengths = false;
 
+    // VoLTE icon
     private ImsManager mImsManager;
     private FeatureConnector<ImsManager> mFeatureConnector;
     private int mCallState = TelephonyManager.CALL_STATE_IDLE;
@@ -109,13 +110,7 @@ public class MobileSignalController extends SignalController<
     // 4G instead of LTE
     private int mShow4GUserConfig;
 
-    // Volte Icon
-    private boolean mVoLTEicon;
     private boolean mDataDisabledIcon;
-
-    // VoWiFi Icon
-    private int mVoWiFiIcon;
-    private boolean mIsVowifiAvailable;
 
     // TODO: Reduce number of vars passed in, if we have the NetworkController, probably don't
     // need listener lists anymore.
@@ -193,12 +188,6 @@ public class MobileSignalController extends SignalController<
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SHOW_FOURG),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SHOW_VOLTE_ICON),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SHOW_VOWIFI_ICON),
-                    false, this, UserHandle.USER_ALL);
             updateSettings();
         }
 
@@ -227,12 +216,6 @@ public class MobileSignalController extends SignalController<
         ContentResolver resolver = mContext.getContentResolver();
         mShow4GUserConfig = Settings.System.getIntForUser(resolver,
                 Settings.System.SHOW_FOURG, -1, UserHandle.USER_CURRENT);
-        mVoLTEicon = Settings.System.getIntForUser(resolver,
-                Settings.System.SHOW_VOLTE_ICON, 1,
-                UserHandle.USER_CURRENT) == 1;
-        mVoWiFiIcon = Settings.System.getIntForUser(resolver,
-                Settings.System.SHOW_VOWIFI_ICON, 2,
-                UserHandle.USER_CURRENT);
         mapIconSets();
         updateTelephony();
     }
@@ -285,11 +268,6 @@ public class MobileSignalController extends SignalController<
                 true, mObserver);
         mContext.getContentResolver().registerContentObserver(Global.getUriFor(
                 Global.MOBILE_DATA + mSubscriptionInfo.getSubscriptionId()),
-                true, mObserver);
-        mContext.getContentResolver().registerContentObserver(Global.getUriFor(Global.DATA_ROAMING),
-                true, mObserver);
-        mContext.getContentResolver().registerContentObserver(Global.getUriFor(
-                Global.DATA_ROAMING + mSubscriptionInfo.getSubscriptionId()),
                 true, mObserver);
         mContext.registerReceiver(mVolteSwitchObserver,
                 new IntentFilter("org.codeaurora.intent.action.ACTION_ENHANCE_4G_SWITCH"));
@@ -488,11 +466,8 @@ public class MobileSignalController extends SignalController<
 
     private int getVolteResId() {
         int resId = 0;
-        if (mVoWiFiIcon == 2 && isVowifiAvailable()) {
-            return resId;
-        }
         if ((mCurrentState.voiceCapable || mCurrentState.videoCapable)
-                && mCurrentState.imsRegistered && mVoLTEicon) {
+                && mCurrentState.imsRegistered) {
             resId = R.drawable.ic_volte;
         }
         return resId;
@@ -521,13 +496,11 @@ public class MobileSignalController extends SignalController<
         mCurrentState.voiceCapable = tm.isVolteAvailable();
         mCurrentState.videoCapable = tm.isVideoTelephonyAvailable();
         mCurrentState.imsRegistered = mPhone.isImsRegistered(mSubscriptionInfo.getSubscriptionId());
-        mIsVowifiAvailable = tm.isWifiCallingAvailable();
         if (DEBUG) {
             Log.d(mTag, "queryImsState tm=" + tm + " phone=" + mPhone
                     + " voiceCapable=" + mCurrentState.voiceCapable
                     + " videoCapable=" + mCurrentState.videoCapable
-                    + " imsRegistered=" + mCurrentState.imsRegistered
-                    + " mIsVowifiAvailable=" + mIsVowifiAvailable);
+                    + " imsRegistered=" + mCurrentState.imsRegistered);
         }
         notifyListenersIfNecessary();
     }
@@ -592,41 +565,7 @@ public class MobileSignalController extends SignalController<
                 && mCurrentState.activityOut;
         showDataIcon &= mCurrentState.isDefault || dataDisabled;
         int typeIcon = (showDataIcon || mConfig.alwaysShowDataRatIcon) ? icons.mDataType : 0;
-        int volteIcon = isVolteSwitchOn() ? getVolteResId() : 0;
-        MobileIconGroup vowifiIconGroup = getVowifiIconGroup();
-        boolean vowifiIcon = mVoWiFiIcon >= 1 && vowifiIconGroup != null;
-        if (mImsManager != null) {
-            if (mImsManager.isWfcEnabledByUser()) {
-                switch (mImsManager.getWfcMode(mCurrentState.roaming)) {
-                    case ImsConfig.WfcModeFeatureValueConstants.WIFI_ONLY:
-                        // Don't show volte Icon if vowifi only
-                        volteIcon = 0;
-                        break;
-                    case ImsConfig.WfcModeFeatureValueConstants.WIFI_PREFERRED:
-                        // Don't show volte Icon if vowifi preferred and available
-                        volteIcon = vowifiIconGroup != null ? 0 : volteIcon;
-                        break;
-                    case ImsConfig.WfcModeFeatureValueConstants.CELLULAR_PREFERRED:
-                        // Don't show vowifi Icon if cellular/volte preferred and available
-                        vowifiIcon = volteIcon != 0 ? false : vowifiIcon;
-                        break;
-                    default:
-                        vowifiIcon = false;
-                        break;
-                }
-            } else {
-                 vowifiIcon = false;
-            }
-        } else {
-            volteIcon = 0;
-            vowifiIcon = false;
-        }
-        if (vowifiIcon) {
-            typeIcon = vowifiIconGroup.mDataType;
-            statusIcon = new IconState(true,
-                    mCurrentState.enabled && !mCurrentState.airplaneMode ? statusIcon.icon : 0,
-                    statusIcon.contentDescription);
-        }
+        int volteIcon = mConfig.showVolteIcon && isVolteSwitchOn() ? getVolteResId() : 0;
         callback.setMobileDataIndicators(statusIcon, qsIcon, typeIcon, qsTypeIcon,
                 activityIn, activityOut, volteIcon, dataContentDescription, dataContentDescriptionHtml,
                 description, icons.mIsWide, mSubscriptionInfo.getSubscriptionId(),
@@ -832,18 +771,9 @@ public class MobileSignalController extends SignalController<
         return !mPhone.isDataConnectionAllowed();
     }
 
-    private boolean isCallIdle() {
-        return mCallState == TelephonyManager.CALL_STATE_IDLE;
-    }
-
-    private int getVoiceNetworkType() {
-        return mServiceState != null
-                ? mServiceState.getVoiceNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
-    }
-
     private int getDataNetworkType() {
-        return mServiceState != null
-                ? mServiceState.getDataNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
+        return mServiceState != null ?
+                mServiceState.getDataNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
     }
 
     @VisibleForTesting
@@ -853,20 +783,6 @@ public class MobileSignalController extends SignalController<
         mCurrentState.activityOut = activity == TelephonyManager.DATA_ACTIVITY_INOUT
                 || activity == TelephonyManager.DATA_ACTIVITY_OUT;
         notifyListenersIfNecessary();
-    }
-
-    private boolean isVowifiAvailable() {
-        return mCurrentState.voiceCapable &&  mCurrentState.imsRegistered
-                && (getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN
-                || mIsVowifiAvailable);
-    }
-
-    private MobileIconGroup getVowifiIconGroup() {
-        if (isVowifiAvailable()) {
-            return !isCallIdle() ? TelephonyIcons.VOWIFI_CALLING : TelephonyIcons.VOWIFI;
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -937,7 +853,7 @@ public class MobileSignalController extends SignalController<
         public void onActiveDataSubscriptionIdChanged(int subId) {
             if (DEBUG) Log.d(mTag, "onActiveDataSubscriptionIdChanged: subId=" + subId);
             updateDataSim();
-	    updateTelephony();
+            updateTelephony();
 	}
 
 	@Override
@@ -1000,7 +916,9 @@ public class MobileSignalController extends SignalController<
     private final BroadcastReceiver mVolteSwitchObserver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Log.d(mTag, "action=" + intent.getAction());
-            notifyListeners();
+            if (mConfig.showVolteIcon) {
+                notifyListeners();
+            }
         }
     };
 
@@ -1073,7 +991,7 @@ public class MobileSignalController extends SignalController<
             builder.append("carrierNetworkChangeMode=").append(carrierNetworkChangeMode)
                     .append(',');
             builder.append("userSetup=").append(userSetup).append(',');
-            builder.append("defaultDataOff=").append(defaultDataOff);
+            builder.append("defaultDataOff=").append(defaultDataOff).append(',');
             builder.append("imsRegistered=").append(imsRegistered).append(',');
             builder.append("voiceCapable=").append(voiceCapable).append(',');
             builder.append("videoCapable=").append(videoCapable);
