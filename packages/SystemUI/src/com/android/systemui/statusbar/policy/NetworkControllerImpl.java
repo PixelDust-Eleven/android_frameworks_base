@@ -1208,7 +1208,6 @@ public class NetworkControllerImpl extends BroadcastReceiver
         boolean hspaDataDistinguishable;
         boolean inflateSignalStrengths = false;
         boolean alwaysShowDataRatIcon = false;
-        boolean showVowifiIcon = false;
 
         static Config readConfig(Context context) {
             Config config = new Config();
@@ -1247,12 +1246,12 @@ public class NetworkControllerImpl extends BroadcastReceiver
 
             config.enableRatIconEnhancement =
                     SystemProperties.getBoolean("persist.sysui.rat_icon_enhancement", false);
-            config.showVowifiIcon = res.getBoolean(R.bool.config_display_vowifi);
             config.enableDdsRatIconEnhancement =
                     SystemProperties.getBoolean("persist.sysui.dds_rat_icon_enhancement", false);
             if ( config.alwaysShowNetworkTypeIcon ) {
                 config.hideLtePlus = false;
             }
+            config.showVolteIcon = res.getBoolean(R.bool.config_display_volte);
             return config;
         }
     }
