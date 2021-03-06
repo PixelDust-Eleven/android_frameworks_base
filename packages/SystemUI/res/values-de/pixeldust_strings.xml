@@ -192,4 +192,7 @@
 
     <!-- Ambient Music Ticker -->
     <string name="ambientmusic_songinfo" formatted="false">%s von %s</string>
+
+    <!-- Biometric Dialog - Use Face -->
+    <string name="biometric_dialog_button_use_face">Gesicht verwenden</string>
 </resources>
