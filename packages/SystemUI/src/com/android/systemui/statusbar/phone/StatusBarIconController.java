@@ -270,11 +270,11 @@ public interface StatusBarIconController {
                 case TYPE_MOBILE:
                     return addMobileIcon(index, slot, holder.getMobileState());
 
-                case TYPE_NETWORK_TRAFFIC:
-                    return addNetworkTraffic(index, slot);
-
                 case TYPE_IMS:
                     return addImsIcon(index, slot, holder.getImsState());
+
+                case TYPE_NETWORK_TRAFFIC:
+                    return addNetworkTraffic(index, slot);
             }
 
             return null;
