@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-<<<<<<< HEAD
    Copyright (C) 2019-2020 The PixelDust Project
-=======
-    Copyright (C) 2019-2020 The PixelDust Project
->>>>>>> 3f714c22a152... Themes: Add colors to use in DU-Themes
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -49,9 +45,6 @@
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
   <java-symbol type="bool" name="config_ledCanPulse" />
-
-  <!-- Enable face auth when swiping security view -->
-  <java-symbol type="bool" name="config_faceAuthOnSecurityView" />
 
   <!-- Whether notify fingerprint client of successful cancelled authentication -->
   <java-symbol type="bool" name="config_notifyClientOnFingerprintCancelSuccess" />
