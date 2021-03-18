@@ -17,6 +17,7 @@
 
 package com.android.systemui.qs.tiles;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -42,8 +43,8 @@ public class AlwaysOnDisplayTile extends QSTileImpl<BooleanState> {
     public AlwaysOnDisplayTile(QSHost host) {
         super(host);
 
-        mSetting = new SecureSetting(mContext, mHandler,
-                   Secure.DOZE_ALWAYS_ON) {
+        mSetting = new SecureSetting(mContext, mHandler, Secure.DOZE_ALWAYS_ON,
+                ActivityManager.getCurrentUser(), 1) {
             @Override
             protected void handleValueChanged(int value,
                    boolean observedChange) {
