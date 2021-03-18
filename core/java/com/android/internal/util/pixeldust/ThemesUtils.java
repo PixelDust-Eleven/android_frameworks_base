@@ -176,4 +176,56 @@ public class ThemesUtils {
             "com.gnonymous.gvisualmod.urm_m", // 2
             "com.gnonymous.gvisualmod.urm_l", // 3
     };
+
+    public static final String[] NAVBAR_COLORS = {
+            "com.gnonymous.gvisualmod.space", // Space
+            "com.gnonymous.gvisualmod.purple", // Purple
+            "com.gnonymous.gvisualmod.orchid", // Orchid
+            "com.gnonymous.gvisualmod.ocean", // Ocean
+            "com.gnonymous.gvisualmod.green", // Green
+            "com.gnonymous.gvisualmod.cinnamon", // Cinnamon
+            "com.gnonymous.gvisualmod.amethyst", // Amethyst
+            "com.gnonymous.gvisualmod.aquamarine", // Aquamarine
+            "com.gnonymous.gvisualmod.carbon", // Carbon
+            "com.gnonymous.gvisualmod.palette", // Palette
+            "com.gnonymous.gvisualmod.sand", // Sand
+            "com.gnonymous.gvisualmod.tangerine", // Tangerine
+            "com.gnonymous.gvisualmod.amber", // Amber
+            "com.gnonymous.gvisualmod.azureradiance", // AzureRadiance
+            "com.gnonymous.gvisualmod.blue", // Blue
+            "com.gnonymous.gvisualmod.bluegrey", // Blue Grey
+            "com.gnonymous.gvisualmod.brown", // Brown
+            "com.gnonymous.gvisualmod.cyan", // Cyan
+            "com.gnonymous.gvisualmod.deeporange", // Deep Orange
+            "com.gnonymous.gvisualmod.deeppurple", // Deep Purple
+            "com.gnonymous.gvisualmod.grey", // Grey
+            "com.gnonymous.gvisualmod.indigo", // Indigo
+            "com.gnonymous.gvisualmod.lightblue", // Light Blue
+            "com.gnonymous.gvisualmod.lightgreen", // Light Green
+            "com.gnonymous.gvisualmod.lime", // Lime
+            "com.gnonymous.gvisualmod.orange", // Orange
+            "com.gnonymous.gvisualmod.pink", // Pink
+            "com.gnonymous.gvisualmod.red", // Red
+            "com.gnonymous.gvisualmod.teal", // Teal
+            "com.gnonymous.gvisualmod.yellow", // Yellow
+            "com.gnonymous.gvisualmod.androidonegreen", // AndroidOneGreen
+            "com.gnonymous.gvisualmod.cocacolared", // CocaColaRed
+            "com.gnonymous.gvisualmod.discordpurple", // DiscordPurple
+            "com.gnonymous.gvisualmod.facebookblue", // FacebookBlue
+            "com.gnonymous.gvisualmod.instagramcerise", // InstagramCerise
+            "com.gnonymous.gvisualmod.jollibeecrimson", // JollibeeCrimson
+            "com.gnonymous.gvisualmod.monsterenergygreen", // MonsterEnergyGreen
+            "com.gnonymous.gvisualmod.nextbitmint", // NextbitMint
+            "com.gnonymous.gvisualmod.oneplusred", // OneplusRed
+            "com.gnonymous.gvisualmod.pepsiblue", // PepsiBlue
+            "com.gnonymous.gvisualmod.pocophoneyellow", // PocophoneYellow
+            "com.gnonymous.gvisualmod.razergreen", // RazerGreen
+            "com.gnonymous.gvisualmod.samsungblue", // SamsungBlue
+            "com.gnonymous.gvisualmod.spotifygreen", // SpotifyGreen
+            "com.gnonymous.gvisualmod.starbucksgreen", // StarbucksGreen
+            "com.gnonymous.gvisualmod.twitchpurple", // TwitchPurple
+            "com.gnonymous.gvisualmod.twitterblue", // TwitterBlue
+            "com.gnonymous.gvisualmod.xboxgreen", // XboxGreen
+            "com.gnonymous.gvisualmod.xiaomiorange", // XiaomiOrange
+    };
 }
