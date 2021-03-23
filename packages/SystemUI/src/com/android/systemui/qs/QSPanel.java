@@ -56,6 +56,7 @@ import com.android.systemui.plugins.qs.DetailAdapter;
 import com.android.systemui.plugins.qs.QSTile;
 import com.android.systemui.plugins.qs.QSTileView;
 import com.android.systemui.qs.QSHost.Callback;
+import com.android.systemui.qs.QuickStatusBarHeader;
 import com.android.systemui.qs.customize.QSCustomizer;
 import com.android.systemui.qs.external.CustomTile;
 import com.android.systemui.qs.logging.QSLogger;
@@ -84,7 +85,9 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private static final String QS_SHOW_AUTO_BRIGHTNESS =
                                 Settings.Secure.QS_SHOW_AUTO_BRIGHTNESS;
     public static final String QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED =
-                               Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED;
+                                Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED;
+    public static final String QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM =
+                                Settings.Secure.QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM;
     public static final String QS_SHOW_HEADER = "qs_show_header";
     public static final String QS_SHOW_SECURITY = "qs_show_secure";
 
@@ -94,6 +97,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
     private final BroadcastDispatcher mBroadcastDispatcher;
     protected final MediaHost mMediaHost;
+    protected boolean mIsQuickQsBrightnessEnabled = true;
 
     /**
      * The index where the content starts that needs to be moved between parents
@@ -402,6 +406,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             updateViewVisibilityForTuningValue(mAutoBrightnessView, newValue);
         } else if (QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED.equals(key) && mBrightnessView != null) {
             updateViewVisibilityForTuningValue(mBrightnessView, newValue);
+        } else if (QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM.equals(key)) {
+            mIsQuickQsBrightnessEnabled = TunerService.parseIntegerSwitch(newValue, true);
         }
     }
 

@@ -64,6 +64,30 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:text="@string/tuner_show_brightness_slider_bottom"/>
+
+            <com.pixeldust.support.preferences.SecureSettingsSwitch
+                android:id="@+id/qqs_show_brightness_slider_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                systemui:initialValue="1"
+                android:layout_gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/tuner_show_brightness_slider_show_expanded"/>
 
             <com.pixeldust.support.preferences.SecureSettingsSwitch

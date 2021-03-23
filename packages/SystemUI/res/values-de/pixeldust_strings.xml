@@ -150,6 +150,7 @@
     <string name="tuner_show_brightness_side_buttons">Buttons seitlich vom Helligkeitsregler anzeigen</string>
     <string name="tuner_quick_settings">Schnelleinstellungen</string>
     <string name="tuner_show_brightness_slider">Helligkeitsregler auf Quickbar anzeigen</string>
+    <string name="tuner_show_brightness_slider_bottom">Quickbar-Helligkeitsregler unten anzeigen</string>
     <string name="tuner_show_brightness_slider_show_expanded">Helligkeitsregler auf QS Panel anzeigen</string>
     <string name="tuner_show_auto_brightness_title">Autobrightness-Symbol anzeigen</string>
     <string name="tuner_brightness_position_bottom">Helligkeitsregler unten anzeigen</string>
