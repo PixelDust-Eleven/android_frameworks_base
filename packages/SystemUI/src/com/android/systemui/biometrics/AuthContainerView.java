@@ -21,6 +21,7 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.hardware.biometrics.BiometricAuthenticator;
 import android.hardware.biometrics.BiometricConstants;
@@ -44,6 +45,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.util.pixeldust.LineageContextConstants;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
@@ -84,6 +86,7 @@ public class AuthContainerView extends LinearLayout
     private final Interpolator mLinearOutSlowIn;
     @VisibleForTesting final BiometricCallback mBiometricCallback;
     private final CredentialCallback mCredentialCallback;
+    private final PackageManager mPackageManager;
 
     @VisibleForTesting final FrameLayout mFrameLayout;
     @VisibleForTesting @Nullable AuthBiometricView mBiometricView;
@@ -94,6 +97,8 @@ public class AuthContainerView extends LinearLayout
     private final View mPanelView;
 
     private final float mTranslationY;
+
+    private static boolean mHasFod;
 
     @VisibleForTesting final WakefulnessLifecycle mWakefulnessLifecycle;
 
@@ -278,6 +283,9 @@ public class AuthContainerView extends LinearLayout
 
         mPanelView = mInjector.getPanelView(mFrameLayout);
         mPanelController = mInjector.getPanelController(mContext, mPanelView);
+
+        mPackageManager = mContext.getPackageManager();
+        mHasFod = mPackageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
 
         // Inflate biometric view only if necessary.
         if (Utils.isBiometricAllowed(mConfig.mBiometricPromptBundle)) {
@@ -465,12 +473,10 @@ public class AuthContainerView extends LinearLayout
 
     @Override
     public void show(WindowManager wm, @Nullable Bundle savedState) {
-        boolean hasFod = false;
         if (mBiometricView != null) {
             mBiometricView.restoreState(savedState);
-            hasFod = mBiometricView.getHasFod();
         }
-        wm.addView(this, getLayoutParams(mWindowToken, hasFod));
+        wm.addView(this, getLayoutParams(mWindowToken));
     }
 
     @Override
@@ -634,7 +640,7 @@ public class AuthContainerView extends LinearLayout
      * @param windowToken token for the window
      * @return
      */
-    public static WindowManager.LayoutParams getLayoutParams(IBinder windowToken, boolean hasFod) {
+    public static WindowManager.LayoutParams getLayoutParams(IBinder windowToken) {
         final int windowFlags = WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
                 | WindowManager.LayoutParams.FLAG_SECURE;
         final WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
@@ -643,11 +649,12 @@ public class AuthContainerView extends LinearLayout
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
                 windowFlags,
                 PixelFormat.TRANSLUCENT);
-        lp.privateFlags |= WindowManager.LayoutParams.SYSTEM_FLAG_SHOW_FOR_ALL_USERS;
+        lp.privateFlags |= WindowManager.LayoutParams.SYSTEM_FLAG_SHOW_FOR_ALL_USERS
+                | WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
         lp.setFitInsetsTypes(lp.getFitInsetsTypes() & ~WindowInsets.Type.ime());
         lp.setTitle("BiometricPrompt");
         lp.token = windowToken;
-        if (hasFod) {
+        if (mHasFod) {
             lp.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         }
         return lp;
