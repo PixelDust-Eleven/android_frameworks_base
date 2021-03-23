@@ -45,7 +45,6 @@
         android:id="@+id/quick_qs_panel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/quick_qs_status_icons"
         android:accessibilityTraversalAfter="@+id/date_time_group"
         android:accessibilityTraversalBefore="@id/expand_indicator"
         android:clipChildren="false"
@@ -59,8 +58,8 @@
         android:id="@+id/quick_qs_brightness_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/brightness_mirror_height"
-        android:layout_below="@id/quick_qs_panel"
-        android:paddingBottom="4dp"
+        android:layout_marginTop="-10dp"
+        android:paddingBottom="-10dp"
         android:visibility="gone" />
 
     <TextView
