@@ -228,4 +228,15 @@ public class ThemesUtils {
             "com.gnonymous.gvisualmod.xboxgreen", // XboxGreen
             "com.gnonymous.gvisualmod.xiaomiorange", // XiaomiOrange
     };
+
+    // Switch styles
+    public static final String[] SWITCH_STYLES = {
+            "com.android.system.switch.aosp", // 1
+            "com.android.system.switch.oneplus", // 2
+            "com.android.system.switch.narrow", // 3
+            "com.android.system.switch.contained", // 4
+            "com.android.system.switch.telegram", // 5
+            "com.android.system.switch.md2", // 6
+            "com.android.system.switch.retro", // 7
+    };
 }
