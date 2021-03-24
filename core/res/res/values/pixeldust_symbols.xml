@@ -96,4 +96,8 @@
 
   <!-- Enable face auth only when swiping security view -->
   <java-symbol type="bool" name="config_faceAuthOnlyOnSecurityView" />
+
+  <!-- Gradient colors -->
+  <java-symbol type="color" name="gradient_start" />
+  <java-symbol type="color" name="gradient_end" />
 </resources>

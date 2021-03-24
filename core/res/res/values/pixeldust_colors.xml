@@ -59,5 +59,9 @@
     <color name="system_neutral_800">#ff303030</color>
     <color name="system_neutral_900">#ff1b1b1b</color>
     <color name="system_neutral_1000">#ff000000</color>
+
+  <!-- Gradient colors -->
+    <color name="gradient_start">#ff1a73e8</color>
+    <color name="gradient_end">#ff1a73e8</color>
 </resources>
 
