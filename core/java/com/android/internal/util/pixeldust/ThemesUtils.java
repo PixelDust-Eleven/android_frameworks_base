@@ -107,6 +107,16 @@ public class ThemesUtils {
             "com.android.theme.darkgrey.systemui",
     };
 
+    public static final String[] DARK_AUBERGINE = {
+            "com.android.theme.darkaubergine.system",
+            "com.android.theme.darkaubergine.systemui",
+    };
+
+    public static final String[] CLEAR_SPRING = {
+            "com.android.theme.clearspring.system",
+            "com.android.theme.clearspring.systemui",
+    };
+
     public static final String[] STATUSBAR_ICONS = {
             "com.android.theme.icon_pack.filled.android",
             "com.android.theme.icon_pack.rounded.android",
