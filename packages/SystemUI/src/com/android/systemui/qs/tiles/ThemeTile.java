@@ -174,6 +174,10 @@ public class ThemeTile extends QSTileImpl<BooleanState> {
                 R.string.system_theme_style_chocox, "choco_x"));
         sStyleItems.add(new ThemeTileItem(UiModeManager.MODE_NIGHT_YES, -1,
                 R.string.system_theme_style_darkgrey, "dark_grey"));
+        sStyleItems.add(new ThemeTileItem(UiModeManager.MODE_NIGHT_YES, -1,
+                R.string.system_theme_style_darkaubergine, "dark_aubergine"));
+        sStyleItems.add(new ThemeTileItem(UiModeManager.MODE_NIGHT_YES, -1,
+                R.string.system_theme_style_clearspring, "clear_spring"));
     }
 
     private enum Mode {
@@ -388,6 +392,24 @@ public class ThemeTile extends QSTileImpl<BooleanState> {
                     try {
                         mOverlayManager.setEnabled(dark_grey,
                                 themeItem.uri.equals("dark_grey"), USER_SYSTEM);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (int i = 0; i < ThemesUtils.DARK_AUBERGINE.length; i++) {
+                    String dark_aubergine = ThemesUtils.DARK_AUBERGINE[i];
+                    try {
+                        mOverlayManager.setEnabled(dark_aubergine,
+                                themeItem.uri.equals("dark_aubergine"), USER_SYSTEM);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (int i = 0; i < ThemesUtils.CLEAR_SPRING.length; i++) {
+                    String clear_spring = ThemesUtils.CLEAR_SPRING[i];
+                    try {
+                        mOverlayManager.setEnabled(clear_spring,
+                                themeItem.uri.equals("clear_spring"), USER_SYSTEM);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
