@@ -2621,6 +2621,7 @@ public abstract class PackageManager {
     public static final String FEATURE_FINGERPRINT = "android.hardware.fingerprint";
 
     /**
+     * @hide
      * Feature for {@link #getSystemAvailableFeatures} and
      * {@link #hasSystemFeature}: The device has biometric hardware to perform face authentication.
      */
