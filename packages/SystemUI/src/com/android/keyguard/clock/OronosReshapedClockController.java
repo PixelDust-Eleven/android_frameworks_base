@@ -131,10 +131,19 @@ public class OronosReshapedClockController implements ClockPlugin {
     private void createViews() {
         mView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.oronos_clock, null);
+        setViews(mView);
+    }
 
-        mHourClock = mView.findViewById(R.id.clockHr);
-        mMinuteClock = mView.findViewById(R.id.clockMin);
-        mLongDate = mView.findViewById(R.id.longDate);
+    private void setViews(View view) {
+        mHourClock = view.findViewById(R.id.clockHr);
+        mMinuteClock = view.findViewById(R.id.clockMin);
+        mLongDate = view.findViewById(R.id.longDate);
+        onTimeTick();
+        // Initialize state of plugin before generating preview.
+        setDarkAmount(1f);
+        ColorExtractor.GradientColors colors = mColorExtractor.getColors(
+                WallpaperManager.FLAG_LOCK);
+        setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
         onTimeTick();
     }
 
@@ -163,14 +172,8 @@ public class OronosReshapedClockController implements ClockPlugin {
 
     @Override
     public Bitmap getPreview(int width, int height) {
-
         View previewView = getView();
-        // Initialize state of plugin before generating preview.
-        setDarkAmount(1f);
-        ColorExtractor.GradientColors colors = mColorExtractor.getColors(
-                WallpaperManager.FLAG_LOCK);
-        setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
-        onTimeTick();
+        setViews(previewView);
 
         return mRenderer.createPreview(previewView, width, height);
     }
@@ -245,9 +248,14 @@ public class OronosReshapedClockController implements ClockPlugin {
 
     @Override
     public void onTimeTick() {
-        mTime.setTimeInMillis(System.currentTimeMillis());
-        mLongDate.setText(mResources.getString(R.string.date_long_title_today, mTime.getDisplayName(
-                Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+        if (mView != null && mHourClock != null && mMinuteClock != null) {
+            mView.onTimeChanged();
+            mHourClock.refreshTime();
+            mMinuteClock.refreshTime();
+            mTime.setTimeInMillis(System.currentTimeMillis());
+            mLongDate.setText(mResources.getString(R.string.date_long_title_today, mTime.getDisplayName(
+                    Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+        }
     }
 
     @Override
@@ -255,6 +263,11 @@ public class OronosReshapedClockController implements ClockPlugin {
         mTimeZone = timeZone;
         mTime.setTimeZone(timeZone);
         onTimeTick();
+    }
+
+    @Override
+    public boolean shouldShowInBigContainer() {
+        return true;
     }
 
     @Override
