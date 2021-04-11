@@ -162,7 +162,7 @@ public class OronosReshapedClockController implements ClockPlugin {
 
     @Override
     public String getTitle() {
-        return "Oroño Reshaped";
+        return "Oroño 2.0";
     }
 
     @Override
