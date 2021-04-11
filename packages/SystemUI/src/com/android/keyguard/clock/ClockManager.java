@@ -158,7 +158,6 @@ public final class ClockManager {
         addBuiltinClock(() -> new TypeClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new TypeClockAltController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new BinaryClockController(res, layoutInflater, colorExtractor, context));
-        addBuiltinClock(() -> new OronosClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new OronosReshapedClockController(res, layoutInflater, colorExtractor, context));
 
         // Store the size of the display for generation of clock preview.
