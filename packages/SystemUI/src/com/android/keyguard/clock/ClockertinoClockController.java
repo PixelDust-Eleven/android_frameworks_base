@@ -26,6 +26,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.graphics.Paint.Style;
 import android.provider.Settings;
+import android.util.MathUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -41,7 +42,7 @@ import com.android.systemui.plugins.ClockPlugin;
 
 import java.util.TimeZone;
 
-import static com.android.systemui.statusbar.phone.KeyguardClockPositionAlgorithm.CLOCK_USE_DEFAULT_Y;
+import static android.view.View.TEXT_ALIGNMENT_CENTER;
 
 /**
  * Plugin for the default clock face used only to provide a preview.
@@ -64,6 +65,15 @@ public class ClockertinoClockController implements ClockPlugin {
     private final SysuiColorExtractor mColorExtractor;
 
     /**
+     * Computes preferred position of clock.
+     */
+    private float mDarkAmount;
+    private final int mStatusBarHeight;
+    private final int mKeyguardLockPadding;
+    private final int mKeyguardLockHeight;
+    private final int mBurnInOffsetY;
+
+    /**
      * Renders preview from clock view.
      */
     private final ViewPreviewer mRenderer = new ViewPreviewer();
@@ -76,7 +86,7 @@ public class ClockertinoClockController implements ClockPlugin {
     /**
      * Root view of clock.
      */
-    private ClockLayout mView;
+    private ClockLayout mBigClockView;
 
     private final Context mContext;
 
@@ -112,18 +122,22 @@ public class ClockertinoClockController implements ClockPlugin {
         mLayoutInflater = inflater;
         mColorExtractor = colorExtractor;
         mContext = context;
+        mStatusBarHeight = res.getDimensionPixelSize(R.dimen.status_bar_height);
+        mKeyguardLockPadding = res.getDimensionPixelSize(R.dimen.keyguard_lock_padding);
+        mKeyguardLockHeight = res.getDimensionPixelSize(R.dimen.keyguard_lock_height);
+        mBurnInOffsetY = res.getDimensionPixelSize(R.dimen.burn_in_prevention_offset_y);
     }
 
     private void createViews() {
-        mView = (ClockLayout) mLayoutInflater
+        mBigClockView = (ClockLayout) mLayoutInflater
                 .inflate(R.layout.clock_clockertino, null);
-        mTimeWidgetBase = mView.findViewById(R.id.timeWidget);
-        mDateWidgetBase = mView.findViewById(R.id.dateWidget);
+        mTimeWidgetBase = mBigClockView.findViewById(R.id.timeWidget);
+        mDateWidgetBase = mBigClockView.findViewById(R.id.dateWidget);
     }
 
     @Override
     public void onDestroyView() {
-        mView = null;
+        mBigClockView = null;
         mTimeWidgetBase = null;
         mDateWidgetBase = null;
     }
@@ -146,7 +160,9 @@ public class ClockertinoClockController implements ClockPlugin {
     @Override
     public Bitmap getPreview(int width, int height) {
 
-        View previewView = getView();
+        // Use the big clock view for the preview
+        View view = getBigClockView();
+
         // Initialize state of plugin before generating preview.
         setDarkAmount(1f);
         ColorExtractor.GradientColors colors = mColorExtractor.getColors(
@@ -154,25 +170,33 @@ public class ClockertinoClockController implements ClockPlugin {
         setColorPalette(colors.supportsDarkText(), colors.getColorPalette());
         onTimeTick();
 
-        return mRenderer.createPreview(previewView, width, height);
+        return mRenderer.createPreview(view, width, height);
     }
 
     @Override
     public View getView() {
-        if (mView == null) {
+        if (mBigClockView == null) {
             createViews();
         }
-        return mView;
+        return mBigClockView;
     }
 
     @Override
     public View getBigClockView() {
-        return null;
+        if (mBigClockView  == null) {
+            createViews();
+        }
+        return mBigClockView ;
     }
 
     @Override
     public int getPreferredY(int totalHeight) {
-        return CLOCK_USE_DEFAULT_Y;
+        // On AOD, clock needs to appear below the status bar with enough room for pixel shifting
+        int aodY = mStatusBarHeight + mKeyguardLockHeight + 2 * mKeyguardLockPadding
+                + mBurnInOffsetY + mTimeWidgetBase.getHeight() + (mTimeWidgetBase.getHeight() / 2);
+        // On lock screen, clock needs to appear below the lock icon
+        int lockY =  mStatusBarHeight + mKeyguardLockHeight + 2 * mKeyguardLockPadding + (mTimeWidgetBase.getHeight() / 2);
+        return (int) MathUtils.lerp(lockY, aodY, mDarkAmount);
     }
 
     @Override
@@ -201,7 +225,10 @@ public class ClockertinoClockController implements ClockPlugin {
 
     @Override
     public void setDarkAmount(float darkAmount) {
-        mPalette.setDarkAmount(darkAmount);
+        mDarkAmount = darkAmount;
+        if (mPalette != null) {
+            mPalette.setDarkAmount(darkAmount);
+        }
     }
 
     @Override
