@@ -5995,6 +5995,12 @@ public final class Settings {
         public static final String OMNI_KEYGUARD_SHOW_BATTERY_BAR_ALWAYS = "sysui_keyguard_show_battery_bar_always";
 
         /**
+         * Whether to tint the active volume bar with a gradient color
+         * @hide
+         */
+        public static final String VOLUME_PANEL_TINT = "volume_panel_tint";
+
+        /**
          * Whether to show battery percent on ambient bottom
          * @hide
          */
