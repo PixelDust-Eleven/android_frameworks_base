@@ -147,6 +147,7 @@
     <string name="tuner_show_brightness_slider">Show brightness slider in quickbar</string>
     <string name="tuner_show_brightness_slider_bottom">Show quickbar brightness slider on bottom</string>
     <string name="tuner_show_brightness_slider_show_expanded">Show brightness slider when expanded</string>
+    <string name="tuner_brightness_position_bottom_title">Show QS brightness slider on bottom</string>
     <string name="tuner_show_auto_brightness_title">Show autobrightness icon</string>
     <string name="tuner_brightness_position_bottom">Brightness slider on bottom</string>
     <string name="tuner_show_secure_title">Show security footer</string>

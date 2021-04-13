@@ -106,6 +106,29 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:text="@string/tuner_brightness_position_bottom_title" />
+
+            <com.pixeldust.support.preferences.SecureSettingsSwitch
+                android:id="@+id/qs_brightness_position_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                systemui:initialValue="0"
+                android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/tuner_show_auto_brightness_title" />
 
             <com.pixeldust.support.preferences.SecureSettingsSwitch
