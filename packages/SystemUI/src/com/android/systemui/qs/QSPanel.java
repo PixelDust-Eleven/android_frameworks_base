@@ -86,6 +86,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
                                 Settings.Secure.QS_SHOW_AUTO_BRIGHTNESS;
     public static final String QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED =
                                 Settings.Secure.QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED;
+    public static final String QS_BRIGHTNESS_POSITION_BOTTOM =
+                                Settings.Secure.QS_BRIGHTNESS_POSITION_BOTTOM;
     public static final String QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM =
                                 Settings.Secure.QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM;
     public static final String QS_SHOW_HEADER = "qs_show_header";
@@ -98,6 +100,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     private final BroadcastDispatcher mBroadcastDispatcher;
     protected final MediaHost mMediaHost;
     protected boolean mIsQuickQsBrightnessEnabled = true;
+    private boolean mQsBrightnessBottom;
 
     /**
      * The index where the content starts that needs to be moved between parents
@@ -357,7 +360,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         final TunerService tunerService = Dependency.get(TunerService.class);
-        tunerService.addTunable(this, QS_SHOW_AUTO_BRIGHTNESS, QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED);
+        tunerService.addTunable(this, QS_SHOW_AUTO_BRIGHTNESS, QS_SHOW_BRIGHTNESS_SLIDER_EXPANDED, QS_BRIGHTNESS_POSITION_BOTTOM);
         Dependency.get(OmniSettingsService.class).addIntObserver(this, QS_SHOW_SECURITY);
         Dependency.get(OmniSettingsService.class).addIntObserver(this, Settings.System.OMNI_QS_SHOW_MEDIA_DIVIDER);
 
@@ -408,7 +411,31 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
             updateViewVisibilityForTuningValue(mBrightnessView, newValue);
         } else if (QQS_SHOW_BRIGHTNESS_SLIDER_BOTTOM.equals(key)) {
             mIsQuickQsBrightnessEnabled = TunerService.parseIntegerSwitch(newValue, true);
+        } else if (QS_BRIGHTNESS_POSITION_BOTTOM.equals(key)) {
+            if (newValue == null || Integer.parseInt(newValue) == 0) {
+                removeView(mBrightnessView);
+                addView(mBrightnessView, 0);
+                mQsBrightnessBottom = false;
+            } else {
+                removeView(mBrightnessView);
+                addView(mBrightnessView, getBrightnessViewPositionBottom());
+                mQsBrightnessBottom = true;
+            }
         }
+    }
+
+    private int getBrightnessViewPositionBottom() {
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            if (v == mSecurityFooter.getView()) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public boolean isBrightnessViewBottom() {
+        return mQsBrightnessBottom;
     }
 
     private void updateViewVisibilityForTuningValue(View view, @Nullable String newValue) {
