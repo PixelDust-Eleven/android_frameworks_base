@@ -63,6 +63,5 @@
     <!-- Gradient colors -->
     <color name="gradient_start">#ff1a73e8</color>
     <color name="gradient_end">#ff1a73e8</color>
-    <color name="bootleg_accent_gradient_end_color">#00000000</color>
 </resources>
 
