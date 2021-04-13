@@ -5178,6 +5178,12 @@ public final class Settings {
         public static final String AMBIENT_MUSIC_TICKER = "ambient_music_ticker";
 
         /**
+         * Screenshot image compression
+         * @hide
+         */
+        public static final String SCREENSHOT_COMPRESSION = "screenshot_compression";
+
+        /**
          * 0 - fullscreen
          * 1 - partial
          * @hide
