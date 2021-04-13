@@ -304,9 +304,6 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
             Builder builder = new Builder()
                     .setStartDelay(EXPANDED_TILE_DELAY)
                     .addFloat(tileLayout, "alpha", 0, 1);
-            if (brightness != null && mQsPanel.isBrightnessViewBottom()) {
-                builder.addFloat(brightness, "alpha", 0, 1);
-            }
             mFirstPageDelayedAnimator = builder.build();
 
             // Fade in the security footer and the divider as we reach the final position
@@ -345,9 +342,6 @@ public class QSAnimator implements Callback, PageListener, Listener, OnLayoutCha
                 .addFloat(mQuickQsPanel, "alpha", 1, 0)
                 .setListener(mNonFirstPageListener)
                 .setEndDelay(.5f);
-        if (brightness != null && mQsPanel.isBrightnessViewBottom()) {
-            animationBuilder.addFloat(brightness, "alpha", 0, 1);
-        }
         mNonfirstPageAnimator = animationBuilder.build();
         mNonfirstPageDelayedAnimator = new TouchAnimator.Builder()
                 .setStartDelay(.14f)
