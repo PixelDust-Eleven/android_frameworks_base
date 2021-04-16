@@ -28,8 +28,5 @@
     <dimen name="analog_clock_height">200dp</dimen>
     <dimen name="date_padding">8dp</dimen>
     <dimen name="clock_bottom_margin">8dp</dimen>
-
-    <!-- Padding added to keyguard status area when Type clock is in use -->
-    <dimen name="keyguard_status_area_typeclock_padding">32dp</dimen>
 	<dimen name="clock_oronos_outline_size">4dp</dimen>
 </resources>

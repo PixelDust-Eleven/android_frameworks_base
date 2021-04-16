@@ -43,6 +43,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.phone.NotificationIconContainer;
 import com.android.systemui.statusbar.policy.ConfigurationController;
 
 import java.io.FileDescriptor;
@@ -64,7 +65,7 @@ public class KeyguardStatusView extends GridLayout implements
     private KeyguardClockSwitch mClockView;
     private TextView mOwnerInfo;
     private KeyguardSliceView mKeyguardSlice;
-    private View mNotificationIcons;
+    private NotificationIconContainer mNotificationIcons;
     private Runnable mPendingMarqueeStart;
     private Handler mHandler;
 
@@ -152,6 +153,10 @@ public class KeyguardStatusView extends GridLayout implements
         return mClockView.hasCustomClockInBigContainer();
     }
 
+    public boolean isTypeClock() {
+        return mClockView.isTypeClock();
+    }
+
     /**
      * Set whether or not the lock screen is showing notifications.
      */
@@ -219,6 +224,9 @@ public class KeyguardStatusView extends GridLayout implements
      * Moves clock, adjusting margins when slice content changes.
      */
     private void onSliceContentChanged() {
+        if (mNotificationIcons != null)
+            mNotificationIcons.setCenter(isTypeClock() ? false : true);
+
         final boolean hasHeader = mKeyguardSlice.hasHeader();
         mClockView.setKeyguardShowingHeader(hasHeader);
         if (mShowingHeader == hasHeader) {
@@ -230,8 +238,7 @@ public class KeyguardStatusView extends GridLayout implements
             MarginLayoutParams params = (MarginLayoutParams) mNotificationIcons.getLayoutParams();
             params.setMargins(params.leftMargin,
                     hasHeader ? mIconTopMarginWithHeader : mIconTopMargin,
-                    params.rightMargin,
-                    params.bottomMargin);
+                    params.rightMargin, params.bottomMargin);
             mNotificationIcons.setLayoutParams(params);
         }
     }
@@ -332,6 +339,7 @@ public class KeyguardStatusView extends GridLayout implements
             }
         }
         mOwnerInfo.setText(info);
+        mOwnerInfo.setGravity(isTypeClock() ? Gravity.START : Gravity.CENTER_HORIZONTAL);
         updateDark();
     }
 
