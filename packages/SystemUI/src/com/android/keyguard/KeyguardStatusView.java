@@ -153,8 +153,8 @@ public class KeyguardStatusView extends GridLayout implements
         return mClockView.hasCustomClockInBigContainer();
     }
 
-    public boolean isTypeClock() {
-        return mClockView.isTypeClock();
+    public boolean isClockLeftAligned() {
+        return mClockView.isClockLeftAligned();
     }
 
     /**
@@ -225,7 +225,7 @@ public class KeyguardStatusView extends GridLayout implements
      */
     private void onSliceContentChanged() {
         if (mNotificationIcons != null)
-            mNotificationIcons.setCenter(isTypeClock() ? false : true);
+            mNotificationIcons.setCenter(isClockLeftAligned() ? false : true);
 
         final boolean hasHeader = mKeyguardSlice.hasHeader();
         mClockView.setKeyguardShowingHeader(hasHeader);
@@ -339,7 +339,7 @@ public class KeyguardStatusView extends GridLayout implements
             }
         }
         mOwnerInfo.setText(info);
-        mOwnerInfo.setGravity(isTypeClock() ? Gravity.START : Gravity.CENTER_HORIZONTAL);
+        mOwnerInfo.setGravity(isClockLeftAligned() ? Gravity.START : Gravity.CENTER_HORIZONTAL);
         updateDark();
     }
 
