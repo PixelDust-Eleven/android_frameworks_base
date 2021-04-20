@@ -239,7 +239,7 @@ public class KeyguardClockSwitch extends RelativeLayout {
             mClockPlugin.onDestroyView();
             mClockPlugin = null;
         }
-        mKeyguardStatusArea.setRowGravity(isTypeClock(plugin) ? Gravity.START : Gravity.CENTER);
+        mKeyguardStatusArea.setRowGravity(isClockLeftAligned(plugin) ? Gravity.START : Gravity.CENTER);
         if (plugin == null) {
             if (mShowingHeader) {
                 mClockView.setVisibility(View.GONE);
@@ -469,12 +469,13 @@ public class KeyguardClockSwitch extends RelativeLayout {
         }
     }
 
-    private boolean isTypeClock(ClockPlugin plugin) {
-        return plugin != null && plugin.getName().equals("type");
+    private boolean isClockLeftAligned(ClockPlugin plugin) {
+        return plugin != null && (plugin.getName().equals("type")
+                                || plugin.getName().equals("ide"));
     }
 
-    public boolean isTypeClock() {
-        return isTypeClock(mClockPlugin);
+    public boolean isClockLeftAligned() {
+        return isClockLeftAligned(mClockPlugin);
     }
 
     /**
