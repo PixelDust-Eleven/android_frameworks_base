@@ -591,6 +591,10 @@ public class EdgeBackGestureHandler extends CurrentUserTracker implements Displa
             return false;
         }
 
+        if (mYDeadzoneDivider != 0 && y < (mDisplaySize.y / mYDeadzoneDivider)) {
+            return false;
+        }
+
         int app = -1;
         if (mVocab != null) {
             app = mVocab.getOrDefault(mPackageName, -1);
