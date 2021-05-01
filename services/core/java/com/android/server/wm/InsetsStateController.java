@@ -53,8 +53,6 @@ import com.android.server.protolog.common.ProtoLog;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.function.Consumer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Manages global window inset state in the system represented by {@link InsetsState}.
@@ -65,7 +63,7 @@ class InsetsStateController {
     private final InsetsState mState = new InsetsState();
     private final DisplayContent mDisplayContent;
 
-    private final HashMap<Integer, InsetsSourceProvider> mProviders = new HashMap<>();
+    private final ArrayMap<Integer, InsetsSourceProvider> mProviders = new ArrayMap<>();
     private final ArrayMap<InsetsControlTarget, ArrayList<Integer>> mControlTargetTypeMap =
             new ArrayMap<>();
     private final SparseArray<InsetsControlTarget> mTypeControlTargetMap = new SparseArray<>();
@@ -193,7 +191,8 @@ class InsetsStateController {
 
             // IME needs different frames for certain cases (e.g. navigation bar in gesture nav).
             if (type == ITYPE_IME) {
-                for (InsetsSourceProvider otherProvider : mProviders.values()) {
+                for (int i = mProviders.size() - 1; i >= 0; i--) {
+                    InsetsSourceProvider otherProvider = mProviders.valueAt(i);
                     if (otherProvider.overridesImeFrame()) {
                         InsetsSource override =
                                 new InsetsSource(
@@ -273,8 +272,8 @@ class InsetsStateController {
      */
     void onPostLayout() {
         mState.setDisplayFrame(mDisplayContent.getBounds());
-        for (InsetsSourceProvider provider : mProviders.values()) {
-            provider.onPostLayout();
+        for (int i = mProviders.size() - 1; i >= 0; i--) {
+            mProviders.valueAt(i).onPostLayout();
         }
         final ArrayList<WindowState> winInsetsChanged = mDisplayContent.mWinInsetsChanged;
         if (!mLastState.equals(mState)) {
@@ -319,7 +318,8 @@ class InsetsStateController {
      */
     void computeSimulatedState(InsetsState state, WindowState win, DisplayFrames displayFrames,
             WindowFrames windowFrames) {
-        for (final InsetsSourceProvider provider : mProviders.values()) {
+        for (int i = mProviders.size() - 1; i >= 0; i--) {
+            final InsetsSourceProvider provider = mProviders.valueAt(i);
             if (provider.mWin == win) {
                 state.addSource(provider.createSimulatedSource(displayFrames, windowFrames));
             }
@@ -464,7 +464,8 @@ class InsetsStateController {
             return;
         }
         mDisplayContent.mWmService.mAnimator.addAfterPrepareSurfacesRunnable(() -> {
-            for (final InsetsSourceProvider provider : mProviders.values()) {
+            for (int i = mProviders.size() - 1; i >= 0; i--) {
+                final InsetsSourceProvider provider = mProviders.valueAt(i);
                 provider.onSurfaceTransactionApplied();
             }
             for (int i = mPendingControlChanged.size() - 1; i >= 0; i--) {
@@ -489,10 +490,10 @@ class InsetsStateController {
                     + mTypeControlTargetMap.valueAt(i));
         }
         pw.println(prefix + "  " + "InsetsSourceProviders map:");
-        for (Map.Entry<Integer, InsetsSourceProvider> entry : mProviders.entrySet()) {
+        for (int i = mProviders.size() - 1; i >= 0; i--) {
             pw.print(prefix + "  ");
-            pw.println(InsetsState.typeToString(entry.getKey()) + " -> ");
-            entry.getValue().dump(pw, prefix);
+            pw.println(InsetsState.typeToString(mProviders.keyAt(i)) + " -> ");
+            mProviders.valueAt(i).dump(pw, prefix);
         }
     }
 }

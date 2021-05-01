@@ -137,7 +137,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -295,7 +294,7 @@ public final class Settings {
     private final File mKernelMappingFilename;
 
     /** Map from package name to settings */
-    final HashMap<String, PackageSetting> mPackages = new HashMap<>();
+    final ArrayMap<String, PackageSetting> mPackages = new ArrayMap<>();
 
     /**
      * List of packages that were involved in installing other packages, i.e. are listed
@@ -1089,8 +1088,8 @@ public final class Settings {
         if (!mInstallerPackages.contains(packageName)) {
             return;
         }
-        for (PackageSetting ps : mPackages.values()) {
-            ps.removeInstallerPackage(packageName);
+        for (int i = 0; i < mPackages.size(); i++) {
+            mPackages.valueAt(i).removeInstallerPackage(packageName);
         }
         mInstallerPackages.remove(packageName);
     }
@@ -1942,7 +1941,9 @@ public final class Settings {
     void writeAllDomainVerificationsLPr(XmlSerializer serializer, int userId)
             throws IllegalArgumentException, IllegalStateException, IOException {
         serializer.startTag(null, TAG_ALL_INTENT_FILTER_VERIFICATION);
-        for (PackageSetting ps : mPackages.values()) {
+        final int N = mPackages.size();
+        for (int i = 0; i < N; i++) {
+            PackageSetting ps = mPackages.valueAt(i);
             IntentFilterVerificationInfo ivi = ps.getIntentFilterVerificationInfo();
             if (ivi != null) {
                 writeDomainVerificationsLPr(serializer, ivi);
@@ -4507,7 +4508,8 @@ public final class Settings {
      */
     List<PackageSetting> getVolumePackagesLPr(String volumeUuid) {
         ArrayList<PackageSetting> res = new ArrayList<>();
-        for (PackageSetting setting : mPackages.values()) {
+        for (int i = 0; i < mPackages.size(); i++) {
+            final PackageSetting setting = mPackages.valueAt(i);
             if (Objects.equals(volumeUuid, setting.volumeUuid)) {
                 res.add(setting);
             }
@@ -5085,7 +5087,9 @@ public final class Settings {
     void dumpPackagesProto(ProtoOutputStream proto) {
         List<UserInfo> users = getAllUsers(UserManagerService.getInstance());
 
-        for (final PackageSetting ps : mPackages.values()) {
+        final int count = mPackages.size();
+        for (int i = 0; i < count; i++) {
+            final PackageSetting ps = mPackages.valueAt(i);
             ps.dumpDebug(proto, PackageServiceDumpProto.PACKAGES, users);
         }
     }
@@ -5495,9 +5499,10 @@ public final class Settings {
 
                 Map<String, List<RuntimePermissionsState.PermissionState>> packagePermissions =
                         new ArrayMap<>();
-                for (Map.Entry<String, PackageSetting> entry : mPackages.entrySet()) {
-                    String packageName = entry.getKey();
-                    PackageSetting packageSetting = entry.getValue();
+                int packagesSize = mPackages.size();
+                for (int i = 0; i < packagesSize; i++) {
+                    String packageName = mPackages.keyAt(i);
+                    PackageSetting packageSetting = mPackages.valueAt(i);
                     if (packageSetting.sharedUser == null) {
                         List<RuntimePermissionsState.PermissionState> permissions =
                                 getPermissionsFromPermissionsState(
@@ -5604,9 +5609,10 @@ public final class Settings {
 
             Map<String, List<RuntimePermissionsState.PermissionState>> packagePermissions =
                     runtimePermissions.getPackagePermissions();
-            for (Map.Entry<String, PackageSetting> entry : mPackages.entrySet()) {
-                String packageName = entry.getKey();
-                PackageSetting packageSetting = entry.getValue();
+            int packagesSize = mPackages.size();
+            for (int i = 0; i < packagesSize; i++) {
+                String packageName = mPackages.keyAt(i);
+                PackageSetting packageSetting = mPackages.valueAt(i);
 
                 List<RuntimePermissionsState.PermissionState> permissions =
                         packagePermissions.get(packageName);
