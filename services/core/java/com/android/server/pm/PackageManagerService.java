@@ -760,7 +760,7 @@ public class PackageManagerService extends IPackageManager.Stub
 
     // Keys are String (package name), values are Package.
     @GuardedBy("mLock")
-    final HashMap<String, AndroidPackage> mPackages = new HashMap<>();
+    final ArrayMap<String, AndroidPackage> mPackages = new ArrayMap<>();
 
     // Keys are isolated uids and values are the uid of the application
     // that created the isolated proccess.
@@ -3020,17 +3020,14 @@ public class PackageManagerService extends IPackageManager.Stub
 
             // Clean up orphaned packages for which the code path doesn't exist
             // and they are an update to a system app - caused by bug/32321269
-            List<Map.Entry<String, PackageSetting>> orphanedPackages = new ArrayList<>();
-            for (Map.Entry<String, PackageSetting> entry : mSettings.mPackages.entrySet()) {
-                PackageSetting ps = entry.getValue();
+            final int packageSettingCount = mSettings.mPackages.size();
+            for (int i = packageSettingCount - 1; i >= 0; i--) {
+                PackageSetting ps = mSettings.mPackages.valueAt(i);
                 if (!isExternal(ps) && (ps.codePath == null || !ps.codePath.exists())
                         && mSettings.getDisabledSystemPkgLPr(ps.name) != null) {
-                    orphanedPackages.add(entry);
+                    mSettings.mPackages.removeAt(i);
+                    mSettings.enableSystemPackageLPw(ps.name);
                 }
-            }
-            for (Map.Entry<String, PackageSetting> entry : orphanedPackages) {
-                mSettings.mPackages.remove(entry.getKey());
-                mSettings.enableSystemPackageLPw(entry.getValue().name);
             }
 
             if (!mOnlyCore && mFirstBoot) {
@@ -3557,7 +3554,8 @@ public class PackageManagerService extends IPackageManager.Stub
             // profile compilation (without waiting to collect a fresh set of profiles).
             if (mIsUpgrade && !mOnlyCore) {
                 Slog.i(TAG, "Build fingerprint changed; clearing code caches");
-                for (final PackageSetting ps : mSettings.mPackages.values()) {
+                for (int i = 0; i < mSettings.mPackages.size(); i++) {
+                    final PackageSetting ps = mSettings.mPackages.valueAt(i);
                     if (Objects.equals(StorageManager.UUID_PRIVATE_INTERNAL, ps.volumeUuid)) {
                         // No apps are running this early, so no need to freeze
                         clearAppDataLIF(ps.pkg, UserHandle.USER_ALL,
@@ -3573,7 +3571,9 @@ public class PackageManagerService extends IPackageManager.Stub
             // their icons in launcher.
             if (!mOnlyCore && mIsPreQUpgrade) {
                 Slog.i(TAG, "Whitelisting all existing apps to hide their icons");
-                for (final PackageSetting ps : mSettings.mPackages.values()) {
+                int size = mSettings.mPackages.size();
+                for (int i = 0; i < size; i++) {
+                    final PackageSetting ps = mSettings.mPackages.valueAt(i);
                     if ((ps.pkgFlags & ApplicationInfo.FLAG_SYSTEM) != 0) {
                         continue;
                     }
@@ -5682,7 +5682,10 @@ public class PackageManagerService extends IPackageManager.Stub
     private List<VersionedPackage> getPackagesUsingSharedLibraryLPr(
             SharedLibraryInfo libInfo, int flags, int userId) {
         List<VersionedPackage> versionedPackages = null;
-        for (PackageSetting ps : mSettings.mPackages.values()) {
+        final int packageCount = mSettings.mPackages.size();
+        for (int i = 0; i < packageCount; i++) {
+            PackageSetting ps = mSettings.mPackages.valueAt(i);
+
             if (ps == null) {
                 continue;
             }
@@ -10812,8 +10815,8 @@ public class PackageManagerService extends IPackageManager.Stub
                     ? changingPkgPair.first : null;
             final PackageSetting changingPkgSetting = changingPkgPair != null
                     ? changingPkgPair.second : null;
-
-            for (final AndroidPackage pkg : mPackages.values()) {
+            for (int i = mPackages.size() - 1; i >= 0; --i) {
+                final AndroidPackage pkg = mPackages.valueAt(i);
                 final PackageSetting pkgSetting = mSettings.getPackageLPr(pkg.getPackageName());
                 if (changingPkg != null
                         && !hasString(pkg.getUsesLibraries(), changingPkg.getLibraryNames())
@@ -20035,7 +20038,9 @@ public class PackageManagerService extends IPackageManager.Stub
     /** This method takes a specific user id as well as UserHandle.USER_ALL. */
     @GuardedBy("mLock")
     private void clearIntentFilterVerificationsLPw(int userId) {
-        for (AndroidPackage pkg : mPackages.values()) {
+        final int packageCount = mPackages.size();
+        for (int i = 0; i < packageCount; i++) {
+            AndroidPackage pkg = mPackages.valueAt(i);
             clearIntentFilterVerificationsLPw(pkg.getPackageName(), userId, true);
         }
     }
@@ -22793,7 +22798,9 @@ public class PackageManagerService extends IPackageManager.Stub
     private List<String> collectAbsoluteCodePaths() {
         synchronized (mLock) {
             List<String> codePaths = new ArrayList<>();
-            for (final PackageSetting ps : mSettings.mPackages.values()) {
+            final int packageCount = mSettings.mPackages.size();
+            for (int i = 0; i < packageCount; i++) {
+                final PackageSetting ps = mSettings.mPackages.valueAt(i);
                 codePaths.add(ps.codePath.getAbsolutePath());
             }
             return codePaths;
@@ -24294,8 +24301,11 @@ public class PackageManagerService extends IPackageManager.Stub
         @Override
         public PackageList getPackageList(PackageListObserver observer) {
             synchronized (mLock) {
-                final ArrayList<String> list = new ArrayList<>(mPackages.size());
-                list.addAll(mPackages.keySet());
+                final int N = mPackages.size();
+                final ArrayList<String> list = new ArrayList<>(N);
+                for (int i = 0; i < N; i++) {
+                    list.add(mPackages.keyAt(i));
+                }
                 final PackageList packageList = new PackageList(list, observer);
                 if (observer != null) {
                     mPackageListObservers.add(packageList);
@@ -25024,8 +25034,8 @@ public class PackageManagerService extends IPackageManager.Stub
         @Override
         public void forEachPackageSetting(Consumer<PackageSetting> actionLocked) {
             synchronized (mLock) {
-                for (PackageSetting ps : mSettings.mPackages.values()) {
-                    actionLocked.accept(ps);
+                for (int index = 0; index < mSettings.mPackages.size(); index++) {
+                    actionLocked.accept(mSettings.mPackages.valueAt(index));
                 }
             }
         }
@@ -25383,8 +25393,9 @@ public class PackageManagerService extends IPackageManager.Stub
 
     void forEachPackage(Consumer<AndroidPackage> actionLocked) {
         synchronized (mLock) {
-            for (AndroidPackage pkg : mPackages.values()) {
-                actionLocked.accept(pkg);
+            int numPackages = mPackages.size();
+            for (int i = 0; i < numPackages; i++) {
+                actionLocked.accept(mPackages.valueAt(i));
             }
         }
     }
@@ -25392,7 +25403,9 @@ public class PackageManagerService extends IPackageManager.Stub
     void forEachInstalledPackage(@NonNull Consumer<AndroidPackage> actionLocked,
             @UserIdInt int userId) {
         synchronized (mLock) {
-            for (AndroidPackage pkg : mPackages.values()) {
+            int numPackages = mPackages.size();
+            for (int i = 0; i < numPackages; i++) {
+                AndroidPackage pkg = mPackages.valueAt(i);
                 PackageSetting setting = mSettings.getPackageLPr(pkg.getPackageName());
                 if (setting == null || !setting.getInstalled(userId)) {
                     continue;
