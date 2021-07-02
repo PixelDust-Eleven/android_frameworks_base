@@ -633,12 +633,12 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                     com.android.internal.R.array.config_rebootActionsList);
         for (int i = 0; i < rebootMenuActions.length; i++) {
             String actionKey = rebootMenuActions[i];
-            if (GLOBAL_ACTION_KEY_REBOOT_RECOVERY.equals(actionKey)) {
-                items.add(new RebootRecoveryAction());
-            } else if (GLOBAL_ACTION_KEY_REBOOT_HOT.equals(actionKey)) {
+            if (GLOBAL_ACTION_KEY_REBOOT_HOT.equals(actionKey)) {
                 items.add(new RebootHotAction());
             } else if (GLOBAL_ACTION_KEY_REBOOT_BOOTLOADER.equals(actionKey)) {
                 items.add(new RebootBootloaderAction());
+            } else if (GLOBAL_ACTION_KEY_REBOOT_RECOVERY.equals(actionKey)) {
+                items.add(new RebootRecoveryAction());
             }
         }
         return items;
@@ -768,21 +768,22 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 } else {
                     addIfShouldShowAction(tempActions, restartAction);
                 }
-            } else if (GLOBAL_ACTION_KEY_REBOOT_RECOVERY.equals(actionKey) &&
-                    isAdvancedRebootPossible(mContext)) {
-                addIfShouldShowAction(tempActions, new RebootRecoveryAction());
             } else if (GLOBAL_ACTION_KEY_REBOOT_HOT.equals(actionKey) &&
                     isAdvancedRebootPossible(mContext)) {
                 addIfShouldShowAction(tempActions, new RebootHotAction());
             } else if (GLOBAL_ACTION_KEY_REBOOT_BOOTLOADER.equals(actionKey) &&
                     isAdvancedRebootPossible(mContext)) {
                 addIfShouldShowAction(tempActions, new RebootBootloaderAction());
-
-
             } else if (GLOBAL_ACTION_KEY_REBOOT_FASTBOOT.equals(actionKey) &&
                     isAdvancedRebootPossible(mContext) &&
                     SystemProperties.getBoolean("ro.fastbootd.available", false)) {
                 addIfShouldShowAction(tempActions, new RebootFastbootAction());
+            } else if (GLOBAL_ACTION_KEY_REBOOT_RECOVERY.equals(actionKey) &&
+                    isAdvancedRebootPossible(mContext)) {
+                if (Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.GLOBAL_ACTIONS_REBOOT_RECOVERY, 0) == 1) {
+                    addIfShouldShowAction(tempActions, new RebootRecoveryAction());
+                }
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 if (Settings.System.getInt(mContext.getContentResolver(),
                         Settings.System.GLOBAL_ACTIONS_SCREENSHOT, 0) == 1) {
