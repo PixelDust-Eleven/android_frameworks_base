@@ -4951,11 +4951,18 @@ public final class Settings {
         public static final String GLOBAL_ACTIONS_FLASHLIGHT = "global_actions_flashlight";
 
         /**
-         * Whether to display the flashlight option in the power menu
+         * Whether to display the emergency option in the power menu
          *
          * @hide
          */
         public static final String GLOBAL_ACTIONS_EMERGENCY = "global_actions_emergency";
+
+        /**
+         * Whether to display the recovery option in the advanced reboot menu
+         *
+         * @hide
+         */
+        public static final String GLOBAL_ACTIONS_REBOOT_RECOVERY = "global_actions_reboot_recovery";
 
         /**
          * How many action items before moving to overflow
