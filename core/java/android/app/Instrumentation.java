@@ -92,9 +92,6 @@ public class Instrumentation {
 
     private static final String TAG = "Instrumentation";
 
-    private static final boolean PRODUCT_NEEDS_MODEL_EDIT =
-            SystemProperties.getBoolean("ro.product.needs_model_edit", false);
-
     /**
      * @hide
      */
@@ -1209,19 +1206,22 @@ public class Instrumentation {
     }
 
     private static void maybeSpoofBuild(Application app) {
+        /**
+         * Set fingerprint to make SafetyNet pass
+         * Use walleye oreo fingerprint which passes safetynet and
+         * doesn't require updating every month
+        */
+        String snetFp = "google/walleye/walleye:8.1.0/OPM1.171019.011/4448085:user/release-keys";
         String packageName = app.getPackageName();
 
         // Set device model to defy NGA in Google Assistant
-        if (PRODUCT_NEEDS_MODEL_EDIT &&
-                "com.google.android.googlequicksearchbox".equals(packageName)) {
+        if ("com.google.android.googlequicksearchbox".equals(packageName)) {
             setBuildField(packageName, "MODEL", "Pixel 3 XL");
         }
 
         // Set fingerprint to make SafetyNet pass
-        String stockFp = SystemProperties.get("ro.build.stock_fingerprint");
-        if (stockFp != null &&
-                "com.google.android.gms".equals(packageName)) {
-            setBuildField(packageName, "FINGERPRINT", stockFp);
+        if ("com.google.android.gms".equals(packageName)) {
+            setBuildField(packageName, "FINGERPRINT", snetFp);
         }
     }
 
