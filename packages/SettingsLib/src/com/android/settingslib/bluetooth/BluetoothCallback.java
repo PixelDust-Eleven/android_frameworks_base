@@ -18,6 +18,8 @@ package com.android.settingslib.bluetooth;
 
 import android.bluetooth.BluetoothCodecStatus;
 
+import java.util.UUID;
+
 /**
  * BluetoothCallback provides a callback interface for the settings
  * UI to receive events from {@link BluetoothEventManager}.
@@ -151,5 +153,49 @@ public interface BluetoothCallback {
      */
     default void onA2dpCodecConfigChanged(CachedBluetoothDevice cachedDevice,
             BluetoothCodecStatus codecStatus) {
+    }
+
+    /**
+     * Called when new device group has been identified with the bonded remote device
+     *
+     * @param cachedDevice Bluetooth device with which device group has been found.
+     * @param groupId Identifier of the device group.
+     * @param setPrimaryServiceUuid Primary service with which this Device Group
+     *                              is associated.
+     */
+    default void onNewGroupFound(CachedBluetoothDevice cachedDevice, int groupId,
+            UUID setPrimaryServiceUuid) {
+    }
+
+    /**
+     * Called when Group Discovery status has been changed.
+     *
+     * @param groupId Identifier of the coordinated set.
+     * @param status Status of the group discovery procedure.
+     * @param reason Reason for the change in status of discovery.
+     */
+    default void onGroupDiscoveryStatusChanged (int groupId, int status, int reason) {
+    }
+
+    /**
+     * Called when Broadcast state is changed. It listens to
+     * {@link android.bluetooth.BluetoothBroadcast#ACTION_BROADCAST_STATE_CHANGED}
+     *
+     * @param state        the Bluetooth device connection state, the possible values are:
+     *                     {@link android.bluetooth.BluetoothBroadcast#STATE_DISABLED},
+     *                     {@link android.bluetooth.BluetoothBroadcast#STATE_ENABLING},
+     *                     {@link android.bluetooth.BluetoothBroadcast#STATE_ENABLED},
+     *                     {@link android.bluetooth.BluetoothBroadcast#STATE_DISABLING},
+     *                     {@link android.bluetooth.BluetoothBroadcast#STATE_STREAMING}
+     */
+    default void onBroadcastStateChanged(int state) {
+    }
+
+    /**
+     * Called when Broadcast key is changed. It listens to
+     * {@link android.bluetooth.BluetoothBroadcast#ACTION_BROADCAST_ENCRYPTION_KEY_GENERATED}
+     *
+     */
+    default void onBroadcastKeyGenerated() {
     }
 }

@@ -270,6 +270,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
             }
         }
         mForcedUseForCommExt = mForcedUseForComm;
+        if (AudioService.DEBUG_SCO) {
+            Log.i(TAG, "In updateSpeakerphoneOn(), mForcedUseForCommExt: " + mForcedUseForCommExt);
+        }
         setForceUse_Async(AudioSystem.FOR_COMMUNICATION, mForcedUseForComm, eventSource);
     }
 
@@ -295,6 +298,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
     /*package*/ boolean isSpeakerphoneOn() {
         synchronized (mDeviceStateLock) {
+            if (AudioService.DEBUG_SCO) {
+                Log.i(TAG, "In isSpeakerphoneOn(), mForcedUseForCommExt: " +mForcedUseForCommExt);
+            }
             return (mForcedUseForCommExt == AudioSystem.FORCE_SPEAKER);
         }
     }
@@ -441,24 +447,39 @@ import java.util.concurrent.atomic.AtomicBoolean;
     // never called by system components
     /*package*/ void setBluetoothScoOnByApp(boolean on) {
         synchronized (mDeviceStateLock) {
+            if (AudioService.DEBUG_SCO) {
+                Log.i(TAG, "In setBluetoothScoOnByApp(), mForcedUseForCommExt: " +
+                      mForcedUseForCommExt);
+            }
             mForcedUseForCommExt = on ? AudioSystem.FORCE_BT_SCO : AudioSystem.FORCE_NONE;
         }
     }
 
     /*package*/ boolean isBluetoothScoOnForApp() {
         synchronized (mDeviceStateLock) {
+            if (AudioService.DEBUG_SCO) {
+                Log.i(TAG, "In isBluetoothScoOnForApp(), mForcedUseForCommExt: " +
+                      mForcedUseForCommExt);
+            }
             return mForcedUseForCommExt == AudioSystem.FORCE_BT_SCO;
         }
     }
 
     /*package*/ void setBluetoothScoOn(boolean on, String eventSource) {
+        if (AudioService.DEBUG_SCO) {
+            Log.i(TAG, "setBluetoothScoOn: " + on + " " + eventSource);
+        }
         //Log.i(TAG, "setBluetoothScoOn: " + on + " " + eventSource);
         synchronized (mDeviceStateLock) {
             if (on) {
                 // do not accept SCO ON if SCO audio is not connected
                 if (!mBtHelper.isBluetoothScoOn()) {
-                    mForcedUseForCommExt = AudioSystem.FORCE_BT_SCO;
-                    return;
+                    if (mBtHelper.isBluetoothAudioNotConnectedToEarbud()) {
+                        Log.w(TAG, "setBluetoothScoOn(true) failed because device "+
+                                   "is not in audio connected mode");
+                        mForcedUseForCommExt = AudioSystem.FORCE_BT_SCO;
+                        return;
+                    }
                 }
                 mForcedUseForComm = AudioSystem.FORCE_BT_SCO;
             } else if (mForcedUseForComm == AudioSystem.FORCE_BT_SCO) {
@@ -466,6 +487,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
                         ? AudioSystem.FORCE_SPEAKER : AudioSystem.FORCE_NONE;
             }
             mForcedUseForCommExt = mForcedUseForComm;
+            if (AudioService.DEBUG_SCO) {
+                Log.i(TAG, "In setbluetoothScoOn(), mForcedUseForCommExt: " +
+                      mForcedUseForCommExt);
+            }
             AudioSystem.setParameters("BT_SCO=" + (on ? "on" : "off"));
             sendIILMsgNoDelay(MSG_IIL_SET_FORCE_USE, SENDMSG_QUEUE,
                     AudioSystem.FOR_COMMUNICATION, mForcedUseForComm, eventSource);
@@ -1093,18 +1118,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
                                 info.mDevice, info.mState, info.mSupprNoisy, info.mMusicDevice);
                     }
                 } break;
-                case MSG_IL_SAVE_PREF_DEVICE_FOR_STRATEGY: {
-                    final int strategy = msg.arg1;
-                    final AudioDeviceAttributes device = (AudioDeviceAttributes) msg.obj;
-                    mDeviceInventory.onSaveSetPreferredDevice(strategy, device);
-                } break;
-                case MSG_I_SAVE_REMOVE_PREF_DEVICE_FOR_STRATEGY: {
-                    final int strategy = msg.arg1;
-                    mDeviceInventory.onSaveRemovePreferredDevice(strategy);
-                } break;
-                case MSG_CHECK_MUTE_MUSIC:
-                    checkMessagesMuteMusic(0);
-                    break;
                 case MSG_L_A2DP_ACTIVE_DEVICE_CHANGE_EXT: {
                     final BtDeviceConnectionInfo info = (BtDeviceConnectionInfo) msg.obj;
                     AudioService.sDeviceLogger.log((new AudioEventLogger.StringEvent(
@@ -1121,6 +1134,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
                                 info.mSupprNoisy, info.mVolume);
                     }
                 } break;
+                case MSG_IL_SAVE_PREF_DEVICE_FOR_STRATEGY: {
+                    final int strategy = msg.arg1;
+                    final AudioDeviceAttributes device = (AudioDeviceAttributes) msg.obj;
+                    mDeviceInventory.onSaveSetPreferredDevice(strategy, device);
+                } break;
+                case MSG_I_SAVE_REMOVE_PREF_DEVICE_FOR_STRATEGY: {
+                    final int strategy = msg.arg1;
+                    mDeviceInventory.onSaveRemovePreferredDevice(strategy);
+                } break;
+                case MSG_CHECK_MUTE_MUSIC:
+                    checkMessagesMuteMusic(0);
+                    break;
                 default:
                     Log.wtf(TAG, "Invalid message " + msg.what);
             }

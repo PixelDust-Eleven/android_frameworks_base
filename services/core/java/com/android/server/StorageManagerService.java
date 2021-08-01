@@ -163,6 +163,7 @@ import com.android.server.storage.StorageSessionController;
 import com.android.server.storage.StorageSessionController.ExternalStorageServiceException;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.ActivityTaskManagerInternal.ScreenObserver;
+import com.android.internal.widget.ILockSettings;
 
 import libcore.io.IoUtils;
 import libcore.util.EmptyArray;

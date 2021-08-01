@@ -39,6 +39,9 @@ LOCAL_JAVA_LIBRARIES := \
     android.test.runner \
     telephony-common \
     android.test.base \
+    android.car \
+    android.car.userlib \
+    telephony-ext \
     ims-common
 
 LOCAL_AAPT_FLAGS := --extra-packages com.android.systemui

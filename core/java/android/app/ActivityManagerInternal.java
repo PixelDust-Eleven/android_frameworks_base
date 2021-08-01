@@ -462,4 +462,7 @@ public abstract class ActivityManagerInternal {
 
     public abstract boolean canAllowWhileInUsePermissionInFgs(int pid, int uid,
             @NonNull String packageName);
+
+    // Starts a process as empty.
+    public abstract int startActivityAsUserEmpty(Bundle options);
 }

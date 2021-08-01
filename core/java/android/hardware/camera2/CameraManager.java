@@ -46,6 +46,7 @@ import android.os.ServiceManager;
 import android.os.ServiceSpecificException;
 import android.os.SystemProperties;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
@@ -1239,10 +1240,22 @@ public final class CameraManager {
 
         private String[] extractCameraIdListLocked() {
             String[] cameraIds = null;
-            boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
+            boolean exposeAuxCamera = false;
+            String packageName = ActivityThread.currentOpPackageName();
+            String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
+            if (packageList.length() > 0) {
+                TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
+                splitter.setString(packageList);
+                for (String str : splitter) {
+                    if (packageName.equals(str)) {
+                        exposeAuxCamera = true;
+                        break;
+                    }
+                }
+            }
             int idCount = 0;
             for (int i = 0; i < mDeviceStatus.size(); i++) {
-                if (!exposeAuxCamera && i == 2) break;
+                if(!exposeAuxCamera && (i == 2)) break;
                 int status = mDeviceStatus.valueAt(i);
                 if (status == ICameraServiceListener.STATUS_NOT_PRESENT
                         || status == ICameraServiceListener.STATUS_ENUMERATING) continue;
@@ -1511,7 +1524,19 @@ public final class CameraManager {
                 /* Force to expose only two cameras
                  * if the package name does not falls in this bucket
                  */
-                boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
+                boolean exposeAuxCamera = false;
+                String packageName = ActivityThread.currentOpPackageName();
+                String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
+                if (packageList.length() > 0) {
+                    TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
+                    splitter.setString(packageList);
+                    for (String str : splitter) {
+                        if (packageName.equals(str)) {
+                            exposeAuxCamera = true;
+                            break;
+                        }
+                    }
+                }
                 if (exposeAuxCamera == false && (Integer.parseInt(cameraId) >= 2)) {
                     throw new IllegalArgumentException("invalid cameraId");
                 }
@@ -1714,9 +1739,28 @@ public final class CameraManager {
         }
 
         private void onStatusChangedLocked(int status, String id) {
-            if (!Camera.shouldExposeAuxCamera() && Integer.parseInt(id) >= 2) {
-                Log.w(TAG, "[soar.cts] ignore the status update of camera: " + id);
-                return;
+            /* Force to ignore the last mono/aux camera status update
+             * if the package name does not falls in this bucket
+             */
+            boolean exposeMonoCamera = false;
+            String packageName = ActivityThread.currentOpPackageName();
+            String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
+            if (packageList.length() > 0) {
+                TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
+                splitter.setString(packageList);
+                for (String str : splitter) {
+                    if (packageName.equals(str)) {
+                        exposeMonoCamera = true;
+                        break;
+                    }
+                }
+            }
+
+            if (exposeMonoCamera == false) {
+                if (Integer.parseInt(id) >= 2) {
+                    Log.w(TAG, "[soar.cts] ignore the status update of camera: " + id);
+                    return;
+                }
             }
 
             if (DEBUG) {
@@ -1853,10 +1897,25 @@ public final class CameraManager {
             /* Force to ignore the aux or composite camera torch status update
              * if the package name does not falls in this bucket
              */
-            boolean exposeAuxCamera = Camera.shouldExposeAuxCamera();
-            if (!exposeAuxCamera == false && Integer.parseInt(id) >= 2) {
-                Log.w(TAG, "ignore the torch status update of camera: " + id);
-                return;
+            boolean exposeMonoCamera = false;
+            String packageName = ActivityThread.currentOpPackageName();
+            String packageList = SystemProperties.get("vendor.camera.aux.packagelist");
+            if (packageList.length() > 0) {
+                TextUtils.StringSplitter splitter = new TextUtils.SimpleStringSplitter(',');
+                splitter.setString(packageList);
+                for (String str : splitter) {
+                    if (packageName.equals(str)) {
+                        exposeMonoCamera = true;
+                        break;
+                    }
+                }
+            }
+
+            if (exposeMonoCamera == false) {
+                if (Integer.parseInt(id) >= 2) {
+                    Log.w(TAG, "ignore the torch status update of camera: " + id);
+                    return;
+                }
             }
 
 

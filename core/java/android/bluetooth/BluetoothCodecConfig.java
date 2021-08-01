@@ -44,7 +44,9 @@ public final class BluetoothCodecConfig implements Parcelable {
             SOURCE_CODEC_TYPE_AAC,
             SOURCE_CODEC_TYPE_APTX,
             SOURCE_CODEC_TYPE_APTX_HD,
+            SOURCE_CODEC_TYPE_APTX_ADAPTIVE,
             SOURCE_CODEC_TYPE_LDAC,
+            SOURCE_CODEC_TYPE_APTX_TWSP,
             SOURCE_CODEC_TYPE_MAX,
             SOURCE_CODEC_TYPE_INVALID
     })
@@ -140,17 +142,14 @@ public final class BluetoothCodecConfig implements Parcelable {
     @UnsupportedAppUsage
     public static final int SAMPLE_RATE_192000 = 0x1 << 5;
 
-    @UnsupportedAppUsage
     public static final int SAMPLE_RATE_16000 = 0x1 << 6;
 
-    @UnsupportedAppUsage
     public static final int SAMPLE_RATE_24000 = 0x1 << 7;
 
-    @UnsupportedAppUsage
     public static final int SAMPLE_RATE_32000 = 0x1 << 8;
 
-    @UnsupportedAppUsage
     public static final int SAMPLE_RATE_8000 = 0x1 << 9;
+
 
     /** @hide */
     @IntDef(prefix = "BITS_PER_SAMPLE_", value = {
@@ -192,8 +191,6 @@ public final class BluetoothCodecConfig implements Parcelable {
 
     @UnsupportedAppUsage
     public static final int CHANNEL_MODE_STEREO = 0x1 << 1;
-
-    @UnsupportedAppUsage
     public static final int CHANNEL_MODE_JOINT_STEREO = 0x1 << 2;
 
     private final @SourceCodecType int mCodecType;

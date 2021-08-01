@@ -4203,6 +4203,7 @@ public class StatusBar extends SystemUI implements DemoMode,
 
         @Override
         public void onScreenTurnedOff() {
+            mDozeServiceHost.updateDozing();
             mFalsingManager.onScreenOff();
             mScrimController.onScreenTurnedOff();
             updateIsKeyguard();

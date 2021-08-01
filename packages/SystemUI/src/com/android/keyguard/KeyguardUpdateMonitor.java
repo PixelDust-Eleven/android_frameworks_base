@@ -103,6 +103,7 @@ import com.android.systemui.statusbar.StatusBarState;
 import com.android.systemui.statusbar.phone.KeyguardBypassController;
 import com.android.systemui.util.Assert;
 import com.android.systemui.util.RingerModeTracker;
+import com.android.systemui.keyguard.KeyguardViewMediator;
 
 import com.google.android.collect.Lists;
 
@@ -2492,6 +2493,12 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
         if (!SubscriptionManager.isValidSubscriptionId(subId)) {
             Log.w(TAG, "invalid subId in handleServiceStateChange()");
+            for (int j = 0; j < mCallbacks.size(); j++) {
+                KeyguardUpdateMonitorCallback cb = mCallbacks.get(j).get();
+                if (cb != null) {
+                    cb.onServiceStateChanged(subId, serviceState);
+                }
+            }
             return;
         } else {
             updateTelephonyCapable(true);
@@ -2499,7 +2506,17 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
 
         mServiceStates.put(subId, serviceState);
 
-        callbacksRefreshCarrierInfo();
+        // The upstream method (callbacksRefreshCarrierInfo) does not subId or
+        // serviceState as input. Thus onServiceStateChanged cannot be called
+        // from that new method. For now, re-use the same logic as before here
+        // instead of a call to callbacksRefreshCarrierInfo.
+        for (int j = 0; j < mCallbacks.size(); j++) {
+            KeyguardUpdateMonitorCallback cb = mCallbacks.get(j).get();
+            if (cb != null) {
+                cb.onRefreshCarrierInfo();
+                cb.onServiceStateChanged(subId, serviceState);
+            }
+        }
     }
 
     public boolean isKeyguardVisible() {
@@ -2861,6 +2878,36 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
         }
     };
 
+    public boolean isOOS()
+    {
+        boolean ret = true;
+        int phoneCount = TelephonyManager.getDefault().getPhoneCount();
+
+        for (int phoneId = 0; phoneId < phoneCount; phoneId++) {
+            int[] subId = SubscriptionManager.getSubId(phoneId);
+            if (subId != null && subId.length >= 1) {
+                if (DEBUG) Log.d(TAG, "slot id:" + phoneId + " subId:" + subId[0]);
+                ServiceState state = mServiceStates.get(subId[0]);
+                if (state != null) {
+                    if (state.isEmergencyOnly())
+                        ret = false;
+                    if ((state.getVoiceRegState() != ServiceState.STATE_OUT_OF_SERVICE)
+                            && (state.getVoiceRegState() != ServiceState.STATE_POWER_OFF))
+                        ret = false;
+                    if (DEBUG) {
+                        Log.d(TAG, "is emergency: " + state.isEmergencyOnly());
+                        Log.d(TAG, "voice state: " + state.getVoiceRegState());
+                    }
+                } else {
+                    if (DEBUG) Log.d(TAG, "state is NULL");
+                }
+            }
+        }
+
+        if (DEBUG) Log.d(TAG, "is Emergency supported: " + ret);
+        return ret;
+    }
+
     /**
      * @return true if and only if the state has changed for the specified {@code slotId}
      */
@@ -2876,8 +2923,9 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             mSimDatas.put(slotId, data);
             changed = true; // no data yet; force update
         } else {
-            changed = data.simState != state;
+            changed = (data.simState != state) || (data.slotId != slotId);
             data.simState = state;
+            data.slotId = slotId;
         }
         return changed;
     }
@@ -2970,6 +3018,28 @@ public class KeyguardUpdateMonitor implements TrustManager.TrustListener, Dumpab
             if (state == getSimState(id) && bestSlotId > slotId) {
                 resultId = id;
                 bestSlotId = slotId;
+            }
+        }
+        return resultId;
+    }
+
+
+    /**
+     * Find the Unlocked SubscriptionId for a SIM in the given state,
+     * @param state
+     * @return subid or {@link SubscriptionManager#INVALID_SUBSCRIPTION_ID} if none found
+     */
+    public int getUnlockedSubIdForState(int state) {
+        List<SubscriptionInfo> list = getSubscriptionInfo(false /* forceReload */);
+        int resultId = SubscriptionManager.INVALID_SUBSCRIPTION_ID;
+        for (int i = 0; i < list.size(); i++) {
+            final SubscriptionInfo info = list.get(i);
+            final int id = info.getSubscriptionId();
+            int slotId = SubscriptionManager.getSlotIndex(id);
+            if (state == getSimState(id) && (KeyguardViewMediator.getUnlockTrackSimState(slotId)
+                    != TelephonyManager.SIM_STATE_READY)) {
+                resultId = id;
+                break;
             }
         }
         return resultId;

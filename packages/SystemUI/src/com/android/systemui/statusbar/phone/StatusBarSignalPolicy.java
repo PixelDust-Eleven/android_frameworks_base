@@ -60,7 +60,6 @@ public class StatusBarSignalPolicy implements NetworkControllerImpl.SignalCallba
     private boolean mBlockEthernet;
     private boolean mActivityEnabled;
     private boolean mForceBlockWifi;
-
     // Track as little state as possible, and only for padding purposes
     private boolean mIsAirplaneMode = false;
     private boolean mWifiVisible = false;

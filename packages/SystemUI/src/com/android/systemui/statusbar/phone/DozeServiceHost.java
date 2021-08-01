@@ -201,6 +201,8 @@ public final class DozeServiceHost implements DozeHost {
             updateDozing();
             mDozeLog.traceDozing(mStatusBarStateController.isDozing());
             mStatusBar.updateIsKeyguard();
+        }else{
+                mDozingRequested = true;
         }
     }
 

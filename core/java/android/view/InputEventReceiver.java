@@ -234,7 +234,6 @@ public abstract class InputEventReceiver {
             Log.e(TAG, "cannot invoke setMotionEventInfo.");
         }
     }
-
     /**
      * Factory for InputEventReceiver
      */

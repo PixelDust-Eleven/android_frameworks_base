@@ -34,7 +34,10 @@ import android.telephony.Annotation;
 import android.telephony.CdmaEriInformation;
 import android.telephony.CellSignalStrength;
 import android.telephony.CellSignalStrengthCdma;
-import android.telephony.NetworkRegistrationInfo;
+import android.telephony.CellSignalStrengthNr;
+import android.telephony.ims.ImsMmTelManager;
+import android.telephony.ims.ImsReasonInfo;
+import android.telephony.ims.feature.MmTelFeature;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.SignalStrength;
@@ -49,16 +52,21 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.ims.ImsConfig;
 import com.android.ims.ImsException;
 import com.android.ims.ImsManager;
 import com.android.ims.FeatureConnector;
 import com.android.internal.annotations.VisibleForTesting;
+import com.android.internal.telephony.PhoneConstants;
+import com.android.internal.telephony.PhoneConstants.DataState;
+import com.android.internal.telephony.TelephonyIntents;
 import com.android.settingslib.Utils;
 import com.android.settingslib.graph.SignalDrawable;
 import com.android.settingslib.net.SignalStrengthUtil;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
+import com.android.systemui.statusbar.policy.FiveGServiceClient;
+import com.android.systemui.statusbar.policy.FiveGServiceClient.FiveGServiceState;
+import com.android.systemui.statusbar.policy.FiveGServiceClient.IFiveGStateListener;
 import com.android.systemui.statusbar.policy.NetworkController.IconState;
 import com.android.systemui.statusbar.policy.NetworkController.SignalCallback;
 import com.android.systemui.statusbar.policy.NetworkControllerImpl.Config;
@@ -73,6 +81,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 
+import org.codeaurora.internal.NrConfigType;
+import org.codeaurora.internal.NrIconType;
 
 public class MobileSignalController extends SignalController<
         MobileSignalController.MobileState, MobileSignalController.MobileIconGroup> implements TunerService.Tunable {
@@ -96,6 +106,7 @@ public class MobileSignalController extends SignalController<
     // this could potentially become part of MobileState for simplification/complication
     // of code.
     private int mDataState = TelephonyManager.DATA_DISCONNECTED;
+    private DataState mMMSDataState = DataState.DISCONNECTED;
     private TelephonyDisplayInfo mTelephonyDisplayInfo =
             new TelephonyDisplayInfo(TelephonyManager.NETWORK_TYPE_UNKNOWN,
                     TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NONE);
@@ -105,6 +116,14 @@ public class MobileSignalController extends SignalController<
     private Config mConfig;
     @VisibleForTesting
     boolean mInflateSignalStrengths = false;
+
+    /****************************SideCar****************************/
+    @VisibleForTesting
+    FiveGStateListener mFiveGStateListener;
+    @VisibleForTesting
+    FiveGServiceState mFiveGState;
+    private FiveGServiceClient mClient;
+    /**********************************************************/
 
     // VoLTE icon
     private ImsManager mImsManager;
@@ -132,6 +151,8 @@ public class MobileSignalController extends SignalController<
         mPhone = phone;
         mDefaults = defaults;
         mSubscriptionInfo = info;
+        mFiveGStateListener = new FiveGStateListener();
+        mFiveGState = new FiveGServiceState();
         mPhoneStateListener = new MobilePhoneStateListener((new Handler(receiverLooper))::post);
         mNetworkNameSeparator = getTextIfExists(R.string.status_bar_network_name_separator)
                 .toString();
@@ -275,6 +296,11 @@ public class MobileSignalController extends SignalController<
         mContext.getContentResolver().registerContentObserver(Global.getUriFor(
                 Global.MOBILE_DATA + mSubscriptionInfo.getSubscriptionId()),
                 true, mObserver);
+        mContext.getContentResolver().registerContentObserver(Global.getUriFor(Global.DATA_ROAMING),
+                true, mObserver);
+        mContext.getContentResolver().registerContentObserver(Global.getUriFor(
+                Global.DATA_ROAMING + mSubscriptionInfo.getSubscriptionId()),
+                true, mObserver);
         mContext.registerReceiver(mVolteSwitchObserver,
                 new IntentFilter("org.codeaurora.intent.action.ACTION_ENHANCE_4G_SWITCH"));
         mFeatureConnector.connect();
@@ -314,6 +340,8 @@ public class MobileSignalController extends SignalController<
         }
         mNetworkToIconLookup.put(toIconKey(TelephonyManager.NETWORK_TYPE_TD_SCDMA),
                 TelephonyIcons.THREE_G);
+        mNetworkToIconLookup.put(toIconKey(TelephonyManager.NETWORK_TYPE_NR),
+                TelephonyIcons.FIVE_G_SA);
 
         if (!mConfig.showAtLeast3G) {
             mNetworkToIconLookup.put(toIconKey(TelephonyManager.NETWORK_TYPE_UNKNOWN),
@@ -448,11 +476,15 @@ public class MobileSignalController extends SignalController<
             if (mInflateSignalStrengths) {
                 level++;
             }
+
             boolean dataDisabled = mCurrentState.userSetup
                     && (mCurrentState.iconGroup == TelephonyIcons.DATA_DISABLED
                     || (mCurrentState.iconGroup == TelephonyIcons.NOT_DEFAULT_DATA));
             boolean noInternet = mCurrentState.inetCondition == 0;
             boolean cutOut = dataDisabled || noInternet;
+            if (mConfig.hideNoInternetState) {
+                cutOut = false;
+            }
             return SignalDrawable.getState(level, getNumLevels(), cutOut);
         } else if (mCurrentState.enabled) {
             return SignalDrawable.getEmptyState(getNumLevels());
@@ -472,9 +504,14 @@ public class MobileSignalController extends SignalController<
 
     private int getVolteResId() {
         int resId = 0;
-        if ((mCurrentState.voiceCapable || mCurrentState.videoCapable)
-                && mCurrentState.imsRegistered) {
+        int voiceNetTye = getVoiceNetworkType();
+        if ( (mCurrentState.voiceCapable || mCurrentState.videoCapable)
+                &&  mCurrentState.imsRegistered ) {
             resId = R.drawable.ic_volte;
+        } else if ( (mTelephonyDisplayInfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_LTE
+                        || mTelephonyDisplayInfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_LTE_CA)
+                    && voiceNetTye  == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+            resId = R.drawable.ic_volte_no_voice;
         }
         return resId;
     }
@@ -634,6 +671,16 @@ public class MobileSignalController extends SignalController<
         } else if (action.equals(TelephonyManager.ACTION_DEFAULT_DATA_SUBSCRIPTION_CHANGED)) {
             updateDataSim();
             notifyListenersIfNecessary();
+        }else if (action.equals(TelephonyIntents.ACTION_ANY_DATA_CONNECTION_STATE_CHANGED)) {
+            String apnType = intent.getStringExtra(PhoneConstants.DATA_APN_TYPE_KEY);
+            String state = intent.getStringExtra(PhoneConstants.STATE_KEY);
+            if ("mms".equals(apnType)) {
+                if (DEBUG) {
+                    Log.d(mTag, "handleBroadcast MMS connection state=" + state);
+                }
+                mMMSDataState = DataState.valueOf(state);
+                updateTelephony();
+            }
         }
     }
 
@@ -723,6 +770,27 @@ public class MobileSignalController extends SignalController<
                 mCurrentState.level = getCdmaLevel();
             } else {
                 mCurrentState.level = mSignalStrength.getLevel();
+                if (mConfig.showRsrpSignalLevelforLTE) {
+                    if (DEBUG) {
+                        Log.d(mTag, "updateTelephony CS:" + mServiceState.getVoiceNetworkType()
+                                + "/" + TelephonyManager.getNetworkTypeName(
+                                mServiceState.getVoiceNetworkType())
+                                + ", PS:" + mServiceState.getDataNetworkType()
+                                + "/"+ TelephonyManager.getNetworkTypeName(
+                                mServiceState.getDataNetworkType()));
+                    }
+                    int dataType = mServiceState.getDataNetworkType();
+                    if (dataType == TelephonyManager.NETWORK_TYPE_LTE ||
+                            dataType == TelephonyManager.NETWORK_TYPE_LTE_CA) {
+                        mCurrentState.level = getAlternateLteLevel(mSignalStrength);
+                    }else if ( dataType == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+                        int voiceType = mServiceState.getVoiceNetworkType();
+                        if (voiceType == TelephonyManager.NETWORK_TYPE_LTE ||
+                                voiceType == TelephonyManager.NETWORK_TYPE_LTE_CA) {
+                            mCurrentState.level = getAlternateLteLevel(mSignalStrength);
+                        }
+                    }
+                }
             }
         }
 
@@ -732,8 +800,18 @@ public class MobileSignalController extends SignalController<
         } else {
             mCurrentState.iconGroup = mDefaultIcons;
         }
+
+        //Modem has centralized logic to display 5G icon based on carrier requirements
+        //For 5G icon display, only query NrIconType reported by modem
+        if ( mFiveGState.isNrIconTypeValid() ) {
+            mCurrentState.iconGroup = mFiveGState.getIconGroup();
+        } else {
+            mCurrentState.iconGroup = getNetworkTypeIconGroup();
+        }
+
         mCurrentState.dataConnected = mCurrentState.connected
-                && mDataState == TelephonyManager.DATA_CONNECTED;
+                && (mDataState == TelephonyManager.DATA_CONNECTED
+                    || mMMSDataState == DataState.CONNECTED);
 
         mCurrentState.roaming = isRoaming();
         if (isCarrierNetworkChangeActive()) {
@@ -765,6 +843,32 @@ public class MobileSignalController extends SignalController<
             mCurrentState.networkNameData = mServiceState.getOperatorAlphaShort();
         }
 
+
+        if ( mConfig.alwaysShowNetworkTypeIcon ) {
+            if ( mFiveGState.isNrIconTypeValid() ) {
+                mCurrentState.iconGroup = mFiveGState.getIconGroup();
+            } else {
+                if (mCurrentState.connected) {
+                    if (isDataNetworkTypeAvailable()) {
+                        int type = mTelephonyDisplayInfo.getOverrideNetworkType();
+                        if (type == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NONE
+                                || type == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_NSA_MMWAVE
+                                || type == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_NSA ) {
+                            iconKey = toIconKey(mTelephonyDisplayInfo.getNetworkType());
+                        } else {
+                            iconKey = toDisplayIconKey(type);
+                        }
+                    } else {
+                        iconKey = toIconKey(getVoiceNetworkType());
+                    }
+                }
+                mCurrentState.iconGroup = mNetworkToIconLookup.getOrDefault(iconKey,
+                        mDefaultIcons);
+            }
+        }
+        mCurrentState.mobileDataEnabled = mPhone.isDataEnabled();
+        mCurrentState.roamingDataEnabled = mPhone.isDataRoamingEnabled();
+
         notifyListenersIfNecessary();
     }
 
@@ -789,9 +893,65 @@ public class MobileSignalController extends SignalController<
         return !mPhone.isDataConnectionAllowed();
     }
 
+    private boolean isDataNetworkTypeAvailable() {
+        boolean isAvailable = true;
+        if ( mTelephonyDisplayInfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_UNKNOWN ) {
+            isAvailable = false;
+        } else {
+            int dataType = getDataNetworkType();
+            int voiceType = getVoiceNetworkType();
+            if ((dataType == TelephonyManager.NETWORK_TYPE_EVDO_A
+                    || dataType == TelephonyManager.NETWORK_TYPE_EVDO_B
+                    || dataType == TelephonyManager.NETWORK_TYPE_EHRPD
+                    || dataType == TelephonyManager.NETWORK_TYPE_LTE
+                    || dataType == TelephonyManager.NETWORK_TYPE_LTE_CA)
+                    && (voiceType == TelephonyManager.NETWORK_TYPE_GSM
+                    || voiceType == TelephonyManager.NETWORK_TYPE_1xRTT
+                    || voiceType == TelephonyManager.NETWORK_TYPE_CDMA)
+                    && ( !isCallIdle() )) {
+                isAvailable = false;
+            }
+        }
+
+        return isAvailable;
+    }
+
+    private boolean isCallIdle() {
+        return mCallState == TelephonyManager.CALL_STATE_IDLE;
+    }
+
+    private int getVoiceNetworkType() {
+        return mServiceState != null ?
+                mServiceState.getVoiceNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
+    }
+
     private int getDataNetworkType() {
         return mServiceState != null ?
                 mServiceState.getDataNetworkType() : TelephonyManager.NETWORK_TYPE_UNKNOWN;
+    }
+
+    private int getAlternateLteLevel(SignalStrength signalStrength) {
+        int lteRsrp = signalStrength.getLteDbm();
+        if ( lteRsrp == SignalStrength.INVALID ) {
+            int signalStrengthLevel = signalStrength.getLevel();
+            if (DEBUG) {
+                Log.d(mTag, "getAlternateLteLevel lteRsrp:INVALID "
+                        + " signalStrengthLevel = " + signalStrengthLevel);
+            }
+            return signalStrengthLevel;
+        }
+
+        int rsrpLevel = SignalStrength.SIGNAL_STRENGTH_NONE_OR_UNKNOWN;
+        if (lteRsrp > -44) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_NONE_OR_UNKNOWN;
+        else if (lteRsrp >= -97) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_GREAT;
+        else if (lteRsrp >= -105) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_GOOD;
+        else if (lteRsrp >= -113) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_MODERATE;
+        else if (lteRsrp >= -120) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_POOR;
+        else if (lteRsrp >= -140) rsrpLevel = SignalStrength.SIGNAL_STRENGTH_NONE_OR_UNKNOWN;
+        if (DEBUG) {
+            Log.d(mTag, "getAlternateLteLevel lteRsrp:" + lteRsrp + " rsrpLevel = " + rsrpLevel);
+        }
+        return rsrpLevel;
     }
 
     @VisibleForTesting
@@ -803,14 +963,77 @@ public class MobileSignalController extends SignalController<
         notifyListenersIfNecessary();
     }
 
-    private boolean isCallIdle() {
-        return mCallState == TelephonyManager.CALL_STATE_IDLE;
+    public void registerFiveGStateListener(FiveGServiceClient client) {
+        int phoneId = mSubscriptionInfo.getSimSlotIndex();
+        client.registerListener(phoneId, mFiveGStateListener);
+        mClient = client;
+    }
+
+    public void unregisterFiveGStateListener(FiveGServiceClient client) {
+        int phoneId = mSubscriptionInfo.getSimSlotIndex();
+        client.unregisterListener(phoneId);
+    }
+
+    private MobileIconGroup getNetworkTypeIconGroup() {
+        MobileIconGroup iconGroup = mDefaultIcons;
+        int overrideNetworkType = mTelephonyDisplayInfo.getOverrideNetworkType();
+        String iconKey = null;
+        if (overrideNetworkType == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NONE
+                || overrideNetworkType == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_NSA_MMWAVE
+                || overrideNetworkType == TelephonyDisplayInfo.OVERRIDE_NETWORK_TYPE_NR_NSA ){
+            int networkType = mTelephonyDisplayInfo.getNetworkType();
+            if (networkType == TelephonyManager.NETWORK_TYPE_UNKNOWN) {
+                networkType = getVoiceNetworkType();
+            }
+            iconKey = toIconKey(networkType);
+        } else{
+            iconKey = toDisplayIconKey(overrideNetworkType);
+        }
+
+        return mNetworkToIconLookup.getOrDefault(iconKey, mDefaultIcons);
+    }
+
+    private boolean showDataRatIcon() {
+        boolean result = false;
+        if ( mCurrentState.mobileDataEnabled ) {
+            if(mCurrentState.roamingDataEnabled || !mCurrentState.roaming) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private int getEnhancementDataRatIcon() {
+        return showDataRatIcon() && mCurrentState.connected ? getRatIconGroup().mDataType : 0;
+    }
+
+    private int getEnhancementDdsRatIcon() {
+        return mCurrentState.dataSim && mCurrentState.connected ? getRatIconGroup().mDataType : 0;
+    }
+
+    private MobileIconGroup getRatIconGroup() {
+        MobileIconGroup iconGroup = mDefaultIcons;
+        if ( mFiveGState.isNrIconTypeValid() ) {
+            iconGroup = mFiveGState.getIconGroup();
+        } else {
+            iconGroup = getNetworkTypeIconGroup();
+        }
+        return iconGroup;
     }
 
     public boolean isVowifiAvailable() {
         return mCurrentState.voiceCapable && mCurrentState.imsRegistered
-                && (getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN
-                || mIsVowifiAvailable);
+                && getDataNetworkType() == TelephonyManager.NETWORK_TYPE_IWLAN;
+    }
+
+    private MobileIconGroup getVowifiIconGroup() {
+        if ( isVowifiAvailable() && !isCallIdle() ) {
+            return TelephonyIcons.VOWIFI_CALLING;
+        } else if (isVowifiAvailable()) {
+            return TelephonyIcons.VOWIFI;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -823,6 +1046,7 @@ public class MobileSignalController extends SignalController<
         pw.println("  mDataState=" + mDataState + ",");
         pw.println("  mInflateSignalStrengths=" + mInflateSignalStrengths + ",");
         pw.println("  isDataDisabled=" + isDataDisabled() + ",");
+        pw.println("  mFiveGState=" + mFiveGState + ",");
     }
 
     class MobilePhoneStateListener extends PhoneStateListener {
@@ -903,8 +1127,19 @@ public class MobileSignalController extends SignalController<
         }
     }
 
-    private ImsMmTelManager.CapabilityCallback mCapabilityCallback =
-            new ImsMmTelManager.CapabilityCallback() {
+    class FiveGStateListener implements IFiveGStateListener{
+
+        public void onStateChanged(FiveGServiceState state) {
+            if (DEBUG) {
+                Log.d(mTag, "onStateChanged: state=" + state);
+            }
+            mFiveGState = state;
+            updateTelephony();
+            notifyListeners();
+        }
+    }
+
+    private ImsMmTelManager.CapabilityCallback mCapabilityCallback = new ImsMmTelManager.CapabilityCallback() {
         @Override
         public void onCapabilitiesStatusChanged(MmTelFeature.MmTelCapabilities config) {
             mCurrentState.voiceCapable =
@@ -913,42 +1148,38 @@ public class MobileSignalController extends SignalController<
                     config.isCapable(MmTelFeature.MmTelCapabilities.CAPABILITY_TYPE_VIDEO);
             Log.d(mTag, "onCapabilitiesStatusChanged isVoiceCapable=" + mCurrentState.voiceCapable
                     + " isVideoCapable=" + mCurrentState.videoCapable);
-            mContext.sendBroadcast(new Intent(IMS_STATUS_CHANGED));
             notifyListenersIfNecessary();
         }
     };
 
     private final ImsMmTelManager.RegistrationCallback mImsRegistrationCallback =
             new ImsMmTelManager.RegistrationCallback() {
-        @Override
-        public void onRegistered(int imsTransportType) {
-            Log.d(mTag, "onRegistered imsTransportType=" + imsTransportType);
-            mCurrentState.imsRegistered = true;
-            mContext.sendBroadcast(new Intent(IMS_STATUS_CHANGED));
-            notifyListenersIfNecessary();
-        }
+                @Override
+                public void onRegistered(int imsTransportType) {
+                    Log.d(mTag, "onRegistered imsTransportType=" + imsTransportType);
+                    mCurrentState.imsRegistered = true;
+                    notifyListenersIfNecessary();
+                }
 
-        @Override
-        public void onRegistering(int imsTransportType) {
-            Log.d(mTag, "onRegistering imsTransportType=" + imsTransportType);
-            mCurrentState.imsRegistered = false;
-            mContext.sendBroadcast(new Intent(IMS_STATUS_CHANGED));
-            notifyListenersIfNecessary();
-        }
+                @Override
+                public void onRegistering(int imsTransportType) {
+                    Log.d(mTag, "onRegistering imsTransportType=" + imsTransportType);
+                    mCurrentState.imsRegistered = false;
+                    notifyListenersIfNecessary();
+                }
 
-        @Override
-        public void onUnregistered(ImsReasonInfo info) {
-            Log.d(mTag, "onDeregistered imsReasonInfo=" + info);
-            mCurrentState.imsRegistered = false;
-            mContext.sendBroadcast(new Intent(IMS_STATUS_CHANGED));
-            notifyListenersIfNecessary();
-        }
+                @Override
+                public void onUnregistered(ImsReasonInfo info) {
+                    Log.d(mTag, "onDeregistered imsReasonInfo=" + info);
+                    mCurrentState.imsRegistered = false;
+                    notifyListenersIfNecessary();
+                }
     };
 
     private final BroadcastReceiver mVolteSwitchObserver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             Log.d(mTag, "action=" + intent.getAction());
-            if (mConfig.showVolteIcon) {
+            if ( mConfig.showVolteIcon ) {
                 notifyListeners();
             }
         }
@@ -987,6 +1218,8 @@ public class MobileSignalController extends SignalController<
         boolean imsRegistered;
         boolean voiceCapable;
         boolean videoCapable;
+        boolean mobileDataEnabled;
+        boolean roamingDataEnabled;
 
         @Override
         public void copyFrom(State s) {
@@ -1006,6 +1239,8 @@ public class MobileSignalController extends SignalController<
             imsRegistered = state.imsRegistered;
             voiceCapable = state.voiceCapable;
             videoCapable = state.videoCapable;
+            mobileDataEnabled = state.mobileDataEnabled;
+            roamingDataEnabled = state.roamingDataEnabled;
         }
 
         @Override
@@ -1023,10 +1258,12 @@ public class MobileSignalController extends SignalController<
             builder.append("carrierNetworkChangeMode=").append(carrierNetworkChangeMode)
                     .append(',');
             builder.append("userSetup=").append(userSetup).append(',');
-            builder.append("defaultDataOff=").append(defaultDataOff).append(',');
+            builder.append("defaultDataOff=").append(defaultDataOff);
             builder.append("imsRegistered=").append(imsRegistered).append(',');
             builder.append("voiceCapable=").append(voiceCapable).append(',');
-            builder.append("videoCapable=").append(videoCapable);
+            builder.append("videoCapable=").append(videoCapable).append(',');
+            builder.append("mobileDataEnabled=").append(mobileDataEnabled).append(',');
+            builder.append("roamingDataEnabled=").append(roamingDataEnabled);
         }
 
         @Override
@@ -1045,7 +1282,9 @@ public class MobileSignalController extends SignalController<
                     && ((MobileState) o).defaultDataOff == defaultDataOff
                     && ((MobileState) o).imsRegistered == imsRegistered
                     && ((MobileState) o).voiceCapable == voiceCapable
-                    && ((MobileState) o).videoCapable == videoCapable;
+                    && ((MobileState) o).videoCapable == videoCapable
+                    && ((MobileState) o).mobileDataEnabled == mobileDataEnabled
+                    && ((MobileState) o).roamingDataEnabled == roamingDataEnabled;
         }
     }
 }

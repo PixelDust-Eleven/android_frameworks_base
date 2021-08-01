@@ -33,6 +33,7 @@ import android.text.TextUtils;
 import android.util.EventLog;
 import android.util.Log;
 
+import android.os.SystemProperties;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.util.ArrayUtils;
@@ -106,6 +107,17 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     private boolean mIsHearingAidProfileConnectedFail = false;
     // Group second device for Hearing Aid
     private CachedBluetoothDevice mSubDevice;
+
+    private int mGroupId = -1;
+
+    private boolean mIsGroupDevice = false;
+
+    private boolean mIsIgnore = false;
+
+    private final int UNKNOWN = -1, BREDR = 100, GROUPID_START = 0, GROUPID_END = 15;
+    private int mType = UNKNOWN;
+    static final int PRIVATE_ADDR = 101;
+
 
     private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -958,10 +970,11 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
             // The pairing dialog now warns of phone-book access for paired devices.
             // No separate prompt is displayed after pairing.
             if (mDevice.getPhonebookAccessPermission() == BluetoothDevice.ACCESS_UNKNOWN) {
-                if (mDevice.getBluetoothClass().getDeviceClass()
+                if ((mDevice.getBluetoothClass() != null) &&
+                   (mDevice.getBluetoothClass().getDeviceClass()
                         == BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE ||
                     mDevice.getBluetoothClass().getDeviceClass()
-                        == BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET) {
+                        == BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET)) {
                     EventLog.writeEvent(0x534e4554, "138529441", -1, "");
                 }
                 mDevice.setPhonebookAccessPermission(BluetoothDevice.ACCESS_REJECTED);
@@ -1249,8 +1262,16 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
      */
     public boolean isConnectedA2dpDevice() {
         A2dpProfile a2dpProfile = mProfileManager.getA2dpProfile();
-        return a2dpProfile != null && a2dpProfile.getConnectionStatus(mDevice) ==
+        A2dpSinkProfile a2dpSinkProfile = mProfileManager.getA2dpSinkProfile();
+        Log.i(TAG, "a2dpProfile :" + a2dpProfile + " a2dpSinkProfile :" + a2dpSinkProfile);
+        if (a2dpProfile != null) {
+            return a2dpProfile.getConnectionStatus(mDevice) ==
                 BluetoothProfile.STATE_CONNECTED;
+        } else if (a2dpSinkProfile != null) {
+            return a2dpSinkProfile.getConnectionStatus(mDevice) ==
+                BluetoothProfile.STATE_CONNECTED;
+        }
+        return false;
     }
 
     /**
@@ -1293,5 +1314,54 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         mSubDevice.mRssi = tmpRssi;
         mSubDevice.mJustDiscovered = tmpJustDiscovered;
         fetchActiveDevices();
+    }
+
+    public int getGroupId(){
+        return mGroupId;
+    }
+
+    public boolean isGroupDevice() {
+        return mIsGroupDevice;
+    }
+
+    public boolean isPrivateAddr() {
+        return mIsIgnore;
+    }
+
+    public void setDeviceType(int deviceType) {
+        if (deviceType!= mType) {
+            // Log.d(TAG, "setDeviceType deviceType " + deviceType + " type " + mType);
+            mType = deviceType;
+            if (mType == UNKNOWN || mType == BREDR) {
+                mIsGroupDevice = false;
+                mGroupId = UNKNOWN;
+                mIsIgnore = false;
+            } else if (mType == PRIVATE_ADDR) {
+                mIsGroupDevice = false;
+                mGroupId = UNKNOWN;
+                mIsIgnore = true;
+            } else if (mType >= GROUPID_START && mType <= GROUPID_END ) {
+                mGroupId = mType;
+                mIsIgnore = false;
+                mIsGroupDevice = true;
+            } else {
+                Log.e(TAG, "setDeviceType error type " + mType);
+            }
+        }
+       /* Log.d(TAG, "setDeviceType mType " + mType + " mIsGroupDevice " + mIsGroupDevice
+                + " mGroupId " + mGroupId + " mIsIgnore " + mIsIgnore
+                + " name " + getName() + " addr " + getAddress()); */
+    }
+
+    public boolean isTypeUnKnown() {
+        if (mType == UNKNOWN) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getmType() {
+        return mType;
     }
 }

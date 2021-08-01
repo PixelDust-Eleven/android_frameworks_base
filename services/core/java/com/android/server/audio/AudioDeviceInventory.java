@@ -38,6 +38,7 @@ import android.os.Binder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
@@ -349,6 +350,8 @@ public class AudioDeviceInventory {
             address = "";
         }
 
+        final @AudioSystem.AudioFormatNativeEnumForBtCodec int a2dpCodec = btInfo.getCodec();
+
         synchronized (mDevicesLock) {
             final String key = DeviceInfo.makeDeviceListKey(
                     AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, address);
@@ -367,7 +370,7 @@ public class AudioDeviceInventory {
             if (isConnected && state != BluetoothProfile.STATE_CONNECTED) {
                 makeA2dpSrcUnavailable(address);
             } else if (!isConnected && state == BluetoothProfile.STATE_CONNECTED) {
-                makeA2dpSrcAvailable(address);
+                makeA2dpSrcAvailable(address, a2dpCodec);
             }
         }
     }
@@ -434,20 +437,26 @@ public class AudioDeviceInventory {
                     + " event=" + BtHelper.a2dpDeviceEventToString(event)));
 
         synchronized (mDevicesLock) {
-            if (mDeviceBroker.hasScheduledA2dpSinkConnectionState(btDevice)) {
-                AudioService.sDeviceLogger.log(new AudioEventLogger.StringEvent(
-                        "A2dp config change ignored (scheduled connection change)")
-                        .printLog(TAG));
-                mmi.set(MediaMetrics.Property.EARLY_RETURN, "A2dp config change ignored")
-                        .record();
-                return;
-            }
             final String key = DeviceInfo.makeDeviceListKey(
                     AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, address);
             final DeviceInfo di = mConnectedDevices.get(key);
             if (di == null) {
                 Log.e(TAG, "invalid null DeviceInfo in onBluetoothA2dpActiveDeviceChange");
                 mmi.set(MediaMetrics.Property.EARLY_RETURN, "null DeviceInfo").record();
+                return;
+            }
+
+            if (mDeviceBroker.hasScheduledA2dpSinkConnectionState(btDevice)) {
+                //Incase of Active device change, mConnectedDevices might have already
+                //updated in handleBluetoothA2dpActiveDeviceChangeExt
+                //Now if we are ignoring active device change,update mApmConnected ,
+                //so that next connection events are handled
+                mApmConnectedDevices.replace(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, key);
+                AudioService.sDeviceLogger.log(new AudioEventLogger.StringEvent(
+                        "A2dp config change ignored (scheduled connection change)")
+                        .printLog(TAG));
+                mmi.set(MediaMetrics.Property.EARLY_RETURN, "A2dp config change ignored")
+                        .record();
                 return;
             }
 
@@ -863,6 +872,13 @@ public class AudioDeviceInventory {
               BtHelper.SetA2dpActiveDevice(null);
               return;
           }
+
+          if (state == BluetoothProfile.STATE_CONNECTED && profile == BluetoothProfile.A2DP_SINK) {
+              mDeviceBroker.postBluetoothA2dpDeviceConnectionStateSuppressNoisyIntent(
+                               device, state, profile, suppressNoisyIntent, a2dpVolume);
+              return;
+          }
+
           // state == BluetoothProfile.STATE_CONNECTED
           synchronized (mConnectedDevices) {
                  final String address = device.getAddress();
@@ -955,15 +971,11 @@ public class AudioDeviceInventory {
             AudioService.sDeviceLogger.log(new AudioEventLogger.StringEvent(
                     "APM failed to make available A2DP device addr=" + address
                             + " error=" + res).printLog(TAG));
-            // TODO: connection failed, stop here
-            // TODO: return;
+            return;
         } else {
             AudioService.sDeviceLogger.log(new AudioEventLogger.StringEvent(
                     "A2DP device addr=" + address + " now available").printLog(TAG));
         }
-
-        // Reset A2DP suspend state each time a new sink is connected
-        mAudioSystem.setParameters("A2dpSuspended=false");
 
         final DeviceInfo di = new DeviceInfo(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, name,
                 address, a2dpCodec);
@@ -1042,21 +1054,25 @@ public class AudioDeviceInventory {
 
 
     @GuardedBy("mDevicesLock")
-    private void makeA2dpSrcAvailable(String address) {
+    private void makeA2dpSrcAvailable(String address, int a2dpCodec) {
         mAudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP,
                 AudioSystem.DEVICE_STATE_AVAILABLE, address, "",
-                AudioSystem.AUDIO_FORMAT_DEFAULT);
+                a2dpCodec);
         mConnectedDevices.put(
                 DeviceInfo.makeDeviceListKey(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, address),
                 new DeviceInfo(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, "",
-                        address, AudioSystem.AUDIO_FORMAT_DEFAULT));
+                        address, a2dpCodec));
     }
 
     @GuardedBy("mDevicesLock")
     private void makeA2dpSrcUnavailable(String address) {
+        final String deviceKey =
+               DeviceInfo.makeDeviceListKey(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, address);
+        final DeviceInfo deviceInfo = mConnectedDevices.get(deviceKey);
+        final int a2dpCodec = deviceInfo != null ? deviceInfo.mDeviceCodecFormat :
+                  AudioSystem.AUDIO_FORMAT_DEFAULT;
         mAudioSystem.setDeviceConnectionState(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP,
-                AudioSystem.DEVICE_STATE_UNAVAILABLE, address, "",
-                AudioSystem.AUDIO_FORMAT_DEFAULT);
+                AudioSystem.DEVICE_STATE_UNAVAILABLE, address, "", a2dpCodec);
         mConnectedDevices.remove(
                 DeviceInfo.makeDeviceListKey(AudioSystem.DEVICE_IN_BLUETOOTH_A2DP, address));
     }
@@ -1192,7 +1208,7 @@ public class AudioDeviceInventory {
                 return 0;
             }
             mDeviceBroker.postBroadcastBecomingNoisy();
-            delay = AudioService.BECOMING_NOISY_DELAY_MS;
+            delay = SystemProperties.getInt("audio.sys.noisy.broadcast.delay", 700);
         }
 
         mmi.set(MediaMetrics.Property.DELAY_MS, delay).record();

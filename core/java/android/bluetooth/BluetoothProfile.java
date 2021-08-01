@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package android.bluetooth;
 
 import android.Manifest;
@@ -206,6 +205,18 @@ public interface BluetoothProfile {
     int HEARING_AID = 21;
 
     /**
+     * DUN
+     * @hide
+     */
+    public static final int DUN = 22;
+
+    /**
+     * Group Operation Profile (Client Role)
+     * @hide
+     */
+    public int GROUP_CLIENT = 23;
+
+    /**
      * BC_PROFILE
      * @hide
      */
@@ -218,16 +229,22 @@ public interface BluetoothProfile {
     public static final int PC_PROFILE = 25;
 
     /**
+     * VCP
+     * @hide
+     */
+    public static final int VCP = 26;
+
+    /**
      * CC_SERVER
      * @hide
      */
-    public static final int CC_SERVER = 26;
+    public static final int CC_SERVER = 27;
 
     /**
      * Broadcast
      * @hide
      */
-    public static final int BROADCAST = 27;
+     public static final int BROADCAST = 28;
 
     /**
      * Max profile ID. This value should be updated whenever a new profile is added to match
@@ -235,7 +252,7 @@ public interface BluetoothProfile {
      *
      * @hide
      */
-    int MAX_PROFILE_ID = 27;
+    int MAX_PROFILE_ID = 28;
 
     /**
      * Default priority for devices that we try to auto-connect to and
@@ -436,6 +453,8 @@ public interface BluetoothProfile {
                 return "HEARING_AID";
             case BROADCAST:
                 return "BROADCAST";
+            case VCP:
+                return "VCP";
             default:
                 return "UNKNOWN_PROFILE";
         }

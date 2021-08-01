@@ -69,6 +69,8 @@ public class ActivityTaskManagerDebugConfig {
     public static final boolean DEBUG_CLEANUP = DEBUG_ALL || false;
     public static final boolean DEBUG_METRICS = DEBUG_ALL || false;
     public static final boolean DEBUG_APPLOCK = DEBUG_ALL || false;
+    //Flag to enable Servicetracker logs in AOSP side
+    static final boolean DEBUG_SERVICETRACKER = false;
 
     static final String POSTFIX_APP = APPEND_CATEGORY_NAME ? "_App" : "";
     static final String POSTFIX_CLEANUP = (APPEND_CATEGORY_NAME) ? "_Cleanup" : "";
