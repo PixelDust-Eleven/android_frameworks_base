@@ -835,7 +835,7 @@ public class Notifier {
         final String soundPath = Settings.Global.getString(mContext.getContentResolver(),
                 wireless ? Settings.Global.WIRELESS_CHARGING_STARTED_SOUND
                         : Settings.Global.CHARGING_STARTED_SOUND);
-        final Uri soundUri = Uri.parse("file://" + soundPath);
+        Uri soundUri = Uri.parse("file://" + soundPath);
         if (soundUri != null) {
             if (!soundUri.isAbsolute()) {
                 soundUri = Uri.parse("file://" + soundPath);
