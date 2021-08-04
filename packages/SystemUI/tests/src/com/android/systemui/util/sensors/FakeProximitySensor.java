@@ -43,7 +43,7 @@ public class FakeProximitySensor extends ProximitySensor {
     }
 
     @Override
-    public boolean getSensorAvailable() {
+    public boolean isLoaded() {
         return mAvailable;
     }
 

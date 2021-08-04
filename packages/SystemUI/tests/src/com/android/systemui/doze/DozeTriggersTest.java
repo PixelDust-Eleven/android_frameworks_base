@@ -121,8 +121,7 @@ public class DozeTriggersTest extends SysuiTestCase {
         verify(mMachine, never()).requestState(any());
         verify(mMachine, never()).requestPulse(anyInt());
 
-        mProximitySensor.setLastEvent(new ProximitySensor.ProximityEvent(false, 2));
-        captor.getValue().onNotificationAlerted(null /* pulseSuppressedListener */);
+        mProximitySensor.setLastEvent(new ProximitySensor.ThresholdSensorEvent(false, 2));
         mProximitySensor.alertListeners();
         waitForSensorManager();
         captor.getValue().onNotificationAlerted(null /* pulseSuppressedListener */);

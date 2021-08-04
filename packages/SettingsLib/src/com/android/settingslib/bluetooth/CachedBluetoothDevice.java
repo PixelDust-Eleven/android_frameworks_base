@@ -44,6 +44,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * CachedBluetoothDevice represents a remote Bluetooth device. It contains
@@ -105,6 +108,17 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
     // Group second device for Hearing Aid
     private CachedBluetoothDevice mSubDevice;
 
+    private int mGroupId = -1;
+
+    private boolean mIsGroupDevice = false;
+
+    private boolean mIsIgnore = false;
+
+    private final int UNKNOWN = -1, BREDR = 100, GROUPID_START = 0, GROUPID_END = 15;
+    private int mType = UNKNOWN;
+    static final int PRIVATE_ADDR = 101;
+
+
     private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -133,6 +147,17 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         mLocalAdapter = BluetoothAdapter.getDefaultAdapter();
         mProfileManager = profileManager;
         mDevice = device;
+        fillData();
+        mHiSyncId = BluetoothHearingAid.HI_SYNC_ID_INVALID;
+        mTwspBatteryState = -1;
+        mTwspBatteryLevel = -1;
+    }
+
+    CachedBluetoothDevice(CachedBluetoothDevice cachedDevice) {
+        mContext = cachedDevice.mContext;
+        mLocalAdapter = BluetoothAdapter.getDefaultAdapter();
+        mProfileManager = cachedDevice.mProfileManager;
+        mDevice = cachedDevice.mDevice;
         fillData();
         mHiSyncId = BluetoothHearingAid.HI_SYNC_ID_INVALID;
         mTwspBatteryState = -1;
@@ -775,13 +800,49 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         return new ArrayList<>(mProfiles);
     }
 
+    public boolean isBASeeker() {
+        if (mDevice == null) {
+            Log.e(TAG, "isBASeeker: mDevice is null");
+            return false;
+        }
+        boolean ret = false;
+        Class<?> bCProfileClass = null;
+        String BC_PROFILE_CLASS = "com.android.settingslib.bluetooth.BCProfile";
+        Method baSeeker;
+        try {
+            bCProfileClass = Class.forName(BC_PROFILE_CLASS);
+            baSeeker = bCProfileClass.getDeclaredMethod("isBASeeker", BluetoothDevice.class);
+            ret = (boolean)baSeeker.invoke(null, mDevice);
+        } catch (ClassNotFoundException | NoSuchMethodException
+                 | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     public List<LocalBluetoothProfile> getConnectableProfiles() {
         List<LocalBluetoothProfile> connectableProfiles =
                 new ArrayList<LocalBluetoothProfile>();
+        Class<?> bCProfileClass = null;
+        String BC_PROFILE_CLASS = "com.android.settingslib.bluetooth.BCProfile";
+        try {
+            bCProfileClass = Class.forName(BC_PROFILE_CLASS);
+        } catch (ClassNotFoundException ex) {
+            Log.e(TAG, "no BCProfileClass: exists");
+            bCProfileClass = null;
+        }
         synchronized (mProfileLock) {
             for (LocalBluetoothProfile profile : mProfiles) {
-                if (profile.accessProfileEnabled()) {
-                    connectableProfiles.add(profile);
+                if (bCProfileClass != null && bCProfileClass.isInstance(profile)) {
+                    if (isBASeeker()) {
+                        connectableProfiles.add(profile);
+                    } else {
+                        Log.d(TAG, "BC profile is not enabled for" + mDevice);
+                    }
+                } else {
+                    if (profile.accessProfileEnabled()) {
+                       connectableProfiles.add(profile);
+                    }
                 }
             }
         }
@@ -1253,5 +1314,54 @@ public class CachedBluetoothDevice implements Comparable<CachedBluetoothDevice> 
         mSubDevice.mRssi = tmpRssi;
         mSubDevice.mJustDiscovered = tmpJustDiscovered;
         fetchActiveDevices();
+    }
+
+    public int getGroupId(){
+        return mGroupId;
+    }
+
+    public boolean isGroupDevice() {
+        return mIsGroupDevice;
+    }
+
+    public boolean isPrivateAddr() {
+        return mIsIgnore;
+    }
+
+    public void setDeviceType(int deviceType) {
+        if (deviceType!= mType) {
+            // Log.d(TAG, "setDeviceType deviceType " + deviceType + " type " + mType);
+            mType = deviceType;
+            if (mType == UNKNOWN || mType == BREDR) {
+                mIsGroupDevice = false;
+                mGroupId = UNKNOWN;
+                mIsIgnore = false;
+            } else if (mType == PRIVATE_ADDR) {
+                mIsGroupDevice = false;
+                mGroupId = UNKNOWN;
+                mIsIgnore = true;
+            } else if (mType >= GROUPID_START && mType <= GROUPID_END ) {
+                mGroupId = mType;
+                mIsIgnore = false;
+                mIsGroupDevice = true;
+            } else {
+                Log.e(TAG, "setDeviceType error type " + mType);
+            }
+        }
+       /* Log.d(TAG, "setDeviceType mType " + mType + " mIsGroupDevice " + mIsGroupDevice
+                + " mGroupId " + mGroupId + " mIsIgnore " + mIsIgnore
+                + " name " + getName() + " addr " + getAddress()); */
+    }
+
+    public boolean isTypeUnKnown() {
+        if (mType == UNKNOWN) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getmType() {
+        return mType;
     }
 }
