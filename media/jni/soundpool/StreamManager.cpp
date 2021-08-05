@@ -111,6 +111,7 @@ StreamManager::StreamManager(
     : StreamMap(streams)
     , mAttributes(*attributes)
     , mOpPackageName(std::move(opPackageName))
+    , mLockStreamManagerStop(streams == 1 || kForceLockStreamManagerStop)
 {
     ALOGV("%s(%d, %zu, ...)", __func__, streams, threads);
     forEach([this](Stream *stream) {

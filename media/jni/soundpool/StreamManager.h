@@ -485,8 +485,6 @@ private:
     // The paired stream may be active or restarting.
     // No particular order.
     std::unordered_set<Stream*> mProcessingStreams GUARDED_BY(mStreamManagerLock);
-
-    const std::string           mOpPackageName;
 };
 
 } // namespace android::soundpool
