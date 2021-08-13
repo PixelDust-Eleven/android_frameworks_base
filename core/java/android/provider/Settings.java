@@ -5497,6 +5497,12 @@ public final class Settings {
         public static final String POWER_MENU_BG_ALPHA = "power_menu_bg_alpha";
 
         /**
+         * Whether to force the launcher to reload the icons of the current icon pack
+         * @hide
+         */
+        public static final String LAUNCHER_RELOAD_ICONS = "launcher_reload_icons";
+
+        /**
          * @hide
          */
         public static final String WFD_LEGACY_VIDEO_MODE = "wfd_legacy_video_mode";

@@ -565,4 +565,9 @@ public class PixeldustUtils {
     public static boolean isABdevice(Context context) {
         return SystemProperties.getBoolean("ro.build.ab_update", false);
     }
+
+    // Method to reload all icons for the current iconpack
+    public static void reloadIcons(Context ctx) {
+        Settings.System.putInt(ctx.getContentResolver(), Settings.System.LAUNCHER_RELOAD_ICONS, 1);
+    }
 }
