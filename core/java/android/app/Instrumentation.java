@@ -1221,6 +1221,7 @@ public class Instrumentation {
         // Set fingerprint to make SafetyNet pass
         if ("com.google.android.gms".equals(packageName)) {
             setBuildField(packageName, "FINGERPRINT", snetFp);
+            setBuildField(packageName, "MODEL", Build.MODEL + "\u200b");
         }
     }
 
