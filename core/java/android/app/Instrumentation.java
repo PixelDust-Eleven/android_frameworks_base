@@ -1223,6 +1223,16 @@ public class Instrumentation {
             setBuildField(packageName, "FINGERPRINT", snetFp);
             setBuildField(packageName, "MODEL", Build.MODEL + "\u200b");
         }
+
+        // Set Pixel XL props to spoof for Google Photos unlimited backup
+        if ("com.google.android.apps.photos".equals(packageName)) {
+            setBuildField(packageName, "BRAND", "google");
+            setBuildField(packageName, "MANUFACTURER", "Google");
+            setBuildField(packageName, "DEVICE", "marlin");
+            setBuildField(packageName, "PRODUCT", "marlin");
+            setBuildField(packageName, "MODEL", "Pixel XL");
+            setBuildField(packageName, "FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys");
+        }
     }
 
     /**
