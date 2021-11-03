@@ -321,7 +321,9 @@ public class ScreenshotHelper {
                             break;
                         case SCREENSHOT_MSG_PROCESS_COMPLETE:
                             synchronized (mScreenshotLock) {
-                                resetConnection();
+                                if (myConn != null && mScreenshotConnection == myConn) {
+                                    resetConnection();
+                                }
                             }
                             break;
                     }

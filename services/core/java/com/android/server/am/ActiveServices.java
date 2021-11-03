@@ -2160,7 +2160,12 @@ public final class ActiveServices {
                 }
             }
 
-            setFgsRestrictionLocked(callingPackage, callingPid, callingUid, s, false);
+            if (!s.mAllowWhileInUsePermissionInFgs) {
+                s.mAllowWhileInUsePermissionInFgs =
+                        shouldAllowWhileInUsePermissionInFgsLocked(callingPackage,
+                                callingPid, callingUid,
+                                service, s, false);
+            }
 
             if (s.app != null) {
                 if ((flags&Context.BIND_TREAT_LIKE_ACTIVITY) != 0) {
